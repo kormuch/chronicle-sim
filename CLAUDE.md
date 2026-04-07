@@ -12,10 +12,10 @@ Das Projekt läuft ausschließlich in der Godot 4.4 Engine. Es gibt kein Build-S
 
 ```
 # Projekt im Editor öffnen (Godot 4.4 muss installiert sein)
-godot --path C:\Users\kormu\projekte\shadows_over_mirkwood
+godot --path C:\Users\kormu\projekte\chronicle-sim
 
 # Spiel direkt starten (headless nicht sinnvoll, da UI-Spiel)
-godot --path C:\Users\kormu\projekte\shadows_over_mirkwood --scene Main.tscn
+godot --path C:\Users\kormu\projekte\chronicle-sim --scene Main.tscn
 ```
 
 Savegame-Pfad: `%APPDATA%\Godot\app_userdata\Schatten über dem Düsterwald\savegame.json`
