@@ -54,7 +54,7 @@ func _build_ui() -> void:
 	hbox.add_child(left_col)
 
 	var title_label := Label.new()
-	title_label.text = "Schatten über dem Düsterwald"
+	title_label.text = "Chronicle Sim"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	left_col.add_child(title_label)
 
@@ -83,12 +83,12 @@ func _build_ui() -> void:
 	toolbar.add_theme_constant_override("separation", 6)
 	left_col.add_child(toolbar)
 
-	_undo_button          = _btn("↩ Rückgängig",       _on_undo_pressed)
+	_undo_button          = _btn("↩ Undo",            _on_undo_pressed)
 	_undo_button.disabled = true
 	toolbar.add_child(_undo_button)
-	toolbar.add_child(_btn("Speichern",          _on_save_pressed))
-	toolbar.add_child(_btn("Laden",              _on_load_pressed))
-	toolbar.add_child(_btn("Nächste Generation", _on_next_gen_pressed))
+	toolbar.add_child(_btn("Save",                _on_save_pressed))
+	toolbar.add_child(_btn("Load",                _on_load_pressed))
+	toolbar.add_child(_btn("Next Generation",     _on_next_gen_pressed))
 
 	# ── Right column — chronicle (top) + status (bottom) ─────────────────
 	var right_col := VBoxContainer.new()
@@ -109,7 +109,7 @@ func _build_ui() -> void:
 	chron_mg.add_child(chron_vbox)
 
 	var chron_title := Label.new()
-	chron_title.text = "Dorfchronik"
+	chron_title.text = "Village Chronicle"
 	chron_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	chron_vbox.add_child(chron_title)
 	chron_vbox.add_child(HSeparator.new())
@@ -118,7 +118,7 @@ func _build_ui() -> void:
 	_chronicle_label.bbcode_enabled     = true
 	_chronicle_label.scroll_following   = false
 	_chronicle_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_chronicle_label.text               = "[i]Die Geschichte beginnt...[/i]"
+	_chronicle_label.text               = "[i]The story begins...[/i]"
 	chron_vbox.add_child(_chronicle_label)
 
 	# Status panel
@@ -134,17 +134,17 @@ func _build_ui() -> void:
 	status_mg.add_child(status_vbox)
 
 	_chieftain_label      = Label.new()
-	_chieftain_label.text = "Häuptling: —"
+	_chieftain_label.text = "Chieftain: —"
 	status_vbox.add_child(_chieftain_label)
 
 	_gen_year_label      = Label.new()
-	_gen_year_label.text = "Generation 1 · Jahr 1"
+	_gen_year_label.text = "Generation 1 · Year 1"
 	status_vbox.add_child(_gen_year_label)
 
 	status_vbox.add_child(HSeparator.new())
 
 	var align_title := Label.new()
-	align_title.text = "Gesinnung"
+	align_title.text = "Alignment"
 	status_vbox.add_child(align_title)
 
 	_alignment_label      = Label.new()
@@ -158,7 +158,7 @@ func _build_ui() -> void:
 	status_vbox.add_child(HSeparator.new())
 
 	var mood_title := Label.new()
-	mood_title.text = "Stimmung im Dorf"
+	mood_title.text = "Village Mood"
 	status_vbox.add_child(mood_title)
 
 	_mood_label                 = Label.new()
@@ -169,7 +169,7 @@ func _build_ui() -> void:
 	status_vbox.add_child(HSeparator.new())
 
 	var kronrat_title := Label.new()
-	kronrat_title.text = "Kronrat"
+	kronrat_title.text = "Council"
 	status_vbox.add_child(kronrat_title)
 
 	_kronrat_label                    = RichTextLabel.new()
@@ -201,10 +201,12 @@ func _on_state_changed(new_state: Dictionary) -> void:
 	var c:         Dictionary = new_state.get("chieftain", {})
 	var alignment: int        = new_state.get("alignment", 0)
 
-	_chieftain_label.text  = "Häuptling: %s" % c.get("name", "—")
-	_gen_year_label.text   = "Generation %d · Jahr %d" % [
+	var s: Dictionary = new_state.get("settlement", {})
+	_chieftain_label.text  = "Chieftain: %s" % c.get("name", "—")
+	_gen_year_label.text   = "Generation %d · Year %d · %d souls" % [
 		new_state.get("generation", 1),
 		new_state.get("year", 1),
+		s.get("population", 0),
 	]
 	_alignment_label.text  = "%+d — %s" % [alignment, _alignment_desc(alignment)]
 	_alignment_bar.text    = _make_alignment_bar(alignment)
@@ -216,7 +218,7 @@ func _on_state_changed(new_state: Dictionary) -> void:
 
 func _on_event_triggered(_event_id: String, text: String, choices: Array) -> void:
 	_story_label.append_text("\n\n" + text + "\n")
-	_chronicle_label.text = _build_chronicle_text()
+	_refresh_chronicle()
 
 	_clear_decisions()
 	for i: int in choices.size():
@@ -230,7 +232,7 @@ func _on_generation_advanced(summary: String) -> void:
 	_story_label.append_text(
 		"\n\n[i]── Generationswechsel ──\n%s[/i]\n" % summary
 	)
-	_chronicle_label.text = _build_chronicle_text()
+	_refresh_chronicle()
 
 # ---------------------------------------------------------------------------
 # Button handlers
@@ -248,21 +250,21 @@ func _on_choice_pressed(index: int) -> void:
 
 
 func _on_undo_pressed() -> void:
-	_story_label.append_text("\n[color=yellow]↩ Rückgängig gemacht.[/color]")
+	_story_label.append_text("\n[color=yellow]↩ Undone.[/color]")
 	_clear_decisions()
 	GameManager.pop_undo_snapshot()
 
 
 func _on_save_pressed() -> void:
 	GameManager.save_game()
-	_story_label.append_text("\n[color=green]Spiel gespeichert.[/color]")
+	_story_label.append_text("\n[color=green]Game saved.[/color]")
 
 
 func _on_load_pressed() -> void:
 	if GameManager.load_game():
 		_story_label.clear()
 		_clear_decisions()
-		_story_label.append_text("[color=cyan]Spielstand geladen.[/color]")
+		_story_label.append_text("[color=cyan]Save game loaded.[/color]")
 
 
 func _on_next_gen_pressed() -> void:
@@ -275,10 +277,11 @@ func _on_next_gen_pressed() -> void:
 func _build_chronicle_text() -> String:
 	var log: Array = GameManager.chronicle_log
 	if log.is_empty():
-		return "[i]Die Geschichte beginnt...[/i]"
+		return "[i]The story begins...[/i]"
 
-	var result:      String = ""
-	var current_gen: int    = -1
+	var result:       String = ""
+	var current_gen:  int    = -1
+	var current_year: int    = -1
 
 	for entry: Dictionary in log:
 		var gen:   int    = int(entry.get("generation", 1))
@@ -287,25 +290,38 @@ func _build_chronicle_text() -> String:
 		var eid:   String = str(entry.get("event_id", ""))
 		var delta: Dictionary = entry.get("delta", {})
 
-		# Generation header
-		if gen != current_gen:
-			current_gen = gen
-			if result != "":
-				result += "\n"
-			result += "[b]── Generation %d ──[/b]\n" % gen
-
 		# Skip internal gen_ bookkeeping (except settlement creation)
 		if eid.begins_with("gen_") and eid != "settlement_generated":
 			continue
 
+		# Generation header
+		if gen != current_gen:
+			current_gen  = gen
+			current_year = -1
+			if result != "":
+				result += "\n"
+			result += "[b]── Generation %d ──[/b]\n" % gen
+
+		# Year header — one per year, not repeated per entry
+		if year != current_year:
+			current_year = year
+			result += "\n[b]Year %d[/b]\n" % year
+
 		# Alignment delta annotation
 		var delta_str: String = ""
 		if delta.has("alignment") and int(delta["alignment"]) != 0:
-			delta_str = " [i](%+d Gesinnung)[/i]" % int(delta["alignment"])
+			delta_str += " [i](%+d alignment)[/i]" % int(delta["alignment"])
+		if delta.has("population") and int(delta["population"]) != 0:
+			delta_str += " [i](%+d pop)[/i]" % int(delta["population"])
 
-		result += "Jahr %d — %s%s\n" % [year, desc, delta_str]
+		result += "— %s%s\n" % [desc, delta_str]
 
-	return result if result != "" else "[i]Noch keine Ereignisse.[/i]"
+	return result if result != "" else "[i]No events yet.[/i]"
+
+
+func _refresh_chronicle() -> void:
+	_chronicle_label.text = _build_chronicle_text()
+	_chronicle_label.call_deferred("scroll_to_paragraph", _chronicle_label.get_paragraph_count())
 
 # ---------------------------------------------------------------------------
 # Status helpers
@@ -317,36 +333,31 @@ func _build_kronrat_text(state: Dictionary) -> String:
 		return "—"
 	var text: String = ""
 	for npc: Dictionary in npcs:
-		var name:   String = str(npc.get("name", "?"))
-		var role:   String = str(npc.get("role", "?"))
-		var age:    int    = int(npc.get("age", 0))
-		var father: String = npc.get("father", {}).get("name", "?")
-		var mother: String = npc.get("mother", {}).get("name", "?")
-		var mood:   String = str(npc.get("state", ""))
-		text += "[b]%s[/b] · %s · %dJ.\n" % [name, role, age]
-		text += "[color=gray]%s & %s[/color]\n" % [father, mother]
-		text += "[i]»%s«[/i]\n\n" % mood
+		var name: String = str(npc.get("name", "?"))
+		var role: String = str(npc.get("role", "?"))
+		var age:  int    = int(npc.get("age", 0))
+		text += "[b]%s[/b] · %s · %d\n" % [name, role, age]
 	return text.strip_edges()
 
 
 func _village_mood(alignment: int) -> String:
-	if   alignment >=  80: return "Die Gemeinschaft erblüht in Einheit und Vertrauen."
-	elif alignment >=  40: return "Im Dorf herrscht Zusammenhalt und Zufriedenheit."
-	elif alignment >=  10: return "Das Leben geht seinen Gang — mehrheitlich gut."
-	elif alignment >=  -9: return "Manche murren, doch der Alltag überwiegt."
-	elif alignment >= -39: return "Misstrauen und Unmut breiten sich aus."
-	elif alignment >= -79: return "Ein dunkler Geist liegt über dem Dorf."
-	else:                  return "Verzweiflung und Hoffnungslosigkeit regieren."
+	if   alignment >=  80: return "The community flourishes in unity and trust."
+	elif alignment >=  40: return "Solidarity and contentment prevail in the village."
+	elif alignment >=  10: return "Life goes on — mostly well."
+	elif alignment >=  -9: return "Some grumble, but daily life carries on."
+	elif alignment >= -39: return "Distrust and resentment are spreading."
+	elif alignment >= -79: return "A dark spirit hangs over the village."
+	else:                  return "Despair and hopelessness hold sway."
 
 
 func _alignment_desc(v: int) -> String:
-	if   v >=  80: return "Rein"
-	elif v >=  40: return "Tugendhaft"
-	elif v >=  10: return "Wohlgesinnt"
+	if   v >=  80: return "Pure"
+	elif v >=  40: return "Virtuous"
+	elif v >=  10: return "Benevolent"
 	elif v >=  -9: return "Neutral"
-	elif v >= -39: return "Zweifelhaft"
-	elif v >= -79: return "Verdorben"
-	else:          return "Dunkel"
+	elif v >= -39: return "Dubious"
+	elif v >= -79: return "Corrupt"
+	else:          return "Dark"
 
 
 func _make_alignment_bar(v: int) -> String:

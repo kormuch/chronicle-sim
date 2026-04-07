@@ -1,0 +1,229 @@
+{
+	"_info": "Mid Era events — generation 2+ and beyond. Mix of alignment and population effects. Use conditions to filter by alignment, generation, or primary trade.",
+
+	"great_fire": {
+		"_info": "Available any generation. Pop loss either way — question is how much.",
+		"title": "The Great Fire",
+		"text": "A fire breaks out near the granary and spreads fast. The whole village turns out — but there are not enough buckets.\nWhat does {chieftain} call for?",
+		"choices": [
+			{
+				"label": "Every able body fights the fire — protect the stores (+5 alignment, -8 pop)",
+				"effect": { "alignment": 5, "population": -8 },
+				"next_event": "",
+				"log_text": "The village fought the fire together. The granary was saved, but lives were lost.",
+				"follow_text": "The fire is out by dawn. Smoke hangs low over the village. Eight names will be carved into the memorial stone before week's end — but the grain is safe."
+			},
+			{
+				"label": "Pull back — save the people, let the granary burn (-5 alignment, -2 pop)",
+				"effect": { "alignment": -5, "population": -2 },
+				"next_event": "",
+				"log_text": "The granary burned. Fewer lives were lost, but hunger followed.",
+				"follow_text": "Two did not make it out in time. The granary is ash. The chieftain orders rationing immediately — winter is still months away, but the calculation is grim."
+			}
+		]
+	},
+
+	"refugee_camp": {
+		"_info": "Available any generation. Welcoming refugees grows population.",
+		"title": "The Refugees",
+		"text": "A group of forty ragged strangers appears at the village edge — families, old and young, fleeing a collapsed settlement to the east.\nThey ask for shelter. What does {chieftain} decide?",
+		"choices": [
+			{
+				"label": "Open the gates — we were strangers once (+10 alignment, +15 pop)",
+				"effect": { "alignment": 10, "population": 15 },
+				"next_event": "",
+				"log_text": "The refugees were welcomed. The village grew.",
+				"follow_text": "Within a season the newcomers have built their own row of houses at the village edge. They bring unfamiliar customs — and skills no one here had before."
+			},
+			{
+				"label": "Turn them away — we cannot carry strangers through winter (-10 alignment)",
+				"effect": { "alignment": -10 },
+				"next_event": "",
+				"log_text": "The refugees were turned away.",
+				"follow_text": "They move on without a word of protest — which is somehow worse than anger. Some of your own people watched from behind fences and said nothing."
+			}
+		]
+	},
+
+	"bandit_raid": {
+		"_info": "Generation 2+. Tests whether the village can defend itself.",
+		"title": "Raiders at the Gate",
+		"conditions": { "generation_min": 2 },
+		"text": "A band of raiders has been seen on the road. They send a messenger: pay tribute or face the torch.\nThe council is divided. What does {chieftain} order?",
+		"choices": [
+			{
+				"label": "Pay the tribute — buy peace for now (-5 alignment)",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "Tribute was paid. The raiders moved on.",
+				"follow_text": "The carts roll out at dusk. It works — the raiders leave. But everyone knows they will be back next year, and the year after that."
+			},
+			{
+				"label": "Arm the village and drive them off (+5 alignment, -5 pop)",
+				"effect": { "alignment": 5, "population": -5 },
+				"next_event": "",
+				"log_text": "The village armed and repelled the raiders. Five were lost in the fight.",
+				"follow_text": "The raiders scatter after a brutal skirmish at the eastern field. Five villagers do not come home. Their names are spoken at the fire that night — and the word spreads: this village does not yield."
+			}
+		]
+	},
+
+	"harvest_festival": {
+		"_info": "Positive alignment only — only thriving communities hold a real feast.",
+		"title": "Festival of the Harvest",
+		"conditions": { "alignment_min": 20 },
+		"text": "The harvest this year is the best in living memory. The barns are full and the mood is high.\nThe elder proposes a great festival — three days of feasting and games.\nBut the council warns: winter is long.",
+		"choices": [
+			{
+				"label": "Hold the festival — the people have earned it (+10 alignment, -5 pop equivalent in stores)",
+				"effect": { "alignment": 10 },
+				"next_event": "",
+				"log_text": "A great harvest festival was held. Spirits soared.",
+				"follow_text": "Three days of music, fire, and laughter. Stories are told that will be repeated for generations. When the festival ends, the village feels like one body, not many."
+			},
+			{
+				"label": "Store the surplus — joy is not food in February (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "The surplus was stored. A modest celebration was held.",
+				"follow_text": "A single evening of quiet celebration, then back to work. Some grumble — but when the hard months come, the stores hold. The chieftain was right, and everyone knows it."
+			}
+		]
+	},
+
+	"dark_omens": {
+		"_info": "Low alignment only — corrupt villages face darker choices.",
+		"title": "Dark Omens",
+		"conditions": { "alignment_max": -20 },
+		"text": "The village elder reports strange signs: a stillborn calf with two heads, a dry well that smells of sulphur, three crows dead on the council steps.\nThe people are frightened. A travelling priest offers to perform a cleansing ritual — for a price.",
+		"choices": [
+			{
+				"label": "Pay the priest — fear is more dangerous than cost (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "A cleansing ritual was performed. Morale recovered somewhat.",
+				"follow_text": "The priest's ritual is theatrical but effective — people feel better, and feeling better makes them work better. Whether the gods were listening is another matter."
+			},
+			{
+				"label": "Find a scapegoat among the villagers — the people need someone to blame (-10 alignment, -3 pop)",
+				"effect": { "alignment": -10, "population": -3 },
+				"next_event": "",
+				"log_text": "Three villagers were accused and driven out. Fear was redirected.",
+				"follow_text": "Three families are gone by morning, their doors left open. The mood lifts — for about a week. Then the questions start: who is next? The chieftain has set a precedent."
+			}
+		]
+	},
+
+	"skilled_craftsman": {
+		"_info": "Available any generation. Simple positive event — how welcoming is the village?",
+		"title": "The Master Craftsman",
+		"text": "A master craftsman passing through asks to settle in {chieftain}'s village. They are clearly gifted — but also clearly difficult, demanding their own workshop and a seat on the council.",
+		"choices": [
+			{
+				"label": "Accept all their terms — talent is worth the trouble (+5 alignment, +5 pop)",
+				"effect": { "alignment": 5, "population": 5 },
+				"next_event": "",
+				"log_text": "The master craftsman settled and brought their apprentices.",
+				"follow_text": "The workshop is built within a month. Four apprentices arrive shortly after, then two more. Their work draws buyers from three valleys over. The village is on the map now."
+			},
+			{
+				"label": "Welcome them, but no council seat — skill does not grant power (-5 alignment)",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "The craftsman settled under reduced terms and grew resentful.",
+				"follow_text": "They accept — and never forget. The workshop is built, the work is good, but the craftsman speaks ill of the chieftain quietly, and is listened to."
+			}
+		]
+	},
+
+	"spy_discovered": {
+		"_info": "Generation 2+. Tests the village's relationship with outsiders.",
+		"title": "The Spy",
+		"conditions": { "generation_min": 2 },
+		"text": "A villager reports that a newcomer who arrived last season has been mapping the village at night and asking questions about the granary and the well.\nThe stranger is brought before {chieftain}.",
+		"choices": [
+			{
+				"label": "Expel them publicly — make an example (+5 alignment, -2 pop)",
+				"effect": { "alignment": 5, "population": -2 },
+				"next_event": "",
+				"log_text": "The spy was expelled publicly. A warning was sent to neighbouring settlements.",
+				"follow_text": "The stranger is marched out at noon in full view of the village. Word travels fast. Whoever sent them will know: this village watches, and it does not forgive quietly."
+			},
+			{
+				"label": "Question them privately and offer to turn them — information has value (-5 alignment)",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "The spy was turned and used for counter-intelligence.",
+				"follow_text": "Behind closed doors, a deal is struck. The chieftain now knows things about the neighbouring settlement that no honest method would have revealed. The stranger stays — and is watched."
+			}
+		]
+	},
+
+	"collapsed_bridge": {
+		"_info": "Available any generation. Logistics crisis — test of community response.",
+		"title": "The Broken Bridge",
+		"text": "The main bridge across the river collapsed overnight — likely rot in the supports. Trade is cut off. Supplies that were expected are not coming.\nThe repair will take months and cost dearly.",
+		"choices": [
+			{
+				"label": "Rebuild immediately — mobilise every carpenter and spare hand (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "The bridge was rebuilt quickly through collective effort.",
+				"follow_text": "Six weeks of long days and short nights. When the first cart crosses the new bridge, the crowd on both banks cheers. It is a small thing — and everything."
+			},
+			{
+				"label": "Charge tolls on the river ford while the bridge is down — crisis is opportunity (-10 alignment)",
+				"effect": { "alignment": -10 },
+				"next_event": "",
+				"log_text": "Tolls were charged on the ford. The bridge was rebuilt slowly.",
+				"follow_text": "The ford is muddy and dangerous, especially in rain. Two mules are lost. Three merchants swear to use a different route next season. The gold comes in — at a cost not yet visible on any ledger."
+			}
+		]
+	},
+
+	"young_rebel": {
+		"_info": "Generation 2+. Internal challenge to authority.",
+		"title": "The Young Rebel",
+		"conditions": { "generation_min": 2 },
+		"text": "A young villager — barely twenty — has begun holding meetings in the evening, speaking openly about the council's failures and calling for new leadership.\nHalf the young people of the village are listening.",
+		"choices": [
+			{
+				"label": "Meet with them openly — hear what they have to say (+10 alignment)",
+				"effect": { "alignment": 10 },
+				"next_event": "",
+				"log_text": "The young rebel was heard openly by the chieftain.",
+				"follow_text": "The meeting is tense for the first hour. Then something shifts. Two of their ideas are actually good. The chieftain says so out loud. The crowd outside the window goes quiet in a different way."
+			},
+			{
+				"label": "Discredit them quietly — spread doubt about their character (-5 alignment)",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "The young rebel was discredited through quiet rumour.",
+				"follow_text": "It works — for now. The meetings stop. But the young rebel says nothing publicly, which is somehow more threatening than a speech. They are watching, and they are patient."
+			}
+		]
+	},
+
+	"mining_accident": {
+		"_info": "Only for mining trade settlements.",
+		"title": "Collapse in the Deep",
+		"conditions": { "trade": "mining" },
+		"text": "A section of the main shaft has collapsed. Six miners are trapped. The rescue is possible — but dangerous, and will halt all extraction for weeks.",
+		"choices": [
+			{
+				"label": "Full rescue — stop everything and get them out (+10 alignment, -3 pop)",
+				"effect": { "alignment": 10, "population": -3 },
+				"next_event": "",
+				"log_text": "A full rescue was attempted. Three were saved, three did not survive.",
+				"follow_text": "Three make it out alive, blinking in the daylight. Three do not. The village mourns together. The chieftain stood at the shaft entrance for the entire rescue — and everyone saw it."
+			},
+			{
+				"label": "Seal the shaft — the living cannot risk more lives for six (-10 alignment, -6 pop)",
+				"effect": { "alignment": -10, "population": -6 },
+				"next_event": "",
+				"log_text": "The shaft was sealed. Six miners were lost.",
+				"follow_text": "The decision is made in minutes. The mining continues the next day. Six families receive compensation. None of them speak to the chieftain again."
+			}
+		]
+	}
+}

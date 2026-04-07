@@ -60,42 +60,42 @@ const NAME_SUFFIX_F: Array = [
 # NPC data
 # ---------------------------------------------------------------------------
 const TRADE_ROLES: Dictionary = {
-	"hunting":     {"m": "Jagdführer",     "f": "Jägerin"},
-	"fishing":     {"m": "Fischermeister", "f": "Fischerin"},
-	"metalwork":   {"m": "Bronzegießer",   "f": "Bronzegießerin"},
-	"carpentry":   {"m": "Zimmermeister",  "f": "Zimmerfrau"},
-	"herbs":       {"m": "Kräuterhändler", "f": "Kräuterfrau"},
-	"trade":       {"m": "Händler",        "f": "Händlerin"},
-	"mining":      {"m": "Bergmann",       "f": "Bergfrau"},
-	"shipbuilding":{"m": "Bootsbauer",     "f": "Bootsfrau"},
-	"crafts":      {"m": "Handwerksmeister","f": "Handwerksmeisterin"},
+	"hunting":     {"m": "Hunt Master",       "f": "Huntress"},
+	"fishing":     {"m": "Fisher Master",     "f": "Fisher"},
+	"metalwork":   {"m": "Bronze Caster",     "f": "Bronze Caster"},
+	"carpentry":   {"m": "Master Carpenter",  "f": "Carpenter"},
+	"herbs":       {"m": "Herb Trader",       "f": "Herb Woman"},
+	"trade":       {"m": "Merchant",          "f": "Merchant"},
+	"mining":      {"m": "Miner",             "f": "Miner"},
+	"shipbuilding":{"m": "Boat Builder",      "f": "Boat Builder"},
+	"crafts":      {"m": "Master Craftsman",  "f": "Craftswoman"},
 }
 
 const NPC_STATES: Dictionary = {
 	"high":     [
-		"Ich bin dankbar für das, was wir gemeinsam aufgebaut haben.",
-		"Die Götter lächeln uns an — daran zweifle ich nicht.",
-		"Meine Kinder werden hier ein gutes Leben haben.",
+		"I am grateful for what we have built together.",
+		"The gods smile upon us — of that I have no doubt.",
+		"My children will have a good life here.",
 	],
 	"medium":   [
-		"Das Leben hier ist hart, aber gerecht.",
-		"Ich vertraue dem Ältestenrat — meistens.",
-		"Es hätte schlimmer kommen können.",
+		"Life here is hard, but fair.",
+		"I trust the elder council — most of the time.",
+		"It could have been worse.",
 	],
 	"neutral":  [
-		"Ich lebe von einem Tag zum nächsten.",
-		"Ich wünsche mir manchmal mehr vom Leben.",
-		"Manchmal träume ich von der Ferne.",
+		"I live from one day to the next.",
+		"I sometimes wish for more from life.",
+		"Sometimes I dream of distant lands.",
 	],
 	"low":      [
-		"Ich misstraue dem Rat. Sie denken zuerst an sich.",
-		"Ich überlege, das Dorf zu verlassen.",
-		"Die Starken fressen, die Schwachen darben.",
+		"I distrust the council. They think of themselves first.",
+		"I am considering leaving the village.",
+		"The strong feed while the weak starve.",
 	],
 	"very_low": [
-		"Dieses Dorf verdient sein Unglück.",
-		"Ich würde fliehen, wenn ich könnte.",
-		"Die Götter haben uns verlassen.",
+		"This village deserves its misfortune.",
+		"I would flee if I could.",
+		"The gods have abandoned us.",
 	],
 }
 
@@ -103,173 +103,134 @@ const NPC_STATES: Dictionary = {
 # Village name generation tables
 # ---------------------------------------------------------------------------
 const VILLAGE_NAME_PREFIX: Dictionary = {
-	"forest_edge": ["Wald", "Buchen", "Eichen", "Moos", "Birk", "Dunkel"],
-	"riverbank":   ["Bach", "Spring", "Wasser", "Strom", "Quell", "Schilf"],
-	"highlands":   ["Stein", "Fels", "Berg", "Hohen", "Grau", "Klippen"],
-	"coast":       ["See", "Wogen", "Sturm", "Brand", "Hafen", "Klippen"],
+	"forest_edge": ["Wood", "Beech", "Oak", "Moss", "Birch", "Shadow"],
+	"riverbank":   ["Brook", "Spring", "Water", "Stream", "Reed", "Willow"],
+	"highlands":   ["Stone", "Cliff", "Hill", "High", "Grey", "Crag"],
+	"coast":       ["Sea", "Wave", "Storm", "Ember", "Haven", "Crag"],
 }
 
 const VILLAGE_NAME_SUFFIX: Dictionary = {
-	"hunting":     ["forst", "hain", "mark", "grund"],
-	"fishing":     ["furt", "grund", "wasser", "bach"],
-	"metalwork":   ["gold", "erz", "hammer", "schmiede"],
-	"carpentry":   ["dorf", "heim", "hof", "bau"],
-	"herbs":       ["au", "kraut", "hain", "garten"],
-	"trade":       ["markt", "krug", "tor", "platz"],
-	"mining":      ["schacht", "erzberg", "grube", "stollen"],
-	"shipbuilding":["hafen", "werft", "bucht", "ufer"],
-	"crafts":      ["dorf", "heim", "werk", "hof"],
+	"hunting":     ["wood", "grove", "march", "fen"],
+	"fishing":     ["ford", "fen", "mere", "beck"],
+	"metalwork":   ["forge", "ore", "hammer", "anvil"],
+	"carpentry":   ["town", "home", "stead", "croft"],
+	"herbs":       ["lea", "herb", "grove", "garden"],
+	"trade":       ["market", "inn", "gate", "square"],
+	"mining":      ["shaft", "lode", "pit", "drift"],
+	"shipbuilding":["haven", "dock", "bay", "shore"],
+	"crafts":      ["town", "home", "works", "croft"],
 }
 
 const VILLAGE_NAME_ALIGN_PREFIX: Dictionary = {
-	"high": ["Licht", "Rein", "Heil", "Freund"],
-	"low":  ["Schatten", "Dunkel", "Asch", "Grau"],
+	"high": ["Light", "Clear", "Blessed", "Fair"],
+	"low":  ["Shadow", "Dark", "Ash", "Grey"],
 }
 
 const VILLAGE_NAME_FOUNDING: Dictionary = {
-	"rich_harvest":  ["Reich", "Frucht", "Ernte", "Segen"],
-	"great_drought": ["Asch", "Dürr", "Hart", "Brand"],
-	"raid_survived": ["Schild", "Wehr", "Trotz", "Stark"],
-	"peaceful_pact": ["Freund", "Bund", "Fried", "Treue"],
-	"plague":        ["Neu", "Hart", "Moder", "Streu"],
-	"ore_vein":      ["Erz", "Gold", "Reich", "Funken"],
+	"rich_harvest":  ["Rich", "Fruit", "Harvest", "Blessed"],
+	"great_drought": ["Ash", "Dry", "Hard", "Ember"],
+	"raid_survived": ["Shield", "Ward", "Defiant", "Strong"],
+	"peaceful_pact": ["Friend", "Bond", "Peace", "True"],
+	"plague":        ["New", "Hard", "Mould", "Spare"],
+	"ore_vein":      ["Ore", "Gold", "Rich", "Spark"],
 }
 
 # ---------------------------------------------------------------------------
 # Settlement generation tables
 # ---------------------------------------------------------------------------
 const LOCATION_NAMES: Dictionary = {
-	"forest_edge": "Waldrand",
-	"riverbank":   "Flussufer",
-	"highlands":   "Hochland",
-	"coast":       "Küste",
+	"forest_edge": "Forest Edge",
+	"riverbank":   "Riverbank",
+	"highlands":   "Highlands",
+	"coast":       "Coast",
 }
 
 const LOCATION_TRADES: Dictionary = {
-	"forest_edge": ["Jäger", "Bogner", "Korbmacher", "Kräuterfrau", "Zimmermann", "Gerber"],
-	"riverbank":   ["Fischer", "Töpfer", "Händler", "Kräuterfrau", "Weber", "Zimmermann"],
-	"highlands":   ["Bronzegießer", "Gerber", "Jäger", "Kräuterfrau", "Zimmermann", "Töpfer"],
-	"coast":       ["Fischer", "Händler", "Seiler", "Töpfer", "Kräuterfrau", "Zimmermann"],
+	"forest_edge": ["Hunter", "Fletcher", "Basket Weaver", "Herb Woman", "Carpenter", "Tanner"],
+	"riverbank":   ["Fisher", "Potter", "Merchant", "Herb Woman", "Weaver", "Carpenter"],
+	"highlands":   ["Bronze Caster", "Tanner", "Hunter", "Herb Woman", "Carpenter", "Potter"],
+	"coast":       ["Fisher", "Merchant", "Rope Maker", "Potter", "Herb Woman", "Carpenter"],
 }
 
 const TRADE_OPTIONS: Dictionary = {
 	"forest_edge": [
-		{"label": "Jagd & Waldnutzung",      "id": "hunting",    "pop_mod":  0, "align_mod":  0},
-		{"label": "Kräuterkunde & Heilkunst", "id": "herbs",      "pop_mod":  0, "align_mod":  5},
-		{"label": "Holzfällen & Zimmerei",    "id": "carpentry",  "pop_mod":  1, "align_mod":  0},
+		{"label": "Hunting & Forestry",      "id": "hunting",     "pop_mod":  0, "align_mod":  0},
+		{"label": "Herbalism & Healing",      "id": "herbs",       "pop_mod":  0, "align_mod":  5},
+		{"label": "Logging & Carpentry",      "id": "carpentry",   "pop_mod":  1, "align_mod":  0},
 	],
 	"riverbank": [
-		{"label": "Fischerei",                "id": "fishing",    "pop_mod":  1, "align_mod":  0},
-		{"label": "Töpferei & Handel",        "id": "trade",      "pop_mod":  1, "align_mod":  0},
-		{"label": "Weberei & Handwerk",       "id": "crafts",     "pop_mod":  0, "align_mod":  5},
+		{"label": "Fishing",                  "id": "fishing",     "pop_mod":  1, "align_mod":  0},
+		{"label": "Pottery & Trade",          "id": "trade",       "pop_mod":  1, "align_mod":  0},
+		{"label": "Weaving & Crafts",         "id": "crafts",      "pop_mod":  0, "align_mod":  5},
 	],
 	"highlands": [
-		{"label": "Bronzegießerei & Waffen",  "id": "metalwork",  "pop_mod": -1, "align_mod": -5},
-		{"label": "Jagd & Gerben",            "id": "hunting",    "pop_mod":  0, "align_mod":  0},
-		{"label": "Erzabbau",                 "id": "mining",     "pop_mod": -1, "align_mod": -5},
+		{"label": "Bronze Casting & Weapons", "id": "metalwork",   "pop_mod": -1, "align_mod": -5},
+		{"label": "Hunting & Tanning",        "id": "hunting",     "pop_mod":  0, "align_mod":  0},
+		{"label": "Mining",                   "id": "mining",      "pop_mod": -1, "align_mod": -5},
 	],
 	"coast": [
-		{"label": "Fischerei & Seefahrt",     "id": "fishing",    "pop_mod":  1, "align_mod":  0},
-		{"label": "Handel & Tauschmarkt",     "id": "trade",      "pop_mod":  1, "align_mod":  5},
-		{"label": "Seilerei & Bootsbau",      "id": "shipbuilding","pop_mod": 0, "align_mod":  0},
+		{"label": "Fishing & Seafaring",      "id": "fishing",     "pop_mod":  1, "align_mod":  0},
+		{"label": "Trade & Barter Market",    "id": "trade",       "pop_mod":  1, "align_mod":  5},
+		{"label": "Rope Making & Shipbuilding","id": "shipbuilding","pop_mod":  0, "align_mod":  0},
 	],
 }
 
 const POPULATION_TIERS: Array = [
-	{"name": "Weiler",       "desc": "Seelen",  "min": 5,   "max": 15},
-	{"name": "Kleindorf",    "desc": "Seelen",  "min": 16,  "max": 40},
-	{"name": "Dorf",         "desc": "Seelen",  "min": 41,  "max": 80},
-	{"name": "Großdorf",     "desc": "Seelen",  "min": 81,  "max": 150},
-	{"name": "Marktflecken", "desc": "Seelen",  "min": 151, "max": 300},
+	{"name": "Hamlet",       "desc": "souls", "min": 5,   "max": 15},
+	{"name": "Small Village","desc": "souls", "min": 16,  "max": 40},
+	{"name": "Village",      "desc": "souls", "min": 41,  "max": 80},
+	{"name": "Large Village","desc": "souls", "min": 81,  "max": 150},
+	{"name": "Market Town",  "desc": "souls", "min": 151, "max": 300},
 ]
 
 const FOUNDING_EVENTS: Array = [
-	{"id": "rich_harvest",  "text": "Eine außergewöhnlich reiche Ernte in den Gründerjahren sicherte das Überleben und stärkte den Zusammenhalt.",     "align_mod":  10, "note": "Fruchtbares Land, gute Gründungszeit"},
-	{"id": "great_drought", "text": "Eine schwere Dürre prüfte die ersten Siedler. Nur die Härtesten überlebten — und sie vergaßen es nie.",            "align_mod":  -5, "note": "Narben der Gründungsdürre"},
-	{"id": "raid_survived", "text": "Ein Überfall eines Nachbarstammes wurde zurückgeschlagen. Die Gemeinschaft wurde stärker — aber auch misstrauischer.","align_mod": -5, "note": "Alte Feindschaft mit einem Nachbarstamm"},
-	{"id": "peaceful_pact", "text": "Frühe Handelsbeziehungen mit einem Nachbarstamm brachten Wohlstand und gegenseitiges Vertrauen.",                  "align_mod":  10, "note": "Altes Bündnis mit den Nachbarn"},
-	{"id": "plague",        "text": "Eine Seuche raffte viele der ersten Siedler dahin. Das Dorf überlebte — kleiner, aber zäher.",                     "align_mod":   0, "note": "Erinnerung an die Große Seuche"},
-	{"id": "ore_vein",      "text": "Ein Bronzeerz-Fund in der Nähe machte die Siedlung begehrt — Fluch und Segen zugleich.",                          "align_mod":  -5, "note": "Bekannte Erzader in der Nähe"},
+	{"id": "rich_harvest",  "text": "An exceptionally rich harvest in the founding years secured survival and strengthened the bonds of the community.",       "align_mod":  10, "note": "Fertile land, prosperous founding season"},
+	{"id": "great_drought", "text": "A severe drought tested the first settlers. Only the hardiest survived — and they never forgot it.",                    "align_mod":  -5, "note": "Scars of the founding drought"},
+	{"id": "raid_survived", "text": "A raid by a neighbouring tribe was repelled. The community grew stronger — but also more suspicious of outsiders.",     "align_mod":  -5, "note": "Old enmity with a neighbouring tribe"},
+	{"id": "peaceful_pact", "text": "Early trade ties with a neighbouring tribe brought prosperity and mutual trust.",                                        "align_mod":  10, "note": "Ancient alliance with the neighbours"},
+	{"id": "plague",        "text": "A plague claimed many of the first settlers. The village survived — smaller, but tougher.",                            "align_mod":   0, "note": "Memory of the Great Plague"},
+	{"id": "ore_vein",      "text": "A bronze ore vein discovered nearby made the settlement coveted — both a curse and a blessing.",                       "align_mod":  -5, "note": "Known ore vein in the vicinity"},
 ]
 
 # ---------------------------------------------------------------------------
-# Game events
+# Game events — geladen aus res://events.json
 # ---------------------------------------------------------------------------
-const EVENTS: Dictionary = {
-	"village_founding": {
-		"title": "Das Dorf erwacht",
-		"text":  ("{settlement_type} am {location_name} — {population} {size_desc}.\n"
-				+ "{founding_text}\n\n"
-				+ "Gewerbe: {trades}\n\n"
-				+ "Der Kronrat tritt erstmals zusammen. Was ist die erste Sorge?"),
-		"choices": [
-			{
-				"label":      "Gemeinschaftlichen Vorratsspeicher bauen — für alle (Gesinnung +5)",
-				"effect":     {"alignment": 5},
-				"next_event": "",
-				"log_text":   "Ein Gemeinschaftsspeicher wurde als erstes Bauwerk errichtet.",
-			},
-			{
-				"label":      "Zuerst die Dorfgrenzen sichern — wir schützen das Unsere (Gesinnung −5)",
-				"effect":     {"alignment": -5},
-				"next_event": "",
-				"log_text":   "Die Dorfgrenzen wurden zuerst gesichert.",
-			},
-		],
-	},
-	"first_winter": {
-		"title": "Der erste Winter",
-		"text":  ("Der Winter kommt früher als erwartet. Die Vorräte werden knapp.\n"
-				+ "Der Kronrat tritt zusammen — was beschließt Häuptling {chieftain}?"),
-		"choices": [
-			{
-				"label":      "Alle teilen gleichmäßig — niemand wird zurückgelassen (Gesinnung +5)",
-				"effect":     {"alignment": 5},
-				"next_event": "",
-				"log_text":   "Alle teilten gleichmäßig — die Gemeinschaft überstand den Winter.",
-			},
-			{
-				"label":      "Die Starken fressen zuerst — die Schwachen müssen warten (Gesinnung −10)",
-				"effect":     {"alignment": -10},
-				"next_event": "",
-				"log_text":   "Die Starken wurden bevorzugt. Manch Schwacher überlebte den Winter nicht.",
-			},
-		],
-	},
-	"trade_caravan": {
-		"title": "Fremde Händler",
-		"text":  ("Fremde Händler aus dem Süden rasten am Dorfrand.\n"
-				+ "Sie bieten Bronzewerkzeug gegen Nahrungsvorräte an.\n"
-				+ "Was entscheidet {chieftain}?"),
-		"choices": [
-			{
-				"label":      "Fair verhandeln — ein gerechter Tausch (Gesinnung +5)",
-				"effect":     {"alignment": 5},
-				"next_event": "",
-				"log_text":   "Ein fairer Tausch wurde vereinbart. Die Händler werden wiederkommen.",
-			},
-			{
-				"label":      "Ausnutzen — die Fremden kennen den wahren Wert nicht (Gesinnung −10)",
-				"effect":     {"alignment": -10},
-				"next_event": "",
-				"log_text":   "Die Unwissenheit der Fremden wurde ausgenutzt. Es sprach sich herum.",
-			},
-		],
-	},
-}
+var EVENTS: Dictionary = {}
 
 # ---------------------------------------------------------------------------
 # Lifecycle
 # ---------------------------------------------------------------------------
 func _ready() -> void:
+	_load_events()
 	call_deferred("_initialize")
+
+
+func _load_events() -> void:
+	var dir := DirAccess.open("res://events/")
+	if dir == null:
+		push_error("GameManager: events/ folder not found.")
+		return
+	dir.list_dir_begin()
+	var file_name := dir.get_next()
+	while file_name != "":
+		if not dir.current_is_dir() and file_name.ends_with(".json"):
+			var file := FileAccess.open("res://events/" + file_name, FileAccess.READ)
+			if file:
+				var parsed = JSON.parse_string(file.get_as_text())
+				file.close()
+				if parsed is Dictionary:
+					EVENTS.merge(parsed)
+				else:
+					push_error("GameManager: Could not parse events/" + file_name)
+		file_name = dir.get_next()
+	dir.list_dir_end()
 
 func _initialize() -> void:
 	if not load_game():
 		_emit_gen_event("gen_new_game_choice")
 	else:
 		state_changed.emit(game_state.duplicate(true))
-		event_triggered.emit("resume", "── Spielstand geladen ──\nWillkommen zurück, Chronist.", [])
+		event_triggered.emit("resume", "── Save game loaded ──\nWelcome back, Chronicler.", [])
 
 # ---------------------------------------------------------------------------
 # Settlement generation flow
@@ -282,27 +243,27 @@ func _emit_gen_event(event_id: String) -> void:
 
 	match event_id:
 		"gen_new_game_choice":
-			text = ("[b]── Schatten über dem Düsterwald ──[/b]\n\n"
-				  + "Ein neues Kapitel beginnt.\n"
-				  + "Wie soll das Schicksal eurer Siedlung entschieden werden?")
+			text = ("[b]── Chronicle Sim ──[/b]\n\n"
+				  + "A new chapter begins.\n"
+				  + "How shall the fate of your settlement be decided?")
 			choices = [
-				{"label": "Schnellstart — das Schicksal würfelt für uns"},
-				{"label": "Geführte Gründung — wir formen unser Schicksal selbst"},
+				{"label": "Quick Start — let fate roll the dice for us"},
+				{"label": "Guided Founding — we shape our own destiny"},
 			]
 		"gen_choose_location":
-			text = ("[b]── Die Wahl des Ortes ──[/b]\n\n"
-				  + "Wo soll eure Siedlung entstehen?\n"
-				  + "Der Ort prägt alles: Gewerbe, Überleben, Zukunft.")
+			text = ("[b]── Choose Your Location ──[/b]\n\n"
+				  + "Where shall your settlement take root?\n"
+				  + "The location shapes everything: trade, survival, future.")
 			choices = [
-				{"label": "Am Waldrand — Jagd, Holz, Kräuter",          "loc": "forest_edge"},
-				{"label": "Am Flussufer — Fischerei, Ton, Handel",      "loc": "riverbank"},
-				{"label": "Im Hochland — Erz, Bronze, Bergbau",         "loc": "highlands"},
-				{"label": "An der Küste — Fischerei, Seefahrt, Handel", "loc": "coast"},
+				{"label": "Forest Edge — hunting, timber, herbs",       "loc": "forest_edge"},
+				{"label": "Riverbank — fishing, clay, trade",           "loc": "riverbank"},
+				{"label": "Highlands — ore, bronze, mining",            "loc": "highlands"},
+				{"label": "Coast — fishing, seafaring, trade",          "loc": "coast"},
 			]
 		"gen_choose_trade":
 			var loc:  String = _gen.get("location", "forest_edge")
 			var opts: Array  = TRADE_OPTIONS.get(loc, [])
-			text = "[b]── Das Hauptgewerbe ──[/b]\n\nWelchem Gewerbe wollt ihr euren Schwerpunkt setzen?"
+			text = "[b]── Primary Trade ──[/b]\n\nWhich craft shall be the foundation of your settlement?"
 			for opt: Dictionary in opts:
 				choices.append({"label": opt["label"], "opt": opt})
 
@@ -323,14 +284,14 @@ func _apply_gen_choice(choice_index: int) -> void:
 				call_deferred("_emit_gen_event", "gen_choose_location")
 		"gen_choose_location":
 			_gen["location"] = choice.get("loc", "forest_edge")
-			_log_entry(current_event_id, {}, "Ort gewählt: " + choice.get("label", ""))
+			_log_entry(current_event_id, {}, "Location chosen: " + choice.get("label", ""))
 			call_deferred("_emit_gen_event", "gen_choose_trade")
 		"gen_choose_trade":
 			var opt: Dictionary = choice.get("opt", {})
 			_gen["primary_trade"] = opt.get("id", "hunting")
 			_gen["pop_mod"]       = opt.get("pop_mod", 0)
 			_gen["align_mod"]     = opt.get("align_mod", 0)
-			_log_entry(current_event_id, {}, "Hauptgewerbe gewählt: " + choice.get("label", ""))
+			_log_entry(current_event_id, {}, "Primary trade chosen: " + choice.get("label", ""))
 			_finalize_generation()
 
 
@@ -364,8 +325,8 @@ func _finalize_generation() -> void:
 	pool.shuffle()
 	var count:  int   = clamp(3 + randi() % 3, 3, pool.size())
 	var trades: Array = pool.slice(0, count)
-	if not ("Kräuterfrau" in trades or "Heiler" in trades):
-		trades.append("Kräuterfrau")
+	if not ("Herb Woman" in trades or "Healer" in trades):
+		trades.append("Herb Woman")
 
 	# Alignment
 	var alignment: int = clamp(align_mod + founding.get("align_mod", 0), -100, 100)
@@ -396,13 +357,13 @@ func _finalize_generation() -> void:
 	}
 
 	_log_entry("settlement_generated", {"alignment": alignment},
-		"Siedlung gegründet: %s am %s, %d Seelen. Häuptling: %s." % [
+		"Settlement founded: %s at the %s, %d souls. Chieftain: %s." % [
 			POPULATION_TIERS[tier]["name"],
 			LOCATION_NAMES.get(loc, loc),
 			pop,
 			chieftain.get("name", "?"),
 		])
-	_log_entry("chieftain_new", {}, "Häuptling %s übernimmt die Führung (ab Jahr 1)." % chieftain.get("name", "?"))
+	_log_entry("chieftain_new", {}, "Chieftain %s takes command (from year 1)." % chieftain.get("name", "?"))
 
 	state_changed.emit(game_state.duplicate(true))
 	call_deferred("trigger_event", "village_founding")
@@ -435,18 +396,18 @@ func _emit_naming_choices() -> void:
 	var elder_name: String = _get_elder_name()
 	var alignment:  int    = game_state.get("alignment", 0)
 	var rec_idx:    int    = 1 if alignment >= 40 else 0
-	var recommended: String = candidates[min(rec_idx, candidates.size() - 1)] if not candidates.is_empty() else "Unbekannt"
+	var recommended: String = candidates[min(rec_idx, candidates.size() - 1)] if not candidates.is_empty() else "Unknown"
 
 	var text: String = (
-		"[b]── Ein Name wächst ──[/b]\n\n"
-		+ "Die Menschen in der Umgebung haben begonnen, eure Siedlung zu benennen.\n"
-		+ "Verschiedene Namen kursieren in den Geschichten der Händler und Reisenden.\n\n"
-		+ "%s rät dem Kronrat:\n[i]»%s« — dieser Name spiegelt wider, wer wir sind.[/i]" % [elder_name, recommended]
+		"[b]── A Name Takes Root ──[/b]\n\n"
+		+ "The people of the surrounding lands have begun to name your settlement.\n"
+		+ "Several names circulate in the tales of merchants and travellers.\n\n"
+		+ "%s counsels the council:\n[i]»%s« — this name reflects who we are.[/i]" % [elder_name, recommended]
 	)
 
 	var choices: Array = []
 	for name: String in candidates:
-		choices.append({"label": "»%s« — diesen Namen trägt unser Dorf" % name, "chosen_name": name})
+		choices.append({"label": "»%s« — this shall be our village's name" % name, "chosen_name": name})
 
 	_gen_choices = choices
 	event_triggered.emit("village_naming", text, choices)
@@ -457,17 +418,17 @@ func _apply_naming_choice(choice_index: int) -> void:
 		return
 	var chosen: String = _gen_choices[choice_index].get("chosen_name", "")
 	game_state["settlement"]["name"] = chosen
-	_log_entry("village_naming", {}, "Das Dorf erhielt den Namen: »%s«." % chosen)
+	_log_entry("village_naming", {}, "The village received its name: »%s«." % chosen)
 	state_changed.emit(game_state.duplicate(true))
 	event_triggered.emit("village_named",
-		"[b]»%s«[/b]\n\nVon nun an nennen die Menschen eure Siedlung so.\nDer Name klingt in den Liedern der Händler und auf den Wegen der Reisenden.",
+		"[b]»%s«[/b]\n\nFrom this day forth, the people call your settlement by this name.\nIt rings out in the songs of merchants and along the roads of travellers." % chosen,
 		[]
 	)
 
 
 func _build_name_candidates(loc: String, trade: String, alignment: int, founding_id: String) -> Array:
-	var prefixes: Array = VILLAGE_NAME_PREFIX.get(loc, ["Alt"]).duplicate()
-	var suffixes: Array = VILLAGE_NAME_SUFFIX.get(trade, ["dorf"]).duplicate()
+	var prefixes: Array = VILLAGE_NAME_PREFIX.get(loc, ["Old"]).duplicate()
+	var suffixes: Array = VILLAGE_NAME_SUFFIX.get(trade, ["town"]).duplicate()
 	prefixes.shuffle()
 	suffixes.shuffle()
 
@@ -478,14 +439,14 @@ func _build_name_candidates(loc: String, trade: String, alignment: int, founding
 	var align_key: String = "high" if alignment >= 40 else ("low" if alignment <= -40 else "")
 	var name2: String
 	if align_key != "":
-		var ap: Array = VILLAGE_NAME_ALIGN_PREFIX.get(align_key, ["Alt"]).duplicate()
+		var ap: Array = VILLAGE_NAME_ALIGN_PREFIX.get(align_key, ["Old"]).duplicate()
 		ap.shuffle()
 		name2 = ap[0] + suffixes[min(1, suffixes.size() - 1)]
 	else:
 		name2 = prefixes[min(1, prefixes.size() - 1)] + suffixes[min(1, suffixes.size() - 1)]
 
 	# 3: Founding event themed
-	var fc: Array = VILLAGE_NAME_FOUNDING.get(founding_id, ["Alt"]).duplicate()
+	var fc: Array = VILLAGE_NAME_FOUNDING.get(founding_id, ["Old"]).duplicate()
 	fc.shuffle()
 	var name3: String = fc[0] + suffixes[min(2, suffixes.size() - 1)]
 
@@ -506,8 +467,8 @@ func _build_name_candidates(loc: String, trade: String, alignment: int, founding
 func _get_elder_name() -> String:
 	for npc: Dictionary in game_state.get("settlement", {}).get("key_npcs", []):
 		if npc.get("is_elder", false):
-			return npc.get("name", "Der Ältestenrat")
-	return "Der Ältestenrat"
+			return npc.get("name", "The Elder Council")
+	return "The Elder Council"
 
 # ---------------------------------------------------------------------------
 # NPC / Kronrat generation
@@ -552,12 +513,12 @@ func _generate_kronrat(primary_trade: String, alignment: int) -> Array:
 	# 1. Elder (Älteste/r) — random gender, old
 	var elder_female: bool = randi() % 2 == 0
 	npcs.append(_make_npc(
-		"Älteste" if elder_female else "Ältester",
+		"Elder" if elder_female else "Elder",
 		elder_female, 45 + randi() % 22, alignment, true
 	))
 
 	# 2. Healer — female by default
-	npcs.append(_make_npc("Heilerin", true, 28 + randi() % 28, alignment, false))
+	npcs.append(_make_npc("Healer", true, 28 + randi() % 28, alignment, false))
 
 	# 3. Trade specialist
 	if TRADE_ROLES.has(primary_trade):
@@ -569,7 +530,7 @@ func _generate_kronrat(primary_trade: String, alignment: int) -> Array:
 		))
 
 	# 4–5. Two more (random roles, no repetition)
-	var extra_roles: Array = ["Krieger", "Bauer", "Ratsmitglied", "Händler", "Zimmermann", "Bogner"]
+	var extra_roles: Array = ["Warrior", "Farmer", "Councillor", "Merchant", "Carpenter", "Fletcher"]
 	extra_roles.shuffle()
 	for i: int in 2:
 		var f: bool = randi() % 2 == 0
@@ -613,8 +574,8 @@ func _pick_npc_state(alignment: int) -> String:
 # Core event system
 # ---------------------------------------------------------------------------
 func trigger_event(event_id: String) -> void:
-	if not EVENTS.has(event_id):
-		push_warning("GameManager: Unbekannte Event-ID '%s'" % event_id)
+	if not EVENTS.has(event_id) or not EVENTS[event_id] is Dictionary:
+		push_warning("GameManager: Unknown or invalid event ID '%s'" % event_id)
 		return
 
 	push_undo_snapshot()
@@ -626,7 +587,7 @@ func trigger_event(event_id: String) -> void:
 		_format_text(event.get("text", "")),
 	]
 
-	_log_entry(event_id, {}, "Ereignis: " + event.get("title", event_id))
+	_log_entry(event_id, {}, "Event: " + event.get("title", event_id))
 	event_triggered.emit(event_id, display_text, event.get("choices", []))
 
 
@@ -649,22 +610,70 @@ func apply_choice(event_id: String, choice_index: int) -> void:
 	var delta:  Dictionary = {}
 
 	for stat: String in effect:
-		var val: int = game_state.get(stat, 0) + effect[stat]
-		if stat == "alignment":
-			val = clamp(val, -100, 100)
-		game_state[stat] = val
-		delta[stat]      = effect[stat]
+		if stat == "population":
+			var current_pop: int = game_state.get("settlement", {}).get("population", 0)
+			game_state["settlement"]["population"] = max(1, current_pop + int(effect[stat]))
+			delta[stat] = int(effect[stat])
+		else:
+			var val: int = game_state.get(stat, 0) + int(effect[stat])
+			if stat == "alignment":
+				val = clamp(val, -100, 100)
+			game_state[stat] = val
+			delta[stat]      = int(effect[stat])
 
 	game_state["decision_count"] = game_state.get("decision_count", 0) + 1
 
 	_log_entry(event_id, delta, choice.get("log_text", "Entscheidung getroffen."))
 	state_changed.emit(game_state.duplicate(true))
 
+	var follow: String = choice.get("follow_text", "")
+	if follow != "":
+		event_triggered.emit("follow", "[i]" + _format_text(follow) + "[/i]", [])
+
 	_check_naming_trigger()
 
 	var next: String = choice.get("next_event", "")
+	var naming_pending: bool = (
+		game_state.get("settlement", {}).get("name", "") == ""
+		and game_state.get("decision_count", 0) >= 5
+	)
 	if next != "":
 		call_deferred("trigger_event", next)
+	elif not naming_pending:
+		call_deferred("_pick_and_trigger_next_event")
+
+func _pick_and_trigger_next_event() -> void:
+	## Picks a random unplayed event that matches current game conditions.
+	var played: Array = []
+	for entry: Dictionary in chronicle_log:
+		var eid: String = str(entry.get("event_id", ""))
+		if not played.has(eid):
+			played.append(eid)
+
+	var alignment:  int    = game_state.get("alignment", 0)
+	var generation: int    = game_state.get("generation", 1)
+	var trade:      String = game_state.get("settlement", {}).get("primary_trade", "")
+
+	var pool: Array = []
+	for eid: String in EVENTS.keys():
+		if eid == "village_founding" or eid.begins_with("_") or not EVENTS[eid] is Dictionary:
+			continue
+		if played.has(eid):
+			continue
+		var cond: Dictionary = EVENTS[eid].get("conditions", {})
+		if alignment  < int(cond.get("alignment_min",  -100)): continue
+		if alignment  > int(cond.get("alignment_max",   100)): continue
+		if generation < int(cond.get("generation_min",    1)): continue
+		if generation > int(cond.get("generation_max",  999)): continue
+		var req_trade: String = str(cond.get("trade", ""))
+		if req_trade != "" and req_trade != trade:              continue
+		pool.append(eid)
+
+	if pool.is_empty():
+		return
+
+	pool.shuffle()
+	trigger_event(pool[0])
 
 # ---------------------------------------------------------------------------
 # Generation advancement
@@ -676,7 +685,7 @@ func advance_generation() -> void:
 	var old: Dictionary = game_state.get("chieftain", {})
 	if not old.is_empty():
 		_log_entry("chieftain_end", {},
-			"Ende der Herrschaft: Häuptling %s (Jahr %d–%d)." % [
+			"End of reign: Chieftain %s (year %d–%d)." % [
 				old.get("name", "?"),
 				old.get("rule_start_year", 1),
 				game_state["year"],
@@ -685,14 +694,14 @@ func advance_generation() -> void:
 	game_state["generation"] += 1
 	game_state["year"]       += 25
 
-	# New chieftain chosen by Kronrat
+	# New chieftain chosen by council
 	var npcs:         Array      = game_state.get("settlement", {}).get("key_npcs", [])
 	var new_chief:    Dictionary = _gen_chieftain_from_kronrat(npcs, game_state["alignment"])
 	new_chief["rule_start_year"] = game_state["year"]
 	game_state["chieftain"]      = new_chief
 
 	_log_entry("chieftain_new", {},
-		"Neuer Häuptling: %s (ab Jahr %d)." % [new_chief["name"], game_state["year"]])
+		"New chieftain: %s (from year %d)." % [new_chief["name"], game_state["year"]])
 
 	var summary: String = _build_generation_summary()
 	_log_entry("generation_advance",
@@ -785,13 +794,13 @@ func _format_text(text: String) -> String:
 	return text.format({
 		"year":            game_state.get("year", 1),
 		"generation":      game_state.get("generation", 1),
-		"settlement_type": t["name"] if not s.is_empty() else "Siedlung",
+		"settlement_type": t["name"] if not s.is_empty() else "Settlement",
 		"population":      str(s.get("population", "?")),
 		"size_desc":       t["desc"],
-		"location_name":   LOCATION_NAMES.get(s.get("location", ""), "unbekanntem Ort"),
+		"location_name":   LOCATION_NAMES.get(s.get("location", ""), "unknown lands"),
 		"founding_text":   s.get("founding_text", ""),
 		"trades":          ", ".join(PackedStringArray(s.get("trades", []))),
-		"chieftain":       c.get("name", "der Häuptling"),
+		"chieftain":       c.get("name", "the chieftain"),
 	})
 
 
@@ -810,7 +819,7 @@ func _build_generation_summary() -> String:
 	var s:        Dictionary = game_state.get("settlement", {})
 	var c:        Dictionary = game_state.get("chieftain", {})
 	var tier_idx: int        = clamp(s.get("tier", 0), 0, POPULATION_TIERS.size() - 1)
-	return "Generation %d · Jahr %d · Häuptling %s · Gesinnung %+d" % [
+	return "Generation %d · Year %d · Chieftain %s · Alignment %+d" % [
 		game_state["generation"],
 		game_state["year"],
 		c.get("name", "?"),

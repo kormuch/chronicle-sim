@@ -1,0 +1,129 @@
+{
+	"_info": "Founding Era — early decisions that shape the village's identity. Each event needs exactly 2 choices with label, effect, log_text, and follow_text.",
+
+	"village_founding": {
+		"title": "The Village Awakens",
+		"text": "{settlement_type} at the {location_name} — {population} {size_desc}.\n{founding_text}\n\nTrades: {trades}\n\nThe council gathers for the first time. What is the first concern?",
+		"choices": [
+			{
+				"label": "Build a communal storehouse — for everyone (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "A communal storehouse was built as the first structure.",
+				"follow_text": "The beams of the storehouse rise quickly — every hand helps. In the evenings, people gather and share stories of the old lands."
+			},
+			{
+				"label": "Secure the village borders first — we protect our own (-5 alignment)",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "The village borders were secured first.",
+				"follow_text": "Fences and watch posts appear at the village edge. Some neighbours look on with suspicion — but the chieftain sleeps easier."
+			}
+		]
+	},
+
+	"first_winter": {
+		"title": "The First Winter",
+		"text": "Winter arrives earlier than expected. Provisions are running low.\nThe council gathers — what does Chieftain {chieftain} decide?",
+		"choices": [
+			{
+				"label": "Share equally — no one is left behind (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "All shared equally — the community survived the winter.",
+				"follow_text": "Winter passes, and everyone has survived. Leaner than hoped — but no empty place by the fire."
+			},
+			{
+				"label": "The strong eat first — the weak must wait (-10 alignment)",
+				"effect": { "alignment": -10 },
+				"next_event": "",
+				"log_text": "The strong were favoured. Some of the weak did not survive the winter.",
+				"follow_text": "The children of the weak watch with wide eyes at the tables of the strong. Some will never forget this winter."
+			}
+		]
+	},
+
+	"trade_caravan": {
+		"title": "Travelling Merchants",
+		"text": "Merchants from the south are resting at the village edge.\nThey offer bronze tools in exchange for food stores.\nWhat does {chieftain} decide?",
+		"choices": [
+			{
+				"label": "Negotiate fairly — a just exchange (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "A fair exchange was agreed. The merchants will return.",
+				"follow_text": "The merchants laugh as they depart and promise to return. Your name travels well along the trade roads."
+			},
+			{
+				"label": "Take advantage — the strangers don't know the true value (-10 alignment)",
+				"effect": { "alignment": -10 },
+				"next_event": "",
+				"log_text": "The ignorance of the strangers was exploited. Word got around.",
+				"follow_text": "The merchants leave without smiling. Weeks later a rumour drifts back — they call your village 'the Greedy Ones'."
+			}
+		]
+	},
+
+	"border_dispute": {
+		"title": "The Boundary Stones",
+		"text": "A neighbouring clan has moved their boundary stones overnight, claiming a stretch of your best farmland.\nThe council looks to {chieftain} for a response.",
+		"choices": [
+			{
+				"label": "Seek mediation — send envoys and negotiate (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "A peaceful mediation was sought with the neighbouring clan.",
+				"follow_text": "After tense talks, a new line is drawn that both sides accept — barely. The farmland is split, but blood was not spilled."
+			},
+			{
+				"label": "Move the stones back by night and double the watch (-5 alignment)",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "The boundary stones were moved back under cover of darkness.",
+				"follow_text": "The land is yours again, for now. But the neighbours haven't forgotten — and neither have your sentries, who scan the dark every night."
+			}
+		]
+	},
+
+	"wandering_healer": {
+		"title": "The Wandering Healer",
+		"text": "A lone healer arrives at the village gate, offering their knowledge of herbs and remedies in exchange for shelter and a place among your people.\nThe council debates.",
+		"choices": [
+			{
+				"label": "Welcome them openly — knowledge is worth more than bread (+10 alignment)",
+				"effect": { "alignment": 10 },
+				"next_event": "",
+				"log_text": "The wandering healer was welcomed into the community.",
+				"follow_text": "The healer settles in quietly and is soon known to all. Children follow them into the forest to learn the names of plants. The village feels a little less alone."
+			},
+			{
+				"label": "Turn them away — we cannot feed another mouth (-5 alignment)",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "The wandering healer was turned away from the village.",
+				"follow_text": "The healer nods without a word and walks on down the road. That winter, three people fall ill with a fever no one knows how to treat."
+			}
+		]
+	},
+
+	"drought_warning": {
+		"title": "The Dry Summer",
+		"text": "The river runs lower than anyone can remember. The elders speak of drought.\nBefore the wells run dry, {chieftain} must act.",
+		"choices": [
+			{
+				"label": "Ration water now and dig a deeper well together (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "Water was rationed and a deeper well was dug communally.",
+				"follow_text": "The work is backbreaking, but the new well holds. The rationing was hard — arguments broke out over buckets — yet the village made it through."
+			},
+			{
+				"label": "Divert the stream from the neighbouring farmstead — we need it more (-10 alignment)",
+				"effect": { "alignment": -10 },
+				"next_event": "",
+				"log_text": "The stream was diverted from a neighbouring farmstead.",
+				"follow_text": "The crops are saved. The neighbour's fields wither. They come to complain, but there is nothing to discuss — the channel is already dug."
+			}
+		]
+	}
+}
