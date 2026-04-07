@@ -4,84 +4,125 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Projekt
 
-**Schatten über dem Düsterwald** — ein textbasiertes Generationen-RPG in Godot 4.4 (GDScript). Der Spieler ist Chronist einer mittelalterlichen Dorfgemeinschaft und trifft Entscheidungen, die über Generationen die Geschichte prägen. Alles in Deutsch: Variablennamen in Englisch, alle UI-Texte, Dialoge und Kommentare auf Deutsch.
+**Schatten über dem Düsterwald** (Arbeitstitel: `chronicle-sim`) — ein textbasiertes Generationen-RPG in Godot 4.4 (GDScript). Der Spieler ist Chronist einer mittelalterlichen Dorfgemeinschaft und trifft Entscheidungen, die über Generationen (~25 Jahre pro Wechsel) die Geschichte des Dorfes prägen.
 
-## Godot-Befehle
+**Sprache:** Variablennamen und Code in Englisch. Alle UI-Texte, Dialoge, Ereignistexte und Kommentare auf Deutsch.
 
-Das Projekt läuft ausschließlich in der Godot 4.4 Engine. Es gibt kein Build-Script oder CLI — starte/teste über den Godot-Editor:
+**Entwickler:** Korbinian Much — AI Product Owner, kein klassischer Programmierer. Erklärungen sollen präzise und direkt sein, keine Grundlagen-Erläuterungen zu GDScript-Syntax.
 
-```
-# Projekt im Editor öffnen (Godot 4.4 muss installiert sein)
+## Godot starten
+
+Kein Build-Script, kein CLI-Test-Runner. Entwicklung und Test ausschließlich im Godot 4.4 Editor.
+
+```bash
 godot --path C:\Users\kormu\projekte\chronicle-sim
-
-# Spiel direkt starten (headless nicht sinnvoll, da UI-Spiel)
 godot --path C:\Users\kormu\projekte\chronicle-sim --scene Main.tscn
 ```
 
-Savegame-Pfad: `%APPDATA%\Godot\app_userdata\Schatten über dem Düsterwald\savegame.json`
+Savegame: `%APPDATA%\Godot\app_userdata\Schatten über dem Düsterwald\savegame.json`
 
 ## Architektur
 
-### Zwei-Dateien-Struktur
+### Dateistruktur
 
 ```
-GameManager.gd   (Singleton/Autoload) — gesamte Spiellogik
-Main.gd          (UI-Controller)      — reine Darstellung, kein Spielzustand
-Main.tscn        (minimale Szene)     — lädt nur Main.gd
+GameManager.gd   Singleton/Autoload — gesamte Spiellogik, State, Events, Persistenz
+Main.gd          UI-Controller — reine Darstellung, kein eigener Spielzustand
+Main.tscn        Minimale Szene, lädt nur Main.gd
+project.godot    Godot-Projektkonfiguration
 ```
 
-**Kommunikation ausschließlich über Signals:**
+Die `.godot/`-Ordner ist in `.gitignore` — nicht committen.
+
+### Kommunikationsregel
+
+`Main.gd` hat **keinen eigenen State** und schreibt **niemals direkt** in `GameManager`. Ausschließlich über diese public API:
+
 ```
-GameManager → Main.gd
-  state_changed(new_state: Dictionary)
-  event_triggered(event_id: String, text: String, choices: Array)
-  generation_advanced(summary: String)
+apply_choice(event_id, index)   — Entscheidung anwenden
+advance_generation()            — Generationswechsel
+push_undo_snapshot()            — Snapshot anlegen
+pop_undo_snapshot()             — Undo ausführen
+save_game() / load_game()       — Persistenz
 ```
 
-`Main.gd` schreibt **niemals** in `GameManager`-State direkt — nur via `apply_choice()`, `advance_generation()`, `push_undo_snapshot()`, `pop_undo_snapshot()`, `save_game()`, `load_game()`.
+Kommunikation von GameManager zu Main.gd über drei Signals:
+```
+state_changed(new_state: Dictionary)
+event_triggered(event_id: String, text: String, choices: Array)
+generation_advanced(summary: String)
+```
 
 ### GameManager-State
 
 ```gdscript
 game_state: Dictionary = {
-    "alignment":      int,   # -100 bis +100
-    "settlement":     {},    # inkl. key_npcs Array
-    "chieftain":      {},    # Name, Eltern, Alter
+    "alignment":      int,        # Gesinnung -100 (Dunkel) bis +100 (Rein)
+    "settlement":     Dictionary, # inkl. key_npcs: Array[Dictionary]
+    "chieftain":      Dictionary, # name, Eltern-Refs, Alter
     "generation":     int,
     "year":           int,
     "decision_count": int,
 }
-chronicle_log: Array      # Vollständige History aller Ereignisse
-undo_stack: Array         # Max. 5 Snapshots (game_state + event_id)
+chronicle_log: Array   # Vollständige Event-History (timestamp, event_id, delta, description, year, gen)
+undo_stack: Array      # Max. 5 Snapshots à {game_state, event_id}
 current_event_id: String
 ```
 
 ### Event-System
 
-Events sind Konstanten in `GameManager.EVENTS` (Dictionary). Jedes Event hat:
-- `title`, `text` (mit Template-Variablen wie `{chieftain}`, `{year}`, `{settlement_type}`)
-- `choices: Array` — je 2 Optionen mit `label`, `effect: {alignment: int}`, `next_event`, `log_text`
+Story-Events als Einträge in `GameManager.EVENTS` (Konstante, Dictionary). Aktuell implementiert: `village_founding`, `first_winter`, `trade_caravan` — das ist die **primäre Erweiterungsbaustelle**.
 
-**Settlement-Generierungsflow** (interne `gen_*` Events, kein Eintrag in `EVENTS`):
-`gen_new_game_choice` → `gen_choose_location` → `gen_choose_trade` → `gen_quickstart` oder Settlement-Generierung → `gen_name_village` → `village_founding`
+Jedes Event-Schema:
+```gdscript
+"event_id": {
+    "title": String,
+    "text":  String,  # Template-Variablen: {chieftain} {year} {settlement_type} {trades} {population}
+    "choices": [
+        {
+            "label":      String,
+            "effect":     {"alignment": int},
+            "next_event": String,   # "" = kein Auto-Follow-up
+            "log_text":   String,
+        },
+        # immer genau 2 Choices
+    ],
+}
+```
 
-Template-Auflösung läuft in `_format_text()` vor dem Emit von `event_triggered`.
+Template-Auflösung läuft in `_format_text()` vor `event_triggered.emit()`.
+
+**Settlement-Generierungsflow** (interne `gen_*` Events, nicht in `EVENTS`):
+```
+gen_new_game_choice → gen_choose_location → gen_choose_trade
+  → gen_quickstart (Zufall) ODER manuelle Auswahl
+  → gen_name_village → village_founding
+```
+
+`gen_*`-Events erscheinen nicht in der Chronik-Anzeige (außer `settlement_generated`).
 
 ### NPC-System
 
-5 Kronrat-NPCs pro Siedlung. Namen prozedural aus `NAME_PREFIX` + `NAME_SUFFIX_M/F`. Kinder erben den Präfix eines Elternteils (50/50). NPC-Stimmung wird aus Alignment-Schwellen abgeleitet (`_pick_npc_state()`), keine eigene Tracking-Variable.
+5 Kronrat-NPCs pro Siedlung. Prozedurale Namen aus `NAME_PREFIX` + `NAME_SUFFIX_M/F` (Tolkien-/germanisch-inspiriert). Kinder erben den Präfix eines Elternteils (50/50 Zufall). NPC-Stimmung (`state`-Feld) wird bei jedem `state_changed` frisch aus dem aktuellen `alignment` berechnet (`_pick_npc_state()`), ist also kein persistierter Wert.
 
-### Chronik-Filterung
+### Alignment-System
 
-`gen_*`-Events werden im Chronik-Display **nicht** angezeigt (außer `settlement_generated`). Generationstrennlinien werden automatisch eingefügt wenn `gen` wechselt.
+Skala -100 bis +100, immer geclampt. Beeinflusst: NPC-Stimmungstexte, Dorfstimmung, Dorfnamen-Generierung, Chronik-Deltas. Wird aktuell als **einzige** Konsequenz von Entscheidungen verändert — kein Bevölkerungs- oder Ressourcensystem vorhanden.
 
-## Wo neue Events hingehören
+## Aktuelle Lücken (Stand Projektstart April 2026)
 
-Neue Story-Events kommen als Einträge in `GameManager.EVENTS` (Dictionary, ab Zeile ~198). Struktur identisch zu den bestehenden drei Events. Gewerbe-spezifische Bedingungslogik gehört in `trigger_event()` bzw. eine dedizierte `_pick_next_event()`-Funktion (noch nicht vorhanden — wird benötigt sobald Events kontextabhängig ausgewählt werden sollen).
+| Thema | Status |
+|---|---|
+| Story-Events | Nur 3 implementiert — Hauptbaustelle |
+| Konsequenzen | Nur Alignment — keine Bevölkerung, Ressourcen, Wirtschaft |
+| NPC-Dynamik | Altern nicht über Spielzeit, kein Tod, keine Dynastien |
+| Speicherslots | Nur einer (`savegame.json`) |
+| Event-Selektion | Kein kontextabhängiger Event-Picker (nach Gewerbe, Alignment, Generation) |
 
-## Bekannte Lücken
+## Arbeitshinweise für Claude
 
-- Nur 3 Story-Events (`village_founding`, `first_winter`, `trade_caravan`) — primäre Erweiterungsbaustelle
-- Entscheidungen beeinflussen bislang ausschließlich `alignment` — kein Bevölkerungs- oder Ressourcensystem
-- NPCs altern nicht über echte Spielzeit (Alter ist statisch nach Generierung)
-- Nur ein Speicherslot (`savegame.json`)
+- Neue Story-Events immer in `GameManager.EVENTS` eintragen, Schema wie oben.
+- Bevor eine `_pick_next_event()`-Logik gebaut wird: erst Rücksprache, da das die Kernmechanik verändert.
+- UI-Änderungen nur in `Main.gd` — nie Darstellungslogik in `GameManager` einbauen.
+- `call_deferred()` verwenden wenn Events während Signal-Verarbeitung getriggert werden (Godot-Pattern, bereits so gehandhabt).
+- Keine Refactors, die nicht explizit angefragt wurden — das Fundament ist bewusst kompakt gehalten.
