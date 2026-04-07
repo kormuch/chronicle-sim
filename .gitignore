@@ -1,0 +1,24 @@
+# Godot 4 — generierte Engine-Dateien
+.godot/
+
+# Godot-Import-Metadaten (bei reinen GDScript-Projekten optional,
+# bei Assets mit Importen besser tracken — hier kein Asset-Ordner)
+*.import
+
+# Godot-Export-Artefakte
+*.exe
+*.x86_64
+*.arm64
+*.apk
+*.aab
+*.ipa
+export_presets.cfg
+
+# Betriebssystem
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Editor
+*.swp
+*~
