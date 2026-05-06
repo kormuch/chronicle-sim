@@ -9,7 +9,8 @@ signal generation_advanced(summary: String)
 # Constants
 # ---------------------------------------------------------------------------
 const SAVE_PATH      := "user://savegame.json"
-const MAX_UNDO_STEPS := 5
+const MAX_UNDO_STEPS  := 5
+const SEASON_NAMES:  Array = ["Spring", "Summer", "Autumn", "Winter"]
 
 # ---------------------------------------------------------------------------
 # Runtime state
@@ -20,7 +21,9 @@ var game_state: Dictionary = {
 	"chieftain":      {},
 	"generation":     1,
 	"year":           1,
+	"season":         1,   # 1=Spring 2=Summer 3=Autumn 4=Winter
 	"decision_count": 0,
+	"flags":          {},
 }
 
 var chronicle_log:    Array  = []
@@ -28,8 +31,12 @@ var undo_stack:       Array  = []
 var current_event_id: String = ""
 
 ## Temp during generation / naming (not persisted)
-var _gen:         Dictionary = {}
-var _gen_choices: Array      = []
+var _gen:            Dictionary = {}
+var _gen_choices:    Array      = []
+var _pending_follow: String     = ""
+
+## Log file
+var _log_file: FileAccess = null
 
 # ---------------------------------------------------------------------------
 # Name-syllable system (Tolkien-/Germanic-inspired, inheritable)
@@ -176,11 +183,11 @@ const TRADE_OPTIONS: Dictionary = {
 }
 
 const POPULATION_TIERS: Array = [
-	{"name": "Hamlet",       "desc": "souls", "min": 5,   "max": 15},
-	{"name": "Small Village","desc": "souls", "min": 16,  "max": 40},
-	{"name": "Village",      "desc": "souls", "min": 41,  "max": 80},
-	{"name": "Large Village","desc": "souls", "min": 81,  "max": 150},
-	{"name": "Market Town",  "desc": "souls", "min": 151, "max": 300},
+	{"name": "Hamlet",       "desc": "souls", "min": 20,  "max": 45},
+	{"name": "Small Village","desc": "souls", "min": 46,  "max": 90},
+	{"name": "Village",      "desc": "souls", "min": 91,  "max": 180},
+	{"name": "Large Village","desc": "souls", "min": 181, "max": 350},
+	{"name": "Market Town",  "desc": "souls", "min": 351, "max": 600},
 ]
 
 const FOUNDING_EVENTS: Array = [
@@ -201,8 +208,18 @@ var EVENTS: Dictionary = {}
 # Lifecycle
 # ---------------------------------------------------------------------------
 func _ready() -> void:
+	_setup_log()
 	_load_events()
 	call_deferred("_initialize")
+
+
+func _setup_log() -> void:
+	var dir := DirAccess.open("user://")
+	if dir and not dir.dir_exists("logs"):
+		dir.make_dir("logs")
+	var ts := Time.get_datetime_string_from_system().replace(":", "-")
+	_log_file = FileAccess.open("user://logs/game_%s.log" % ts, FileAccess.WRITE)
+	_log_debug("=== Chronicle Sim started ===")
 
 
 func _load_events() -> void:
@@ -227,10 +244,55 @@ func _load_events() -> void:
 
 func _initialize() -> void:
 	if not load_game():
+		_log_debug("No save found — starting new game")
 		_emit_gen_event("gen_new_game_choice")
 	else:
+		_log_debug("Save loaded — current_event_id: %s" % current_event_id)
 		state_changed.emit(game_state.duplicate(true))
 		event_triggered.emit("resume", "── Save game loaded ──\nWelcome back, Chronicler.", [])
+		resume_current_event()
+
+
+func resume_current_event() -> void:
+	_log_debug("resume_current_event: %s" % current_event_id)
+	if current_event_id.begins_with("gen_"):
+		call_deferred("_emit_gen_event", current_event_id)
+	elif current_event_id == "village_naming":
+		call_deferred("_re_emit_naming_event")
+	elif current_event_id == "chieftain_marriage":
+		call_deferred("_trigger_marriage_event")
+	elif current_event_id == "chieftain_heir":
+		call_deferred("_trigger_heir_event")
+	elif current_event_id != "" and EVENTS.has(current_event_id):
+		var event: Dictionary = EVENTS[current_event_id]
+		var display_text: String = "[b]── %s ──[/b]\n%s" % [
+			event.get("title", current_event_id),
+			_format_text(event.get("text", "")),
+		]
+		event_triggered.emit(current_event_id, display_text, event.get("choices", []))
+	else:
+		_log_debug("resume_current_event: no resumable event found")
+
+
+func new_game() -> void:
+	_log_debug("new_game() called — resetting all state")
+	game_state = {
+		"alignment":      0,
+		"settlement":     {},
+		"chieftain":      {},
+		"generation":     1,
+		"year":           1,
+		"season":         1,
+		"decision_count": 0,
+		"flags":          {},
+	}
+	chronicle_log    = []
+	undo_stack       = []
+	current_event_id = ""
+	_gen             = {}
+	_gen_choices     = []
+	_pending_follow  = ""
+	_emit_gen_event("gen_new_game_choice")
 
 # ---------------------------------------------------------------------------
 # Settlement generation flow
@@ -258,7 +320,6 @@ func _emit_gen_event(event_id: String) -> void:
 				{"label": "Forest Edge — hunting, timber, herbs",       "loc": "forest_edge"},
 				{"label": "Riverbank — fishing, clay, trade",           "loc": "riverbank"},
 				{"label": "Highlands — ore, bronze, mining",            "loc": "highlands"},
-				{"label": "Coast — fishing, seafaring, trade",          "loc": "coast"},
 			]
 		"gen_choose_trade":
 			var loc:  String = _gen.get("location", "forest_edge")
@@ -296,7 +357,7 @@ func _apply_gen_choice(choice_index: int) -> void:
 
 
 func _generate_quick() -> void:
-	var locs: Array = ["forest_edge", "riverbank", "highlands", "coast"]
+	var locs: Array = ["forest_edge", "riverbank", "highlands"]
 	_gen["location"] = locs[randi() % locs.size()]
 	var opts: Array      = TRADE_OPTIONS.get(_gen["location"], [])
 	var opt:  Dictionary = opts[randi() % opts.size()]
@@ -557,6 +618,10 @@ func _gen_chieftain_from_kronrat(npcs: Array, alignment: int) -> Dictionary:
 		"father":           father,
 		"mother":           mother,
 		"rule_start_year":  1,
+		"has_spouse":       false,
+		"spouse":           {},
+		"has_heir":         false,
+		"heir":             {},
 	}
 
 
@@ -581,11 +646,19 @@ func trigger_event(event_id: String) -> void:
 	push_undo_snapshot()
 	current_event_id = event_id
 
-	var event:        Dictionary = EVENTS[event_id]
-	var display_text: String     = "[b]── %s ──[/b]\n%s" % [
-		event.get("title", event_id),
-		_format_text(event.get("text", "")),
-	]
+	var event:      Dictionary = EVENTS[event_id]
+	var event_text: String     = _format_text(event.get("text", ""))
+
+	var display_text: String
+	if _pending_follow != "":
+		display_text = "[i]%s[/i]\n\n[b]── %s ──[/b]\n%s" % [
+			_pending_follow,
+			event.get("title", event_id),
+			event_text,
+		]
+		_pending_follow = ""
+	else:
+		display_text = "[b]── %s ──[/b]\n%s" % [event.get("title", event_id), event_text]
 
 	_log_entry(event_id, {}, "Event: " + event.get("title", event_id))
 	event_triggered.emit(event_id, display_text, event.get("choices", []))
@@ -597,6 +670,12 @@ func apply_choice(event_id: String, choice_index: int) -> void:
 		return
 	if event_id == "village_naming":
 		_apply_naming_choice(choice_index)
+		return
+	if event_id == "chieftain_marriage":
+		_apply_marriage_choice(choice_index)
+		return
+	if event_id == "chieftain_heir":
+		_apply_heir_choice(choice_index)
 		return
 
 	if not EVENTS.has(event_id):
@@ -610,7 +689,12 @@ func apply_choice(event_id: String, choice_index: int) -> void:
 	var delta:  Dictionary = {}
 
 	for stat: String in effect:
-		if stat == "population":
+		if stat == "set_flag":
+			var flag: String = str(effect[stat])
+			game_state["flags"][flag] = true
+			delta["flag"] = flag
+			_log_debug("Flag set: %s" % flag)
+		elif stat == "population":
 			var current_pop: int = game_state.get("settlement", {}).get("population", 0)
 			game_state["settlement"]["population"] = max(1, current_pop + int(effect[stat]))
 			delta[stat] = int(effect[stat])
@@ -622,13 +706,14 @@ func apply_choice(event_id: String, choice_index: int) -> void:
 			delta[stat]      = int(effect[stat])
 
 	game_state["decision_count"] = game_state.get("decision_count", 0) + 1
+	game_state["season"]        = (game_state.get("season", 1) % 4) + 1
 
 	_log_entry(event_id, delta, choice.get("log_text", "Entscheidung getroffen."))
 	state_changed.emit(game_state.duplicate(true))
 
 	var follow: String = choice.get("follow_text", "")
 	if follow != "":
-		event_triggered.emit("follow", "[i]" + _format_text(follow) + "[/i]", [])
+		_pending_follow = _format_text(follow)
 
 	_check_naming_trigger()
 
@@ -639,8 +724,171 @@ func apply_choice(event_id: String, choice_index: int) -> void:
 	)
 	if next != "":
 		call_deferred("trigger_event", next)
-	elif not naming_pending:
+	elif naming_pending:
+		pass
+	elif _check_life_events_trigger():
+		pass
+	else:
 		call_deferred("_pick_and_trigger_next_event")
+
+# ---------------------------------------------------------------------------
+# Chieftain life events — marriage & heir
+# ---------------------------------------------------------------------------
+func _check_life_events_trigger() -> bool:
+	var chieftain:  Dictionary = game_state.get("chieftain", {})
+	var decisions:  int        = game_state.get("decision_count", 0)
+	var has_name:   bool       = game_state.get("settlement", {}).get("name", "") != ""
+
+	if not has_name:
+		return false
+
+	if not chieftain.get("has_spouse", false) and decisions >= 8:
+		call_deferred("_trigger_marriage_event")
+		return true
+
+	if chieftain.get("has_spouse", false) and not chieftain.get("has_heir", false) and decisions >= 15:
+		call_deferred("_trigger_heir_event")
+		return true
+
+	return false
+
+
+func _trigger_marriage_event() -> void:
+	push_undo_snapshot()
+	current_event_id = "chieftain_marriage"
+
+	var chieftain:     Dictionary = game_state.get("chieftain", {})
+	var chief_female:  bool       = chieftain.get("gender", "m") == "f"
+	var spouse_female: bool       = not chief_female
+
+	# Internal candidate — from a Kronrat family line
+	var npcs:       Array      = game_state.get("settlement", {}).get("key_npcs", [])
+	var base:       Dictionary = npcs[randi() % npcs.size()] if not npcs.is_empty() else {}
+	var candidate_a: Dictionary = _gen_child_name(
+		base.get("father", _gen_person_name(false)),
+		base.get("mother", _gen_person_name(true)),
+		spouse_female
+	)
+
+	# External candidate — fully random
+	var candidate_b: Dictionary = _gen_person_name(spouse_female)
+
+	_gen_choices = [
+		{
+			"label":       "%s — from within the village, a bond of trust (+5 alignment)" % candidate_a["name"],
+			"spouse":      candidate_a,
+			"align_mod":   5,
+			"follow_text": "The ceremony is held at midsummer, in the village square. Everyone attends. The elder speaks the old words. That night fires burn until dawn, and for once no one argues about anything.",
+		},
+		{
+			"label":       "%s — from a neighbouring clan, a bridge outward" % candidate_b["name"],
+			"spouse":      candidate_b,
+			"align_mod":   0,
+			"follow_text": "They arrive with a small escort. Strangers at first — careful smiles, unfamiliar habits. Over the following months the escort stays, and with them come new skills, old stories, and slowly, trust.",
+		},
+	]
+
+	var text: String = (
+		"[b]── A New Bond ──[/b]\n\n"
+		+ "The village has found its footing. The council speaks now of lineage — of what comes after.\n\n"
+		+ "Two names have been put forward for %s." % chieftain.get("name", "the chieftain")
+	)
+	_log_entry("chieftain_marriage", {}, "The council proposes marriage for Chieftain %s." % chieftain.get("name", "?"))
+	event_triggered.emit("chieftain_marriage", text, _gen_choices)
+
+
+func _apply_marriage_choice(index: int) -> void:
+	if index >= _gen_choices.size():
+		return
+	var choice:    Dictionary = _gen_choices[index]
+	var spouse:    Dictionary = choice.get("spouse", {})
+	var align_mod: int        = int(choice.get("align_mod", 0))
+
+	game_state["chieftain"]["has_spouse"] = true
+	game_state["chieftain"]["spouse"]     = spouse
+
+	if align_mod != 0:
+		game_state["alignment"] = clamp(game_state.get("alignment", 0) + align_mod, -100, 100)
+
+	_log_entry("chieftain_marriage", {"alignment": align_mod},
+		"Chieftain %s wed %s." % [game_state["chieftain"].get("name", "?"), spouse.get("name", "?")])
+	state_changed.emit(game_state.duplicate(true))
+
+	var follow: String = choice.get("follow_text", "")
+	if follow != "":
+		_pending_follow = follow
+
+	call_deferred("_pick_and_trigger_next_event")
+
+
+func _trigger_heir_event() -> void:
+	push_undo_snapshot()
+	current_event_id = "chieftain_heir"
+
+	var chieftain:   Dictionary = game_state.get("chieftain", {})
+	var spouse:      Dictionary = chieftain.get("spouse", {})
+	var heir_female: bool       = randi() % 4 == 0   # 25% daughter
+	var heir_data:   Dictionary = _gen_child_name(chieftain, spouse, heir_female)
+
+	_gen_choices = [
+		{
+			"label":       "Hold a great feast — every soul in the village celebrates (+5 alignment)",
+			"heir_data":   heir_data,
+			"heir_female": heir_female,
+			"align_mod":   5,
+			"follow_text": "Fires, song, the smell of roasting meat. The child sleeps through all of it. Tomorrow half the village will have sore heads — but for one night, everyone smiled at the same thing.",
+		},
+		{
+			"label":       "A quiet naming — these are not easy times, we celebrate modestly",
+			"heir_data":   heir_data,
+			"heir_female": heir_female,
+			"align_mod":   0,
+			"follow_text": "A small fire, close family, the elder's words spoken quietly. The child receives its name. Outside, life goes on. Perhaps that is exactly the point.",
+		},
+	]
+
+	var child_word: String = "daughter" if heir_female else "son"
+	var text: String = (
+		"[b]── An Heir is Born ──[/b]\n\n"
+		+ "%s has given birth. The child is healthy — a %s, crying loud enough to wake the whole settlement.\n\n" % [spouse.get("name", "the spouse"), child_word]
+		+ "%s holds the child for the first time. The council waits outside the door.\n\n" % chieftain.get("name", "The chieftain")
+		+ "The child's name: [b]%s[/b]." % heir_data["name"]
+	)
+	_log_entry("chieftain_heir", {}, "An heir is born to Chieftain %s: %s." % [chieftain.get("name", "?"), heir_data["name"]])
+	event_triggered.emit("chieftain_heir", text, _gen_choices)
+
+
+func _apply_heir_choice(index: int) -> void:
+	if index >= _gen_choices.size():
+		return
+	var choice:    Dictionary = _gen_choices[index]
+	var heir_data: Dictionary = choice.get("heir_data", {})
+	var align_mod: int        = int(choice.get("align_mod", 0))
+
+	var heir: Dictionary = {
+		"name":        heir_data.get("name", "?"),
+		"name_prefix": heir_data.get("name_prefix", ""),
+		"name_suffix": heir_data.get("name_suffix", ""),
+		"gender":      "f" if choice.get("heir_female", false) else "m",
+		"birth_year":  game_state.get("year", 1),
+	}
+
+	game_state["chieftain"]["has_heir"] = true
+	game_state["chieftain"]["heir"]     = heir
+
+	if align_mod != 0:
+		game_state["alignment"] = clamp(game_state.get("alignment", 0) + align_mod, -100, 100)
+
+	_log_entry("chieftain_heir", {"alignment": align_mod},
+		"Heir %s named, child of %s." % [heir["name"], game_state["chieftain"].get("name", "?")])
+	state_changed.emit(game_state.duplicate(true))
+
+	var follow: String = choice.get("follow_text", "")
+	if follow != "":
+		_pending_follow = follow
+
+	call_deferred("_pick_and_trigger_next_event")
+
 
 func _pick_and_trigger_next_event() -> void:
 	## Picks a random unplayed event that matches current game conditions.
@@ -667,12 +915,26 @@ func _pick_and_trigger_next_event() -> void:
 		if generation > int(cond.get("generation_max",  999)): continue
 		var req_trade: String = str(cond.get("trade", ""))
 		if req_trade != "" and req_trade != trade:              continue
+		var req_flag: String = str(cond.get("requires_flag", ""))
+		if req_flag != "" and not game_state.get("flags", {}).has(req_flag): continue
+		var forbid_flag: String = str(cond.get("forbids_flag", ""))
+		if forbid_flag != "" and game_state.get("flags", {}).has(forbid_flag): continue
 		pool.append(eid)
 
+	_log_debug("_pick_next_event: pool=%d, played=%d, align=%d, gen=%d, trade=%s" % [
+		pool.size(), played.size(), alignment, generation, trade
+	])
+
 	if pool.is_empty():
+		_log_debug("Event pool exhausted — no eligible unplayed events")
+		event_triggered.emit("pool_empty",
+			"[i]The chronicles fall silent. There are no more tales to tell in this age.\n\nAdvance to the next generation to continue.[/i]",
+			[]
+		)
 		return
 
 	pool.shuffle()
+	_log_debug("Triggering event: %s" % pool[0])
 	trigger_event(pool[0])
 
 # ---------------------------------------------------------------------------
@@ -694,14 +956,35 @@ func advance_generation() -> void:
 	game_state["generation"] += 1
 	game_state["year"]       += 25
 
-	# New chieftain chosen by council
-	var npcs:         Array      = game_state.get("settlement", {}).get("key_npcs", [])
-	var new_chief:    Dictionary = _gen_chieftain_from_kronrat(npcs, game_state["alignment"])
-	new_chief["rule_start_year"] = game_state["year"]
-	game_state["chieftain"]      = new_chief
+	# New chieftain — heir inherits if one exists, otherwise council elects
+	var npcs:      Array      = game_state.get("settlement", {}).get("key_npcs", [])
+	var old_heir:  Dictionary = old.get("heir", {})
+	var new_chief: Dictionary
 
-	_log_entry("chieftain_new", {},
-		"New chieftain: %s (from year %d)." % [new_chief["name"], game_state["year"]])
+	if old.get("has_heir", false) and not old_heir.is_empty():
+		new_chief = {
+			"name":             old_heir.get("name", "?"),
+			"name_prefix":      old_heir.get("name_prefix", ""),
+			"name_suffix":      old_heir.get("name_suffix", ""),
+			"gender":           old_heir.get("gender", "m"),
+			"age":              25,
+			"father":           {"name": old.get("name", "?"), "name_prefix": old.get("name_prefix", "")},
+			"mother":           old.get("spouse", {}),
+			"rule_start_year":  game_state["year"],
+			"has_spouse":       false,
+			"spouse":           {},
+			"has_heir":         false,
+			"heir":             {},
+		}
+		_log_entry("chieftain_new", {},
+			"Heir %s takes the seat — child of %s (year %d)." % [new_chief["name"], old.get("name", "?"), game_state["year"]])
+	else:
+		new_chief = _gen_chieftain_from_kronrat(npcs, game_state["alignment"])
+		new_chief["rule_start_year"] = game_state["year"]
+		_log_entry("chieftain_new", {},
+			"New chieftain elected: %s (year %d)." % [new_chief["name"], game_state["year"]])
+
+	game_state["chieftain"] = new_chief
 
 	var summary: String = _build_generation_summary()
 	_log_entry("generation_advance",
@@ -762,25 +1045,37 @@ func save_game() -> void:
 	if file:
 		file.store_string(JSON.stringify(data, "\t"))
 		file.close()
+		_log_debug("save_game() OK — event: %s, decisions: %d" % [current_event_id, game_state.get("decision_count", 0)])
+	else:
+		_log_debug("save_game() FAILED — could not open %s" % SAVE_PATH)
 
 
 func load_game() -> bool:
 	if not FileAccess.file_exists(SAVE_PATH):
+		_log_debug("load_game(): no save file at %s" % SAVE_PATH)
 		return false
 	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if file == null:
+		_log_debug("load_game(): could not open save file")
 		return false
 	var content: String = file.get_as_text()
 	file.close()
 
 	var parsed = JSON.parse_string(content)
 	if not parsed is Dictionary:
+		_log_debug("load_game(): JSON parse failed")
 		return false
 
-	if parsed.has("game_state")    and parsed["game_state"] is Dictionary:    game_state    = parsed["game_state"]
+	if parsed.has("game_state")    and parsed["game_state"] is Dictionary:
+		game_state = parsed["game_state"]
+		if not game_state.has("flags"):
+			game_state["flags"] = {}
+		if not game_state.has("season"):
+			game_state["season"] = 1
 	if parsed.has("chronicle_log") and parsed["chronicle_log"] is Array:      chronicle_log = parsed["chronicle_log"]
 	if parsed.has("undo_stack")    and parsed["undo_stack"] is Array:         undo_stack    = parsed["undo_stack"]
 	if parsed.has("current_event_id"):                                         current_event_id = parsed["current_event_id"]
+	_log_debug("load_game() OK — event: %s, decisions: %d" % [current_event_id, game_state.get("decision_count", 0)])
 	return true
 
 # ---------------------------------------------------------------------------
@@ -793,6 +1088,8 @@ func _format_text(text: String) -> String:
 	var t:        Dictionary = POPULATION_TIERS[tier_idx]
 	return text.format({
 		"year":            game_state.get("year", 1),
+		"season":          game_state.get("season", 1),
+		"season_name":     SEASON_NAMES[clamp(game_state.get("season", 1) - 1, 0, 3)],
 		"generation":      game_state.get("generation", 1),
 		"settlement_type": t["name"] if not s.is_empty() else "Settlement",
 		"population":      str(s.get("population", "?")),
@@ -801,7 +1098,16 @@ func _format_text(text: String) -> String:
 		"founding_text":   s.get("founding_text", ""),
 		"trades":          ", ".join(PackedStringArray(s.get("trades", []))),
 		"chieftain":       c.get("name", "the chieftain"),
+		"spouse":          c.get("spouse", {}).get("name", ""),
+		"heir":            c.get("heir", {}).get("name", ""),
 	})
+
+
+func _log_debug(msg: String) -> void:
+	if _log_file == null:
+		return
+	_log_file.store_line("[%s] %s" % [Time.get_time_string_from_system(), msg])
+	_log_file.flush()
 
 
 func _log_entry(event_id: String, delta: Dictionary, description: String) -> void:
@@ -811,6 +1117,7 @@ func _log_entry(event_id: String, delta: Dictionary, description: String) -> voi
 		"delta":       delta,
 		"description": description,
 		"year":        game_state.get("year", 0),
+		"season":      game_state.get("season", 1),
 		"generation":  game_state.get("generation", 0),
 	})
 

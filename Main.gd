@@ -5,7 +5,9 @@ extends Control
 # ---------------------------------------------------------------------------
 # Node references
 # ---------------------------------------------------------------------------
-var _story_label:        RichTextLabel
+var _history_label:      RichTextLabel   # past events — dimmed
+var _current_label:      RichTextLabel   # active event text — prominent
+var _current_panel:      PanelContainer  # frame around active event, animated
 var _decision_container: VBoxContainer
 var _undo_button:        Button
 
@@ -19,6 +21,9 @@ var _alignment_label:  Label
 var _alignment_bar:    Label
 var _mood_label:       Label
 var _kronrat_label:    RichTextLabel
+
+## Tracks the raw BBCode in _current_label so we can archive it to history
+var _current_bbcode: String = ""
 
 # ---------------------------------------------------------------------------
 # Lifecycle
@@ -47,7 +52,7 @@ func _build_ui() -> void:
 	hbox.add_theme_constant_override("separation", 10)
 	root_margin.add_child(hbox)
 
-	# ── Left column — story + decisions + toolbar ─────────────────────────
+	# ── Left column ───────────────────────────────────────────────────────────
 	var left_col := VBoxContainer.new()
 	left_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	left_col.add_theme_constant_override("separation", 6)
@@ -58,24 +63,43 @@ func _build_ui() -> void:
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	left_col.add_child(title_label)
 
-	# Story panel
-	var story_panel := PanelContainer.new()
-	story_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	left_col.add_child(story_panel)
-	var story_mg := MarginContainer.new()
+	# History panel — past events, dimmed, scrollable
+	var history_panel := PanelContainer.new()
+	history_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	left_col.add_child(history_panel)
+	var history_mg := MarginContainer.new()
 	for side in ["margin_left","margin_right","margin_top","margin_bottom"]:
-		story_mg.add_theme_constant_override(side, 8)
-	story_panel.add_child(story_mg)
-	_story_label                    = RichTextLabel.new()
-	_story_label.bbcode_enabled     = true
-	_story_label.scroll_following   = true
-	_story_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	story_mg.add_child(_story_label)
+		history_mg.add_theme_constant_override(side, 8)
+	history_panel.add_child(history_mg)
+	_history_label                    = RichTextLabel.new()
+	_history_label.bbcode_enabled     = true
+	_history_label.scroll_following   = true
+	_history_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	history_mg.add_child(_history_label)
+
+	# Current event panel — active event, framed, animated
+	_current_panel = PanelContainer.new()
+	_current_panel.custom_minimum_size = Vector2(0, 140)
+	left_col.add_child(_current_panel)
+	var current_mg := MarginContainer.new()
+	for side in ["margin_left","margin_right","margin_top","margin_bottom"]:
+		current_mg.add_theme_constant_override(side, 12)
+	_current_panel.add_child(current_mg)
+	_current_label                   = RichTextLabel.new()
+	_current_label.bbcode_enabled    = true
+	_current_label.scroll_following  = false
+	_current_label.fit_content       = true
+	current_mg.add_child(_current_label)
 
 	# Decisions
 	_decision_container = VBoxContainer.new()
 	_decision_container.add_theme_constant_override("separation", 4)
 	left_col.add_child(_decision_container)
+
+	# Bottom spacer so buttons don't sit flush at edge
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 14)
+	left_col.add_child(spacer)
 
 	# Toolbar
 	var toolbar := HBoxContainer.new()
@@ -83,14 +107,15 @@ func _build_ui() -> void:
 	toolbar.add_theme_constant_override("separation", 6)
 	left_col.add_child(toolbar)
 
-	_undo_button          = _btn("↩ Undo",            _on_undo_pressed)
+	_undo_button          = _btn("↩ Undo",        _on_undo_pressed)
 	_undo_button.disabled = true
 	toolbar.add_child(_undo_button)
-	toolbar.add_child(_btn("Save",                _on_save_pressed))
-	toolbar.add_child(_btn("Load",                _on_load_pressed))
-	toolbar.add_child(_btn("Next Generation",     _on_next_gen_pressed))
+	toolbar.add_child(_btn("Save",            _on_save_pressed))
+	toolbar.add_child(_btn("Load",            _on_load_pressed))
+	toolbar.add_child(_btn("New Game",        _on_new_game_pressed))
+	toolbar.add_child(_btn("Next Generation", _on_next_gen_pressed))
 
-	# ── Right column — chronicle (top) + status (bottom) ─────────────────
+	# ── Right column ──────────────────────────────────────────────────────────
 	var right_col := VBoxContainer.new()
 	right_col.custom_minimum_size = Vector2(290, 0)
 	right_col.add_theme_constant_override("separation", 6)
@@ -133,8 +158,9 @@ func _build_ui() -> void:
 	status_vbox.add_theme_constant_override("separation", 4)
 	status_mg.add_child(status_vbox)
 
-	_chieftain_label      = Label.new()
-	_chieftain_label.text = "Chieftain: —"
+	_chieftain_label                 = Label.new()
+	_chieftain_label.text            = "Chieftain: —"
+	_chieftain_label.autowrap_mode   = TextServer.AUTOWRAP_WORD_SMART
 	status_vbox.add_child(_chieftain_label)
 
 	_gen_year_label      = Label.new()
@@ -202,10 +228,20 @@ func _on_state_changed(new_state: Dictionary) -> void:
 	var alignment: int        = new_state.get("alignment", 0)
 
 	var s: Dictionary = new_state.get("settlement", {})
-	_chieftain_label.text  = "Chieftain: %s" % c.get("name", "—")
-	_gen_year_label.text   = "Generation %d · Year %d · %d souls" % [
+	var spouse_line: String = ("☑ " + c.get("spouse", {}).get("name", "?")) if c.get("has_spouse", false) else "☐ Unmarried"
+	var heir:        Dictionary = c.get("heir", {})
+	var heir_line:   String
+	if c.get("has_heir", false):
+		var born: int  = int(heir.get("birth_year", new_state.get("year", 1)))
+		var age:  int  = new_state.get("year", 1) - born
+		heir_line = "☑ Heir: %s · age %d" % [heir.get("name", "?"), age]
+	else:
+		heir_line = "☐ No heir"
+	_chieftain_label.text  = "Chieftain: %s\n%s\n%s" % [c.get("name", "—"), spouse_line, heir_line]
+	_gen_year_label.text   = "Generation %d · Year %d · %s · %d souls" % [
 		new_state.get("generation", 1),
 		new_state.get("year", 1),
+		_season_name(new_state.get("season", 1)),
 		s.get("population", 0),
 	]
 	_alignment_label.text  = "%+d — %s" % [alignment, _alignment_desc(alignment)]
@@ -217,8 +253,20 @@ func _on_state_changed(new_state: Dictionary) -> void:
 
 
 func _on_event_triggered(_event_id: String, text: String, choices: Array) -> void:
-	_story_label.append_text("\n\n" + text + "\n")
 	_refresh_chronicle()
+
+	if choices.is_empty():
+		# Follow text or system message — append to current panel
+		_current_label.append_text("\n\n" + text)
+		_current_bbcode += "\n\n" + text
+		return
+
+	# New decision event — archive current to history, show fresh in current panel
+	_archive_current_to_history()
+	_current_bbcode = text
+	_current_label.clear()
+	_current_label.append_text(text)
+	_animate_current_panel()
 
 	_clear_decisions()
 	for i: int in choices.size():
@@ -229,9 +277,9 @@ func _on_event_triggered(_event_id: String, text: String, choices: Array) -> voi
 
 
 func _on_generation_advanced(summary: String) -> void:
-	_story_label.append_text(
-		"\n\n[i]── Generationswechsel ──\n%s[/i]\n" % summary
-	)
+	var gen_text: String = "\n[i]── Generation Shift ──\n%s[/i]" % summary
+	_current_label.append_text(gen_text)
+	_current_bbcode += gen_text
 	_refresh_chronicle()
 
 # ---------------------------------------------------------------------------
@@ -244,32 +292,61 @@ func _on_choice_pressed(index: int) -> void:
 		if b is Button:
 			label_text = b.text
 	_clear_decisions()
+	# Show chosen option as footer in history
 	if label_text != "":
-		_story_label.append_text("\n[color=gray]▶ %s[/color]" % label_text)
+		_history_label.append_text("\n[color=#888888]▶ %s[/color]\n" % label_text)
 	GameManager.apply_choice(GameManager.current_event_id, index)
 
 
 func _on_undo_pressed() -> void:
-	_story_label.append_text("\n[color=yellow]↩ Undone.[/color]")
+	_history_label.append_text("\n[color=yellow]↩ Undone.[/color]")
 	_clear_decisions()
+	_current_label.clear()
+	_current_bbcode = ""
 	GameManager.pop_undo_snapshot()
 
 
 func _on_save_pressed() -> void:
 	GameManager.save_game()
-	_story_label.append_text("\n[color=green]Game saved.[/color]")
+	_history_label.append_text("\n[color=green]✓ Game saved.[/color]")
 
 
 func _on_load_pressed() -> void:
 	if GameManager.load_game():
-		_story_label.clear()
+		_history_label.clear()
+		_current_label.clear()
+		_current_bbcode = ""
 		_clear_decisions()
-		_story_label.append_text("[color=cyan]Save game loaded.[/color]")
+		_history_label.append_text("[color=cyan]Save game loaded.[/color]\n")
+		GameManager.resume_current_event()
+
+
+func _on_new_game_pressed() -> void:
+	_history_label.clear()
+	_current_label.clear()
+	_current_bbcode = ""
+	_clear_decisions()
+	GameManager.new_game()
 
 
 func _on_next_gen_pressed() -> void:
 	_clear_decisions()
 	GameManager.advance_generation()
+
+# ---------------------------------------------------------------------------
+# Current panel helpers
+# ---------------------------------------------------------------------------
+func _archive_current_to_history() -> void:
+	if _current_bbcode == "":
+		return
+	_history_label.append_text("\n[color=#888888]" + _current_bbcode + "[/color]\n")
+
+
+func _animate_current_panel() -> void:
+	_current_panel.modulate = Color(1.4, 1.3, 0.7)
+	var tween := create_tween()
+	tween.tween_property(_current_panel, "modulate", Color.WHITE, 0.9)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
 
 # ---------------------------------------------------------------------------
 # Chronicle formatting
@@ -370,6 +447,11 @@ func _make_alignment_bar(v: int) -> String:
 # ---------------------------------------------------------------------------
 # Utility
 # ---------------------------------------------------------------------------
+func _season_name(season: int) -> String:
+	var names := ["Spring", "Summer", "Autumn", "Winter"]
+	return names[clamp(season - 1, 0, 3)]
+
+
 func _clear_decisions() -> void:
 	for child in _decision_container.get_children():
 		child.queue_free()

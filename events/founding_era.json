@@ -6,18 +6,18 @@
 		"text": "{settlement_type} at the {location_name} — {population} {size_desc}.\n{founding_text}\n\nTrades: {trades}\n\nThe council gathers for the first time. What is the first concern?",
 		"choices": [
 			{
-				"label": "Build a communal storehouse — for everyone (+5 alignment)",
-				"effect": { "alignment": 5 },
+				"label": "Build a communal storehouse — for everyone",
+				"effect": { "set_flag": "has_storehouse" },
 				"next_event": "",
 				"log_text": "A communal storehouse was built as the first structure.",
-				"follow_text": "The beams of the storehouse rise quickly — every hand helps. In the evenings, people gather and share stories of the old lands."
+				"follow_text": "The beams rise quickly — every hand helps. In the evenings, people gather around the half-built frame and share stories of the old lands. Something is being made here."
 			},
 			{
-				"label": "Secure the village borders first — we protect our own (-5 alignment)",
-				"effect": { "alignment": -5 },
+				"label": "Secure the village borders first — we protect our own",
+				"effect": { "set_flag": "has_palisade" },
 				"next_event": "",
-				"log_text": "The village borders were secured first.",
-				"follow_text": "Fences and watch posts appear at the village edge. Some neighbours look on with suspicion — but the chieftain sleeps easier."
+				"log_text": "The village borders were secured first — a palisade and watch posts.",
+				"follow_text": "Fences and watch posts appear at the village edge. The work takes two weeks. When it is done, the village feels smaller inside — but safer."
 			}
 		]
 	},
@@ -106,13 +106,91 @@
 		]
 	},
 
+	"smoke_on_the_horizon": {
+		"title": "Smoke on the Horizon",
+		"text": "Scouts return at dusk with troubled faces. Tracks in the eastern forest — unfamiliar boots, a cold fire pit, the smell of old smoke. Someone has been watching your settlement for days.\n\nThe council gathers. No one sleeps well. {chieftain} must decide before dawn.",
+		"choices": [
+			{
+				"label": "Send rangers — track them, show this land has teeth (-5 alignment)",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "Rangers were sent into the forest to track the strangers.",
+				"follow_text": "The rangers return two days later, hollow-eyed. They found the camp — abandoned in haste, bones of a deer still warm. Whoever watched your village has moved on. For now. The rangers say nothing of what else they found in that camp. Some things are better left in the dark."
+			},
+			{
+				"label": "Set the men to building — palisade, watchtower, a ditch",
+				"effect": {},
+				"next_event": "",
+				"log_text": "The settlement turned inward — palisade and watchtower raised.",
+				"follow_text": "Week after week the posts go in, the ditches deepen, the watchtower grows. The strangers never come. Maybe they saw the walls rising and decided to look elsewhere. Maybe they are still out there, patient. Either way, your people sleep better — and that counts for something."
+			},
+			{
+				"label": "Send an envoy with bread and salt — meet them as neighbours (+10 alignment)",
+				"effect": { "alignment": 10 },
+				"next_event": "",
+				"log_text": "An envoy was sent into the forest with food and an offer of peace.",
+				"follow_text": "The envoy returns the next evening with a story: a band of thirty, driven from their valley by a chieftain who took everything. They carry little but hunger and children. {chieftain} opens the gate. Some in the council grumble. The strangers become neighbours — quietly, one shared fire at a time."
+			}
+		]
+	},
+
+	"storehouse_test": {
+		"_info": "Only appears if has_storehouse flag is set. The storehouse built earlier becomes relevant.",
+		"title": "The Empty Storehouse",
+		"text": "A bad harvest. The storehouse that the village built in its first season stands half-empty by midwinter.\n\nBecause it exists, the rationing is organised. Because it exists, {chieftain} can see exactly how bad things are — and act before people go hungry.\n\nWhat is the priority now?",
+		"conditions": {
+			"requires_flag": "has_storehouse"
+		},
+		"choices": [
+			{
+				"label": "Open the stores fully — no one goes hungry this winter (+10 alignment, -10 population long-term risk)",
+				"effect": { "alignment": 10, "population": -5 },
+				"next_event": "",
+				"log_text": "The storehouse was opened fully during the hard winter.",
+				"follow_text": "The stores run out before spring. It was the right thing to do — and now there is nothing left. Next autumn, the village will need to be more careful."
+			},
+			{
+				"label": "Ration strictly — protect the seed grain above all",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "Strict rationing was enforced to protect the seed grain.",
+				"follow_text": "Some go to bed hungry. The seed grain survives intact. In spring, the fields are full — and people remember both things."
+			}
+		]
+	},
+
+	"palisade_test": {
+		"_info": "Only appears if has_palisade flag is set. A threat arrives and the palisade matters.",
+		"title": "The Night Watch",
+		"text": "Fires on the ridge to the east — too many, too close. Someone is watching the settlement.\n\nThe watch post your people built in the founding year sees them first. There is time to prepare.\n\nWithout it, there would not have been.",
+		"conditions": {
+			"requires_flag": "has_palisade"
+		},
+		"choices": [
+			{
+				"label": "Stand at the gate and show force — let them see we are ready",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "Armed villagers stood at the gate to meet the threat.",
+				"follow_text": "By morning the fires are gone. No one came. Whether they saw the palisade and thought better of it — nobody knows. The watch stays doubled for a week."
+			},
+			{
+				"label": "Send a runner to the neighbours — warn them, stand together (+10 alignment)",
+				"effect": { "alignment": 10 },
+				"next_event": "",
+				"log_text": "Neighbouring settlements were warned and a joint watch organised.",
+				"follow_text": "The messenger returns with six armed men from the next valley. The fires fade. In the morning a neighbour's elder clasps {chieftain}'s arm. 'We owe you one,' he says."
+			}
+		]
+	},
+
 	"drought_warning": {
 		"title": "The Dry Summer",
 		"text": "The river runs lower than anyone can remember. The elders speak of drought.\nBefore the wells run dry, {chieftain} must act.",
 		"choices": [
 			{
-				"label": "Ration water now and dig a deeper well together (+5 alignment)",
-				"effect": { "alignment": 5 },
+				"label": "Ration water now and dig a deeper well together",
+				"effect": { "set_flag": "has_deep_well" },
 				"next_event": "",
 				"log_text": "Water was rationed and a deeper well was dug communally.",
 				"follow_text": "The work is backbreaking, but the new well holds. The rationing was hard — arguments broke out over buckets — yet the village made it through."

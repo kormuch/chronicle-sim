@@ -1,0 +1,1863 @@
+Situations
+For Tabletop Roleplaying
+
+- Second Iteration -
+
+What's This?
+
+This is a compilation of six articles – methods for building situations
+for tabletop roleplaying. Each of the six methods is a procedure; by
+working through one of these procedures, you'll generate the core
+'stuff' needed for a session or two of play.
+
+Contents
+
+4
+10
+16
+24
+32
+42
+
+Long Knives is used to create situations for intrigue
+that the characters are tied to.
+
+Broken Places builds situations where a villain of some
+sort has taken over an organization.
+
+The Quest is used to generate adventures that will take
+the characters out on significant journeys
+
+Transgression is a generator for social movements and
+the resistance to those movements.
+
+Predator Souls is a means for making monster-hunting
+scenarios for your games.
+
+Nine Rooms is a method for setting up dungeons, the
+classical limited-space perilous situations.
+
+Record Sheets
+
+Each method closes off with a reduced-size version of the record
+sheet used to track the details being created. It's possible to print
+these as given, removing margins and printing on “fit to page”
+settings. However, it's much easier to grab the PDF for record
+sheets, which gives each sheet in full-page format.
+
+①
+
+②
+
+③
+
+④
+
+Building Your Game
+1. Know The Fundamentals: Fundamentals Of Tabletop
+Roleplaying is a basic run-down on what tabletop
+gaming involves, and how to go about it.
+2. Get The Engine: The Ouroboros Engine is a generaluse system for fantasy gaming, with just enough
+density for both tactics and flexible stakes, but is
+otherwise light.
+3. Choose Your Setting: Three distinct settings are
+planned for the Ouroboros Engine, each of which does
+something a little different:
+♦ Tenocha: The Old Empire
+♦ Hoard: The Reach
+♦ Awen: The World Begins With You.
+4. Build Situation: Six methods for building situations
+for play are available; these can be used for any
+system, but the settings above directly link to them:
+♦ Broken Places
+♦ Predator Souls
+♦ Nine Rooms
+♦ Transgression
+♦ Long Knives
+♦ The Quest
+
+Long Knives
+
+“I've come to believe that the recent temple desecrations are
+being performed by the Hidden Ones, in order to stir up
+sentiment against the Fomor spirit cults. And it's working. If
+someone doesn't do something, we're going to see lynch mobs.”
+
+Feuds & Intrigues
+
+Situations like the one quoted from above can be a bit of a trick to set
+up believably. It's often even more of a trick to make sure that the
+players care about them; many Guides have spent enormous amounts
+of time creating intricate scenarios nobody was all that interested in.
+This is a way to put together such situations that faces down both of
+those concerns. You'll need the record sheet for power plays, and a
+blank piece of paper (which can be the back of that sheet).
+
+First, Build The List
+
+Grab the blank piece of paper. On the top of it, note down the
+location – where the characters are based, or a place they'll be right
+quick in the campaign, and where they'll hold still long enough for
+you to grab them.
+Now, rummage through what you know about those characters,
+and start noting down their relationships to groups. This can include
+implied groups just as much as known ones. If they have special
+training, what group did they learn from? If they've seen some action
+in the past, who was it with, and against who? Where were they
+raised, and among what people? Things like that. You might want to
+have their character records on hand, so you can go down the list.
+As you consider this, any time you think of a group that should or
+could have a presence in the target area, write them down. These can
+be subsets of that group rather than the whole – a guild office for a
+profession one character has, people who follow the same mystical
+tradition as another, and so on. These can also be fragments of
+groups that you decide to change up in some way - retired members
+of a mercenary troupe one character travelled with, who now run a
+fighting school,
+Once that's all down, you have your raw material; those people
+are all in the area, but they won't all necessarily matter right off.
+Figuring out which groups are central to the immediate action comes
+next.
+
+Second, From Group To Faction
+
+Picking up the list from the last step, walk through it one group at a
+time, and note next to each of them a few things that they might want
+in the area, and who might oppose them. So, if you had noted “Fjell's
+Raiders” in your list, you might add “Want to sell their loot; opposed
+by the authorities”.
+As you go along, look for places where groups on the list have
+common general opponents, especially if those groups would also
+oppose each other. The goal here is to find a tight cluster of about five
+groups, each of whom would find the others problematic (not all the
+groups in that clump need to be from the original list; it's pretty usual
+for one of the common ties to be “law enforcement” or “the local
+nobility” or other vested interests.
+When you think you have that cluster of groups, it's time to
+formalize them into factions. This is done by giving each a spot on
+the power play sheet, and noting in the following...
+♦ Group: The name of the group, or at least a name for the group.
+♦ Connection: How does this group connect to the player characters?
+Not all groups will, to be sure, but most should.
+♦ Resources: What kind of troops, money, and other resources does
+the groups have in the area? How can they exert political force (or
+real force)? Think creatively here; it can help later on.
+♦ Agenda: What things does this group want?
+♦ Opposed By: Which of the other listed factions blocks the agendas
+that this group has, and which ones?
+Here's how that might look:
+
+Group: The local Assassin's Guild.
+Connection: Jaka's old mentor just took over this hall.
+Resources: A couple dozen Assassins, loads of blackmail material.
+Agenda: They want to be an 'open secret', ignored by the law.
+Opposed By: The city guard, and Gavva's Enforcers.
+Group: Gavva's Enforcers.
+Connection: They defended several towns from Fjell's raiding.
+Resources: Lucrative contracts guarding nobles, noble contacts.
+Agenda: The Enforcers want to displace the city guard entirely.
+Opposed By: The city guard, the High Temple.
+
+Third, From Factions To Strife
+
+With the tension neatly compiled, it's now just a matter of making
+things happen. To do that, you'll just finish off a series of sentences...
+♦ The instigators were: Decide who made the first move. Not what
+it was or why, yet – just who.
+♦ They acted against: Which opponent did the group act against?
+♦ The time was right: What made this happen when it happened? Is
+there a new leader out to make their mark, something distracting
+the opposition, some new resource in the area the acting group
+thinks they can get, some upcoming gain for their opposition that
+the group fears?
+♦ What happened was: Now, it's time to decide what the action was.
+As with any such action, it should fit the motive (the agenda of the
+group), the opportunity (the reason the time was right), and the
+means (the resources the acting group has on hand). The action can
+be overt or hidden, a direct hit or a frame-up; consider the trusty
+levers of bribery, blackmail, and intimidation.
+♦ Which prompted: How did the targeted group react? How was
+this an overreaction, or an act that caught others in the crossfire?
+♦ And this will lead to: This activity should lead to some kind of
+opportunity for the other groups to jump in and poke the situation.
+How will they do that? If the characters do nothing, how will
+things get worse?
+Here's how that might look:
+
+The Instigators Were The local Assassin's Guild.
+They Acted Against: The city guard.
+The Time Was Right: Jaka's mentor arrived with this plan.
+What Happened Was: The Assassins killed the guard captains
+who couldn't be bought, and had the corrupt ones claim that
+Gavva's enforcers were behind it.
+
+Which Prompted: Gavva to proclaim his innocence, with strong
+Oaths, naming the attacks evil and diabolical in public.
+
+And This Will Lead To: The Temple is preparing an inquisition
+to 'delve the depth of the matter', which is making most of
+those involved very worried, even the innocent.
+
+Fourth, From Strife To Appeal
+
+Now, there's action and reaction, but the characters aren't stuck in,
+yet. People need to come to them and get them in on it; at least two
+people, over the course of events. Again, fill in the blanks.
+♦ The [first/second] visitors are: Who is going to try and get the
+characters involved?
+♦ They want: What do they want the character to do? Be specific,
+here, and make sure that the action will have repercussions.
+♦ They know: What do they know? It shouldn't be everything, but
+enough that a bit of action will reveal more of the truth.
+♦ They can offer: What assistance, favours, or benefits will they offer
+the characters?
+Here's how that might look:
+
+The First Visitors Are Gavva and a couple men.
+They Want: To turn an old but honourable enemy into a friend;
+they want Fjell to investigate the guards that blamed them.
+
+They Know: The names and routes of the guards that fingered them
+for the murders, by not why, or who really did it.
+
+They Can Offer: Future favours, assistance in battles yet to come,
+almost anything the group dreams up that they can do.
+
+The Second Visitors Are Temple inquisitors.
+They Want: To put Jaka to the Question; they have some idea that
+assassins are involved, and she has few friends.
+
+They Know: That the Enforcers didn't do the killing themselves,
+But they believe the Enforcers were behind it.
+
+They Can Offer: Threats, violence, and will happily call out the
+city guard to capture Jaka as a rogue assassin.
+
+Wheels Within Wheels
+
+For a campaign that's built around heavy intrigue, the major powers
+of the setting – cities, nations, or other significant groups – are treated
+as the factions involved.
+
+Broken Places
+
+"Plucky Heroes fight corruption, clean up town!"
+
+The Power Behind
+
+A great many adventures in fiction are about dealing with the
+shadowy villain that has overtaken some place, bringing their sinister
+powers to bear in order to seize power behind the scenes. This is a
+means to set up that kind of challenge..
+THE PLACE AND THE RISE
+Give the place a name - whatever suits the region, culture, and so on.
+Then finish each of the sentences in the first section to tell the story of
+the rise of the villain. For an example, look below.
+
+Once, There Was A Place Called...
+The Village Of Unrao
+It was blessed with: beehives making preservative honey.
+It wasn't perfect; everyone bickered with the elders.
+Someone came, a clever merchant.
+They got power, the job of managing storehouse accounts.
+And increased it, hiring guards with choice foods.
+And took over, seizing control over the food supply.
+Now, these days, anyone that argues with him starves.
+
+GETTING A GOOD HISTORY
+As you finish each sentence, ensure that you’re showing both how the
+villain got power (usually by leveraging whatever was wrong with
+the place to begin with - the ‘It wasn’t perfect’ bit), and make sure that
+you’re showing off why the villain is absolutely the Bad Guy. After
+play begins, those sentences become the framework for the history of
+the place that the characters can hear about.
+
+Next, The “Proper Order”
+
+Something can’t really be corrupted unless there’s a good or right
+way for things to be. The second section of this process is to go over
+how things ought to look. This part is fairly easy; there should be a
+leader (which might be a group, such as ‘the tribal elders’), probably
+with some specialists that aren’t officials but are close to the leader,
+and some officials, each with their own areas of responsibility. While
+you’re filing out these names, you may want to give them job titles,
+and you’ll probably want to include the villain - most villains have an
+‘official’ job that is significantly more humble seeming than their
+actual powers. In addition, unless the society of the game world
+makes it unfeasible, use a nice blend of males and females, and spend
+a quick moment considering their family situations; fiction about
+broken places often also includes broken families divided along
+partisan lines, people ‘sleeping with the enemy’, and all manner of
+other messed-up personal mojo. The form is built to act as a quick
+reference for authority structures in play, but that doesn’t mean that
+authority is the only game in town.
+
+How It Should Be
+Leadership:
+
+Officials:
+
+Elder Agin
+
+Wali;
+Lead
+Hunter
+
+Specialists:
+Axari, advisor.
+
+Jagra;
+Villain
+
+{
+{
+{
+{
+
+Kia;
+Beekeeper
+
+Responsibilities:
+
+Leading Hunts
+
+Managing stores
+
+Managing hives
+Leading local rites
+
+The Real Power
+
+This set of boxes is filled out in much the same way as the way things
+should be, except that filling this out is about the power structure that
+the villain actually has and uses. This should include the villain, and
+any notes about them you care to make, and their ‘free-roaming’
+agents (thugs). It should also include the people that the villain has
+subverted with authority or has put in charge of his own operations
+(dupes), and finally, it should describe what those dupes are in
+control of (with a note on how they do it, if they have no ’legitimate’
+authority). As with the boxes describing how things should be,
+consider how these characters relate to others in the community (and
+especially in the legitimate power structure).
+POWER NOTES
+When noting down what a given individual has power over, you
+might also want to note down how the villain has power over them.
+In the example below, Kia the Beekeeper works for Jagra only because
+he's holding her son captive.
+
+How It Really Is
+Villain:
+
+Dupes:
+
+Jagra
+
+Unagan;
+Hired
+thug
+Solrun;
+
+{
+{
+{
+{
+
+Power Over:
+Guard captain
+
+Storehouse boss
+
+Specialists:
+
+Bootlicker
+
+Lat, assassin.
+
+The Hives
+Kia;
+Beekeeper Son is Jagra's captive
+
+Getting Involved
+
+Now that things are nicely messed up, and you’ve put a villain in
+charge, it might be good to turn your attention to creating the
+opportunity for some band with sufficient daring and wit to come
+and save the day.
+♦ The Hook: First, you’re going to need to get their attention with
+something that they can’t (or won’t) ignore. Maybe they’re raring to
+go, and just need an excuse; maybe you need have their friends
+kidnapped, houses burned down, distant cousins living in
+starvation. Maybe you’re not that heavy-handed, and have ideas
+with more finesse. You know your players. How will you hook ‘em?
+♦ The Contact: Also known as the “mouthpiece”, the contact is
+someone on the inside that knows what the characters need to
+know. Decide who that is, and (just as important) think of a few
+ways to connect the characters to them, as quickly as possible once
+they’re on the scene.
+♦ Network: If there’s a villain running the show, then there will be
+people that want to resist. The network is the means by which they
+communicate - do they still act like the legitimate government is in
+power? Do they meet secretly? Have a base out in the jungle?
+♦ Insiders: Some of the people working for the villain should be ready
+to change sides, turn out good, be double agents, that kind of thing.
+Who are they?
+
+Getting Involved
+The hook: The mother of Holly's character lives here.
+The contact: Wali's kids, who will find them and take 'em to Wali.
+The network: A camp in the jungle where rebels meet.
+An insider: Kia, who can only help if her son is rescued.
+An insider: Elder Agin, who is in town keeping things calm.
+
+A Broken World
+
+A campaign can be built around this same concept. A nation whose
+throne has been usurped can make an interesting game – especially if
+one or more of the characters has rights tied to it historically.
+
+The Quest
+
+"Get the talisman to bleak hill before time runs out!"
+
+The Clock Is Ticking
+
+The "time-limited quest" is an adventure setup so standard that it
+might well be invisible. In some cases, the time limit is obvious; in
+others, it's very light, but it's almost always around. This is a method
+for setting up such a situation in a fairly classic manner.
+
+The Basic Situation
+The first thing to do in creating such a setup is to lay down the very
+basics of the situation. On the worksheet, that looks as shown here.
+The blanks are filled out one line at a time, to form complete
+sentences. For each, think of two or three ways to finish the sentence,
+and then choose the best option. Notes on filing in each blank can be
+found on the next page; for now, here's an example of how this looks:
+
+Unless Something Is Done...
+The Dragon cult will raise their undying master.
+You must take the heir of the dragon, by Bloodright.
+And go to the sanctuary at Alria.
+But be wary of cultists and sympathizers.
+For they wish to sacrifice him to accelerate their rituals.
+And there are rumours of Skinchanger cults on the route.
+
+Filling In The Blanks
+
+♦ Unless something is done, [a very bad thing will happen]: Finish
+
+this sentence with something the player characters will not tolerate.
+While the event you write should be intolerable to the player
+characters, it shouldn't be a game stopper. Give yourself a few
+seconds to think about what you would do if the player characters
+utterly fail to stop the intolerable event. What stories could you tell
+after that? Could heroes lead a resistance movement against a
+dragon overlord? The player characters turn to a life of crime?
+♦ You must take [something that can stop it]: Finish this sentence
+with something that is valuable because it has a purpose - it can
+prevent the very bad thing from happening. Usually this thing will
+have obvious value, which can give even more opportunities for
+tension, as other characters in the story will want it. If the object
+doesn't have any intrinsic value, consider making it something that
+can easily be lost, stolen, mistaken for something else. Finally, if the
+object is actually a person or creature, that opens a whole host of
+complications based on keeping them "on-side" and dealing with
+their various demands, which can be fun.
+♦ And go to [a place where it can be used]: Finish this sentence with
+a place where the object can be used in some way - with a very loose
+definition of use. A magic ring can be destroyed, a rising prophet
+can speak with the Gods, a spy can be planted. Don't forget to think
+of two or three possibilities! In this case, the other places might be
+failsafe options for the players, or even riskier alternatives. But you
+just need to write the best one.
+♦ But be wary of [bad guys and other threats]: Here we introduce the
+immediate story's primary antagonists, which may or may not be
+related to the very bad thing that we made up in "Unless something
+is done...". What's the main threat on the journey from here to there?
+♦ For they wish to [do bad stuff]: The obvious answer is "stop you
+and kill you". But that's a bit simplistic, some of the time. If the
+enemies on the road instead want to steal the preventative thing,
+and take it somewhere entirely different, then you're got a potential
+side chase right up the road.
+♦ And there are rumors of [a wildcard thing]: This last bit is some
+other odd thing that just happens to be in the region, which you can
+pull out as needed. This group should have potential motives for
+getting involved - they don't like intruders, they also want to make
+off with the device, for some other reason entirely, and so on. The
+wildcard is present so that they can be pulled out on any side - as an
+added opponent if needed, or as a happy relief force that will also
+make things far more complicated, or as just background.
+
+Complications!
+
+The next thing is to go over each of the elements of the situation, and
+consider which of them, if any, could be used as "a twist". To do this,
+take a look at each, and ask "What would make this a bit different, if it
+were revealed?".
+So, the adventure could become...
+
+Unless Something Is Done...
+The Dragon cult will raise their undying master.
+You must take the heir of the dragon, by Bloodright.
+Complication: He's sometimes possessed by his ancestor.
+And go to the sanctuary at Alria.
+Complication: Where he can be killed and soul-destroyed.
+But be wary of cultists and sympathizers.
+Complication: Who worship him as a sacred vessel, needing
+only to be slain to be awakened.
+
+For they wish to sacrifice him to accelerate their rituals.
+Complication: Which will change him into the undying one.
+And there are rumours of Skinchanger cults on the route.
+Complication: Who can force out the possessing spirit...
+...by substituting a primal spirit in.
+
+Timing
+
+In any game with a clear direction, keeping a tight pace can easily end
+up coming out in play as pushing for very specific actions. That's less
+than ideal; taken too far, it becomes "railroading", which is ugly.
+Keeping the pressure up in general, though, is just good pacing. So
+this step is to help set things running in a useful fashion, and to spur
+thoughts about how you're actually going to present this material to
+the players. To do that, break up the action into stages - Introduction,
+Acquisition, Challenges, Complications, and Closure, each of which
+adds a little more on top of the the stuff going on; we'll go into detail
+on those shortly. Each stage of the situation is comprised of two quick
+bits. These bits are:
+♦ Opener: This is the thing that happens to signal the beginning of the
+stage. Notably, this should be the thing that happens to the
+characters; while this stage of the situation may well reflect larger
+events, what matters here is how those events meet play.
+♦ Events: These are 'usual things' that are added to play to this stage.
+
+Introduction: A visit from Ava, the sigilite.
+Events: Ava explains the peril, and how it affects the characters.
+Acquisition: Arrival at the fratery where the Heir has been held.
+Events: Arguing with or circumventing the fratery brothers.
+Challenges: Hitting the road towards Alria, the cultists attack!
+Events: More cult harrassment, the heir is cryptic.
+Complications: In camp one night, the heir is briefly possessed.
+Events: Heir explains the soul-killing, skinchangers, cultists.
+Closing: Arrival at Alria; the cult launches their last, all-out attack.
+Events: The Heir gets soul-killed?
+
+The Introduction Stage
+
+This stage is where the characters are given the basic situation and are
+motivated to solving it.
+♦ Opener: This might be a mouthpiece approaching the characters, or
+a conflict to be explained afterwards. It might be a greater in-world
+signal or omen, which one of the characters has the skill to interpret.
+♦ Events: Events in this stage are information-getting and preparation;
+meeting people who know more, doing research. In some cases, no
+added events are needed; the opener may be enough.
+
+The Acquisition Stage
+
+This stage is where the character acquire the plot device. Depending
+on the scope of the situation, this could be a single scene, or an
+extended heist, with heavy planning.
+♦ Opener: This scene is generally where the characters first sight or
+meet the plot device, or of the place or opponent it must be acquired
+from. It's often a conflict, or paves the way for a few challenges.
+♦ Events: Events in this stage comprise things must be done to
+actually get the plot device. In a quick situation, the opener is
+usually the only event. In a an epic, there might be quite a few.
+
+The Challenges Stage
+
+The first part of the actual journey - laden with peril, but nothing
+confusing. This is the straightforward part.
+♦ Opener: This is generally the first encounter with the "standard
+challenge" of the situation, often combative.
+♦ Events: The events of this stage are often variants on the opener
+itself, further challenges and conflicts in the same vein.
+
+The Complication Stage
+
+The Complication Stage: The second part of the journey, where the
+real story comes out. During this stage, players may decide to take the
+action in new directions. That's all right – it's better to have players
+engaged than be married to your closing!
+♦ Opener: The opener of this stage is usually a minor reveal of the
+complications, often with the means to dig up more. This might be a
+communication, or some action on the part of the plot device.
+♦ Events: Events in this stage revolve around gathering more
+information, or dealing with fallout from information gained. If the
+group is staying on the move, this is in addition to challenge events.
+
+The Closing Stage
+
+The Closing Stage: This stage is the last piece of the original journey.
+You might not actually get here, but it's good to be ready.
+♦ Opener: This is the arrival at the place of delivery itself, which is
+where anything not revealed or not realized in the complications
+stage should immediately become clear.
+♦ Events: After the final reveal... the assumed ending.
+
+Transgression
+
+“At the catacomb door, give the sign of the eagle. Expect to be
+challenged and asked uncomfortable questions; answer them
+honestly.”
+
+Agents Of Change
+
+Social movements, whether good or bad, have every place in
+roleplaying campaigns. In the large scale, such movements can
+become factions struggling for their goals – but on the small scale, and
+at the beginning, it can be engaging to dig in to the acts of
+transgression, and the forces arrayed against them.
+
+The Issue At Hand
+
+As a tool, this situation-builder aims to be relatively neutral. Your
+choice of issues, however, should not be neutral at all. If the social
+rule is that slavery is okay, and transgressors are aiming to end it,
+that's one thing. If the issue is that diabolical forces are real, and some
+people aim to draw on those forces to save their society from
+impending collapse, that's another. If the rational method is quashed
+as a threat to the church, that makes it an issue. On the whole, the
+questions that create an issue are “who's being oppressed?”, which
+might (or might not) also include the question of “should they be?”;
+while players can hopefully agree that slavery is abominable... What
+if the diabolical cultists are right, and evil can be harnessed for good?
+BEING THE BAD GUYS, AND IMPLODING FROM INSIDE
+This situation-builder is in the business of setting up two sides that
+will come to grips, and assumes that the characters will be
+sympathetically introduced to side of those looking to change society.
+If they sign on, that makes the characters the villains, as far as the
+normal social order of the setting is concerned. Depending on the
+issue at hand, it may make them heroes as far as the players are
+concerned – or, in other cases, it actually may make the player
+characters into the bad guys. That's great! But it's good to be aware
+that when the temptation to go rogue is put in front of players, some
+of them will take it. Likewise, if the entrenched interests make offers
+to 'turn' some or all of the characters, they might very well take those
+offers, possibly even pitting the player characters against each other.
+So long as the players are engaged in playing that out, that's great; but
+be sure you're ready to go there before you go.
+
+Building The Issue
+
+Starting in on the record sheet that you'll find at the end of this article,
+you'll first need to name the issue that you have in mind. Then, it's
+time to dig into how that issue exists in the society.
+♦ The Accepted Rhetoric Is: What you're primarily looking for here
+is the main negative word used to justify the normal social stance
+on the issue. Diabolism is evil. Science is heretical. The enslaved
+people are inferior. It doesn't need to be true, just accepted.
+Dishonourable. Unclean. Unnatural. Find that word!
+♦ The Elect Who Benefit Are: Someone with power benefits from this
+social attitude, even if the benefit is small. Who is it? How do they
+benefit? Even maintaining the ideological comfort of the elect is a
+benefit of sorts. Decide on this, and make a note on it.
+♦ Censure Occurs If: What's the mildest action on this issue that will
+draw a criticism from an average person? Slavery might be openly
+criticized; it's when you set your slaves free that you're censured.
+Or the whole topic may be taboo; decide and make a note.
+♦ Discrimination Starts When: While the fully-transgressive will
+clearly get a hit, where does it start? At what point is a person
+considered “involved enough” in an issue that they'll start finding
+doors closed to them? Is being 'half-slave' enough?
+♦ Violence Occurs If: At what point will someone start reacting
+violently to the transgression? This can be authority or just the
+nastiest person on the street; whichever way, when do they 'go off'?
+Below is a quick look at that might shake out; this assumes the society
+of Tenocha, the old empire. In that setting, industrial society depends
+on elemental artifacts, which are getting harder and harder to make;
+diabolism presents a (dangerous, terrifying) alternative.
+
+The Issue Is...
+Diabolism
+The accepted rhetoric is all diabolic artifacts are evil.
+The elect who benefit are the elemental artifact-keepers
+Censure occurs if diabolism is even mentioned.
+Discrimination starts when any 'taint' of it is rumoured
+Violence occurs if there is evidence it is occurring
+
+Tell Me A Story
+
+With the 'ground state' achieved, it's time for lightning to strike. A
+series of events is what's needed next. Start by deciding where this all
+happens – and try to be pretty specific; think of neighborhoods.
+♦ Someone Identifies: Some person in the setting is transgressing,
+and has an interest in getting others in on it. Who is this? What
+drove them to this, and gave them the power to make a difference?
+♦ They Advocate: This person will look to gather support – to either
+bring more people in on what they're doing, to make it acceptable,
+or both. Who do they talk to, and where?
+♦ People Gather: A group of believers begins to get together on a
+regular basis. Where? What form do the gatherings have?
+♦ There's A Goal: The gatherings will have at least one immediate
+goal. This might be “avoid the Inquisition and grow”, or “get a law
+discriminating against Sullied overturned”; general or concrete.
+They might have a plan to do this – or not. Your call.
+♦ The Player Characters?: Before moving on, decide where the player
+character will get involved in this. If this is the first situation in a
+campaign, the player characters might be these people; if not, how
+do they get approached or entangled in this business?
+
+This is all happening in...
+The city of Tepucha,around the docks.
+Someone identifies; a strange preacher from a northern city
+named Kacha; he lives on a ship, having no clan in town.
+They advocate; Kacha freely distributes one-use talismans that
+heal among the Sullied, and offers to teach their making.
+People gather; on the ship Kacha instructs them in the ritual
+precautions needed to bind a diabolical to service.
+There's a goal; to enslave a creature from beyond for use.
+
+Where are the player characters in this?
+They'll be given such a talisman by an admirer, and told about
+the great healer down at the docks, just after the first gathering.
+
+Opposition
+
+This new movement won't go unchallenged. But 'society reacts' is
+nebulous; in the immediate moment, there will be some institution
+that will take up the cause against them first. This could be a group
+officially dedicated to stopping this sort of thing – or just the power
+bloc of one of those elites that benefits from the current setup. Decide
+which way you'd like it, and give the institution a name.
+♦ The Leader: Someone will be in charge of the effort against the new
+group. That's the leader. If the Inquisition came to town, the leader
+would be the top guy in that group, not the pope. Who is it?
+♦ The Followers: This leader will have some specialists; name them
+and their specialties. Who are they? Groups like “assorted thugs,
+soldiers, and ranchers” go under resources, not followers.
+♦ Their Resources: The opposition will have resources at their
+disposal to use against the transgressors. To invent these, work in
+reverse – list escalating bad things that they might try to do, figure
+out what resources do that, and then list them in the block given.
+
+The Organized Opposition:
+The Dockside Wind Temple (Elementalists)
+Leader:
+Elder
+Tachan
+
+Followers:
+Chavath, a spy.
+Anek, wind-bound.
+
+Resource:
+Influence
+Over Dock
+Overseers
+
+Used To:
+Find & confiscate
+Talismans, and
+disgrace owners
+
+Huge
+Piles Of
+Money.
+
+Post bounties for
+information, for
+Leader's head.
+
+The
+Shrine
+Guards
+Influence
+With The
+Warlords
+
+{
+{
+{
+{
+
+Deploy and patrol
+the docks in a
+crackdown.
+Find a gathering,
+and assault it as
+an evil coven.
+
+Plotting Out The Conflict
+
+While the 'things resources do' should already be arranged in
+escalating order, it's a good idea to see how those will be deployed.
+♦ The Opposition Will Hear: The opposition is operating blind; even
+if they have good spies, they won't necessarily listen to them. But
+they need to hear something, or they won't get in on the situation.
+♦ They Will Begin By, And Escalate To: What's the first thing the
+opposition will do? What next, and so on? What will go wrong,
+and cause side effects and atrocious incidents, as they do this – how
+does it all fall apart?
+♦ If The Players Do Nothing: If the player character don't change the
+course of events, what happens? This should be a few things. First,
+it should be problematic enough that players will want to avert it to
+some degree. Second, some of that problem should be visible; if the
+players don't know that they want to change things, they might not
+work too hard to do so. And third, it should be something you're
+okay with letting happen; if the player characters decide to engage
+some part of the situation that won't resolve it, and use the whole
+thing as backdrop for and material for their own pursuits, that
+should lead to more good times in future.
+
+The Coming Conflict...
+The opposition will hear about the talismans on the docks,
+and assume they came in by trade.
+They will begin by confiscating them, disgracing those who
+are found possessing them (through contacts).
+And escalate to posting bounties and patrols, causing incidents
+and accusations that rile up the dockworkers.
+If the players do nothing; riots and purges will occur.
+
+The Characters As A Resource
+
+You may want to send the player characters out as a resource for the
+opposition. That's great! But before you rig it that way, check: Are you
+planning to put some real temptation towards the other side in there?
+If the answer is “no”, you might want to grab Broken Places, and
+build the situation that way around instead.
+
+Running The Show
+
+Once you've got this kind of situation and you're ready to go, here's
+the thing: Don't stop grabbing at the characters. Ever. Everyone
+involved wants things done, and player characters are the kind of
+people that get things done.
+There's rhetoric for the social value in place – have someone spout
+that rhetoric, in long form. This might entice the characters, or it
+might repulse them; so long as they react, you're in. There's money
+and entrenched interests on the opposition side; offer some of it to
+them. The transgressors, on the other hand, are oppressed and are
+trying to do what they think is right, and they're about to get
+hammered by The Man for it. Be clear on that, and show off how
+they're trying to do the right thing – the diabolist cult forming in the
+example is handing out healing, and learning how to ward off
+diabolicals; those are good things, even if binding a diabolical being
+really is the worst idea in history (and that's up to you; is it?).
+Even if you know which side the players will be on, throw a little
+of the temptation their way. Knowing that they'll refuse it doesn't
+mean that it's not fun to refuse, or to consider playing double agent.
+WORKING FOR THE TRANSGRESSORS
+If it shakes out that the player characters take up with the
+transgressors, then their challenges are: They need to beat, evade, or
+convert those resources and their actions. And they need to discredit,
+convert, or otherwise deal with the leader. Take a few moments
+before play to think about how what game statistics you might need
+for any fights, social rolls, and so on.
+WORKING FOR THE OPPOSITION
+If the player characters end up working for the opposition, they've got
+the big power on their side. In this case, the goals are to end the
+group and stop it's leader – and possibly to stop their own side from
+going too far, or (alternatively) to make sure that they go far enough.
+How far will they go, and how far is necessary?
+WORKING FOR THEMSELVES
+Player characters can be opportunists. They can care more about their
+own stuff than about the bigger picture. A character healed with one
+of the diabolical talismans might react with “These things are
+diabolical? Oh, crap, I need to cover up the fact that I've been tainted,
+and murder the person who healed me”. So long as players are
+playing with the stuff of the situation, just roll with it. They don't
+need to be hooked into doing what was expected, so long as they're
+engaged and you can figure out what should happen next.
+
+Predator Souls
+
+“And I don't want to hear anything about "I don't believe in
+vampires" because I don't believe in vampires, but I believe in
+my own two eyes, and what I saw is fucking vampires.”
+
+Monsters!
+
+Monsters are one of the staples of gaming, and for good reason.
+Hunting down nasty things is pretty satisfying. However, the
+emphasis is usually more on the fight than on the hunt – setting up a
+good hunt is like setting up any good mystery: Annoyingly tricky.
+This situation generator aims to make it a little easier.
+THE BIGGEST SHIFT
+The most notable thing you'll need to keep in mind when running a
+situation built this way is that characters always notice leads. If
+there's a lead on the agenda, or the turf, of the monster, the characters
+see it. Dice rolls should be used to see how well they interpret it – the
+key difference being “Do they need to blunder around following up
+on footwork, and warn the monster they're coming, or do they get
+good enough view that the monster doesn't have time for an
+ambush... or even good enough to kick in the door and surprise the
+enemy?”
+THE MONSTER AT THE END OF THIS HUNT
+This generator sets up a few assumptions about the monster...
+♦ It was once human: Or at least, of a species that players can have as
+a character in the setting.
+♦ It is predatory: That is, it feeds on people in some fashion (though
+not always physically), and this feeding is dangerous to the victims.
+It might also feed on things other than humans, but people are core
+targets.
+♦ It is infectious: The survivors of harsh feedings, or people that are
+deliberately turned, or the dead bodies of those left after a feeding,
+can potentially become lesser version of the same monster.
+♦ It congregates: Powerful versions of the monster have power over
+the weaker, newer ones, and gather them up and boss them around.
+This power might be supernatural, or it might be purely practical;
+things like “I know how to use your new abilities, and will teach
+you” or “Here's how to hunt”.
+
+Describing Your Monster
+
+Vampires, werewolves, undead horrors, and many other kinds of
+creatures can match the profile above, though they might not be
+exactly 'classical' when they do. So, stepping through, describe your
+monster:
+♦ It's identity is: Jimmy the loser-turned-vampire is interesting; Mrs.
+Robinson the real estate broker turned strega is weird. Who was
+your monster, and what is it now?
+♦ It Hungers For: Does it drink blood, eat flesh? Does it seduce
+married men and devour the emotional connections to their wives?
+Does it consume mystical items?
+♦ It Feeds By: How does the process of feeding work? Physical
+assault, intimate contact, long stalking and indirect contact?
+♦ It's Agenda Is / Turf Is: What's the primary motive of the monster?
+Is it trying to make more of it's own kind, secure it's territory against
+some threat, pursue some historical goal of vengeance or collect
+some item? Where does it lair and hunt? This can be a simple
+physical locale, a lair with a surrounding turf, or a pattern, like
+rotating through singles' bars. Note that either Turf or Agenda
+should provide clear leads to finding the monster, but both don't
+need to be (the example situation is strong on turf, for instance – a
+situation with an angry ghost looking to put it's collection of burial
+goods back together, with players looking to get in front of that, is
+all about the agenda).
+♦ It's History Is: All monsters have origins, and many of them have
+local myths. A history that can be found, and hints at the agenda of
+the monster, is ideal.
+A sample monster, Mussushu the diabolical, is given below:
+
+The Monster Is...
+Mushussu the Diabolical,
+possessing Aktev the dockworker.
+It hungers for traits, talents, and parts – human and not.
+It feeds by ritual sacrifice, performed by a small cult.
+It's agenda is to add to itself, keeping what it takes.
+It's turf is a ship; hunting is in the dockyards of Tepucha.
+It's history is the outcome of a binding attempt gone wrong.
+
+Mushussu
+
+As in any situation generator, the space for notes is limited – it's
+expected that you, as the person using the device, will know what
+you mean by your own notes. In the example, though, you aren't
+likely to know what's meant by my crib notes, so here's a little
+more:
+Mussushu is a thing from outside reality, wearing stolen flesh.
+That flesh will degrade over time into an incoherent mass, unless
+new parts are sacrificed to replace the old. The sacrifice is a
+ritual, which causes the feature chosen to dissolve from it's holder
+and appear on Mussushu instead – which means victims can be
+left with blank expanses of skin where their sacrificed eyes used
+to be, stumps where their hands were, and so on.
+A sacrificial victim can still act as if the part was present – moving
+objects with invisible hands, seeing with missing eyes, and so on –
+but doing so takes an effort of will and inflicts mental strain.
+Swiftly, the victim is driven to incoherent madness and a desire to
+harvest their missing part from others (not to do anything with it;
+just from mad jealousy). The sacrifice in question need not always
+come from a human, as amply illustrated above.
+
+Infection & Congregation
+
+Monsters breed more monsters. Sometimes, this takes a deliberate
+action, sometimes it's just the standard outcome. Modern vampire
+stories often include a 'process of turning', while one bite from a
+zombie and, well, you're on your way.
+♦ Infection Means: What does it take to infect someone? Do the
+infected become the same kind of monster, or something else?
+♦ The Infected Are: Who has the monster actually infected? If there a
+lot of them, and they're doing different things, you may want to
+make added notes in the margins. But if there are just a couple, or
+the infected are following along with the monster in general (which
+is the easiest case), just note down who they are, and cover the
+details in congregation.
+♦ Congregation: What is the whole group doing? Are they meeting
+physically with the monster for tutelage and instruction, or are the
+'spawn' influenced in some other fashion? This might be a good
+place to drop yourself a note on the monster's actual lair, if they
+meet up there – or on the turf as a whole.
+
+Infection Means...
+The fed-upon lose their traits, but retain the benefits; they are
+then driven to seek and prey on others with those traits.
+The infected are: A plague of mad, roaming killers.
+
+Congregation Means...
+The infected and insane feel naturally drawn to hunt in packs.
+Mushussu can suggest targets to them mentally, by pure will.
+
+Feeding Sites
+
+Next, you'll want to come up with a number of instances of feeding.
+These will be locations and events that can be investigated. For each
+instance, you'll need some details...
+♦ What Happened: A quick line on what occurred in the event; who,
+when, where, and what has happened to the site, evidence, or
+corpse since.
+♦ Leads On Agenda: If the attacks fit a pattern based on the agenda of
+the monster, this should be fairly easy to spot, as 'details that seem
+odd' but match each other.
+♦ Leads on Turf: Feeding sites will all be within a certain range of the
+lair of the creature, or the creature will leave some trace of “where it
+came from” behind at all of them. Again, this should be made pretty
+clear in play.
+♦ Witnesses: Did someone hear, see, or otherwise note the affair?
+What do they know? What will they say? Will they be on the scene,
+or did they leave behind something showing off their identity?
+♦ Site Order: The second and third feeding sites can happen after play
+gets rolling – so the first site can afford to be a bit confusing, with
+the second a bit clearer, and the third clearer yet.
+
+About Leads
+There's a temptation to go all Sherlock Holmes on leads, and make
+them tricky and forensic. Unless your characters actually are forensic,
+take that temptation and squash it.
+Leads should be obviously out of place. They should be out of
+place, or right up front where they're obvious. Don't hesitate to point
+at whole classes of turf outright, and then ask for rolls to narrow it
+down and learn more. That nasty slime on the scenes can be obviously
+gunk from a ship's bilge, but roll to notice that there are also little
+flecks of oak in it – which narrows the search to two ships in th whole
+harbour, and to realize that the thing doing the spattering had to be
+ten feet tall at least.
+Of course, sometimes this kind of thing can strain disbelief; why
+would the murderer be carrying a boathook downtown, after all?
+And this is where the supernatural element comes in wonderfully to
+your rescue. Big huge bite marks in the neck are a clear indication of
+what the monster is. Having a ledger of “goods received” open on
+the table, the safe door torn off with supernatural force, and scattered
+bits of Kalcun root laying around, is a pretty fair indication that the
+monster wanted that magical root of lighting-calling towards it's
+agenda. Now, roll to figure out where that ritual could be done.
+
+First Site
+The Embankment
+What happened: A guard was taken; was found eyeless & mad next day.
+Leads on agenda: He's eyeless that way; someone will know what it means.
+Leads on turf: There's a hook & line trailing into the canal at his post. A boat?
+Witnesses: Nope!
+
+Second Site
+The Dockside Wind Shrine
+What happened: Elder Tachan was taken, found mouthless & mad, next day.
+Leads on agenda: Nothing new...
+Leads on turf: It happened outside, and the witness says “labourers did it”!
+Witnesses: A drunken sot, pushing a theory about it being in the shrine.
+
+Third Site
+A Canal-Boat
+What happened: The boat was boarded,taken to a ship, fed on, set adrift.
+Leads on agenda: Crew are mad & altered; ritual scrawl covers the boat.
+Leads on turf: The crew was attacked in a boat, while tied to it.
+Witnesses: The punter who found it says it had to come from the harbour.
+
+Getting The Player Characters In
+
+Some forms of situation work well pretty much regardless of how the
+characters connect to them. This isn't one of those; the strong
+assumption here is that the player characters will commit to hunting
+the monster. Which means you want to shamelessly hook them, and
+do so with significant strength. Some hooks:
+♦ Duty: If the premise of your game includes the characters being
+given missions of some sort, or serving some authority, make the
+hunt a mission. Find out what's going on there, and put an end to it.
+♦ Revenge: Look back at the feeding sites. Consider installing one or
+more non-player characters that the players actually like as victims.
+If you're going this way, don't go for “your long-lost cousin who's
+never been in play” - wipe out someone they have interacted with.
+♦ Reward: Never mind offers of quick cash; is there something that
+the characters really want? Business ownership, titles, some item of
+power? Great! Figure out who has that, and put someone they love
+as the first victim.
+♦ Threat: Before the characters even hear about the monster, hit them
+with the infected, and be ready to keep hitting them and others in
+the setting until they're ready to go “Okay, this has to end”.
+MOUTHPIECES
+These are the catch-all characters for getting players in on the action.
+The butler to the mad billionaire that hired them, and the sergeant at
+the crime scenes, for instance. Not just characters that will explain the
+starting situation, but ones who could easily receive some more
+information if it's useful to hand some over; often, this means law
+enforcement types and criminal bosses, but can include anyone that
+has their 'ear to the ground' – the street vendor or bartender who
+hears everything, for example. In modern games, the hacker genius
+or paranoid expert keeping an eye on all the police reports and other
+information might suit as well.
+
+The Player Characters Will Come In Because...
+They're city guards, and will be sent in.
+First Mouthpiece: Guard Veteran Pixil
+Second Mouthpiece: Chaco the squealer.
+First Side: Cult observer; caught=suicide.
+Second Side: Infected, sent to kill them.
+
+Sides & Off-Record Preparation
+
+The last two lines on the record are “sides”. These are for noting any
+additional encounters you know you want to throw at the characters
+as they progress; things like getting attacked by infected, or being
+followed by someone outside the situation who wants in on it for a
+completely different reason. These things, as well as many other bits
+on the record sheet, lead to:
+THE REST OF THE PREP
+The situation as given by the record sheet will hook in the characters,
+send them after the monster, provide them with bits that will let them
+catch up to it and face it. The side notes for added encounters add a
+little spice on top of that. But as always, there's plenty more you'll
+likely want to get ready for running this situation:
+♦ Pavement To Pound: The group may very well start searching turf
+and agenda-related sites the moment the fist lead drops. This can be
+covered by 'build up successes' rolls and the like, of course, but it
+can be a lot more fun to pile in the colourful characters and red
+herrings. There's no guarantee players will hit this stuff, but having
+some ready can make the chase much more fun.
+♦ Significant Digits: When the group finally confronts the monster,
+there's going to be a showdown. Depending on your system, setting
+up for that might be as easy as picking a “threat number” and
+having at it... Or as complex as a set-piece battle, with tactical
+abilities and statistics. If there's room to make that engaging? Do it.
+♦ Cat & Mouse: The monster and infected, whatever form they take,
+probably aren't going to sit still during the investigation, if they
+have any warning at all. Which means that you have the
+opportunity to go well past the two side scenes if you like, and
+change the game into “we want to catch it before we get unlucky,
+and get dead”. If the investigative grind is a secondary kind of fun
+for the players, or you're not sure you can pull a rabbit from your
+hat for each new way of looking around that the players come up
+with, chase this angle.
+♦ The Death Map: If you're going for “all the feedings took place near
+the lair”, then you'll want a map that you can mark them on; just
+describing this is nowhere near as good at spurring the pavementpounding.
+
+Nine Rooms
+
+“The monastery was abandoned years ago; it's overrun with
+goblins, these days – and they've grown bold enough that
+they're raiding nearby towns.”
+
+Building Dungeons
+
+Roleplaying games have long had a special, even central, place for
+dungeons. These dangerous complexes containing monsters, traps,
+hazards, and great treasures have shaped much of what gaming is.
+This article covers a basic method for crafting dungeons.
+FIRST, FIND YOUR CONCEPT
+The core concept of a dungeon has three major parts:
+● What Player Characters Are There For: Are the characters there to
+'clear out' the nasty denizens of the dungeon? Are they there to
+make off with the treasures of the dungeon's lost past? Are they
+there to confront a nemesis? Something else?
+● What The Dungeon Was: Most dungeons started existence as one
+thing, and then collapsed into being something else. So, was the
+dungeon originally a cave complex, monastery, fortress, elemental
+shrine, the lair of an awful thing (a different one than now, that is)?
+● What The Dungeon Is Now, And Why: Most dungeons have made
+a transition from their original form into being what they are now.
+How did this one transition, and what's in it now? Was it
+abandoned or ruined in war, and then something awful moved in?
+Did the current occupants descend on and kill (or imprison!) the
+original occupants? Was it intended as the forbidden prison for
+something beyond normal reality, and a cult has rediscovered it?
+The answer to this should also tell you what kind of adversaries the
+characters will face inside the dungeon.
+THEN, IT'S ON TO THE ROOMS
+Moving through the list of room functions over the next few pages,
+think over the principles and examples and see what you can adapt or
+are spurred to that can fit that concept of “what it was and what it is”.
+A piece of scratch paper helps, here. As a nod to realism, you may
+also want to make a list of “things that the place must have had, and
+things that it must have now” - things like ways to dispose of waste,
+places to store food, places to sleep, perform crafts, whatever suits the
+previous and current functions. This isn't something to get too hung
+up over, but some attention is useful.
+
+The Fallen Fire Shrine
+
+I'm building a dungeon for Tenocha. Originally (just yesterday!),
+this site was a fire shrine – an industrial workshop powered by a
+very, very strong heat-producing artifact.
+However, one of the people the artifact was tied to fell into
+dark practices, and it was spun out of control. The usuallycontrolled heat systems suddenly began doing entirely the wrong
+things, and the power of the artifact has weakened the border of
+reality. Before the shrine could be evacuated fully, diabolical
+beings surfaced inside, in immaterial form. A few of those inside
+were willing to listen to their mental whispers, and make small
+sacrifices to these diabolicals from their own bodies for promises
+of freedom in escaping.
+Of course, the diabolicals lied. They seek flesh sacrifices hands, eyes, skin, and other body parts. The ritual makes these
+vanish from the victim, and “go to” the diabolical. Since these
+diabolicals are otherwise immaterial, this means that they appear
+as flying swarms of hands and eyes, animate sheets of skin and
+teeth, and other such horrors. Meanwhile, sacrificial victims are
+driven mad and seek to rend the parts they have lost from others
+– and continue to make further sacrifices of each other and
+anyone entering.
+
+Entrances & Exits
+
+Characters need to get into and out of the dungeon – and, if there are
+multiple levels, need to be able to move between those levels. That's
+what entrance and exist rooms are for. Some examples:
+● Lobby: A large and introductory room, possibly with a few benches
+and sometimes containing the dead body of some previous soul
+attempting to run the dungeon.
+● Portal or Rift:
+A magical device that 'gates' to somewhere else,
+either as a deliberate installation (a portal), or a rend in space (a rift).
+The 'somewhere else' in question might well be another plane... or
+another floor of the dungeon, actually set a thousand miles away.
+Or it might be the room next door.
+● Breach: A room partly exposed to outside or inner cave system, by
+means of collapsed wall. This breach might well be caused by
+plants, which have broken open the wall and grown into the
+dungeon itself.
+● Water Entry: A largely water-floored room that connects to water
+outside the dungeon. This might be a tie to an underground river, a
+hidden cove for smugglers or raiders, or even a passage that must
+be swum through to enter or exit.
+● Burial Tower: Some dungeons are entirely underground, with only
+a single extension rising above the ground. This might be by design,
+such as a minehead. Alternatively, a dungeon may have been
+buried by time, and such a feature might have once been a tower or
+a chimney left protruding above the ground.
+● Lift: A mechanized elevator, powered by gears, steam, or some
+other method. Often connected to a machine room (later).
+
+Fire Shrine: In And Out
+
+The Fire Temple would have had a fair number of entrances and
+exits, originally, but I'd like to be able to control pacing, so I'm
+going to chop it down to just one normal way in and out. A quick
+note goes down to have rubble and collapses at some former
+entries.
+So, the current entrance will clearly be an original one; I'm
+going to go with a lobby-like structure. In addition to this, the
+place where the artifact malfunction occurred is absolutely going
+to be home to a rift to outside normal reality – one that a person
+can't properly survive passing through, and thus more of a
+hazard than an exist, but certainly worth making a note of. That
+gives me three notes for when I get to the mapping stage: Rubble
+piles, a lobby entrance, and the artifact room with it's rift in space.
+
+Treasuries
+
+A treasury is a room that's primarily there to store something that the
+characters will consider valuable. This doesn't necessarily mean a
+vault full of gold (though it could). In many cases, the contents of
+some treasury will be the actual object of the player characters.
+● Headquarters, Study or Library: In such rooms, the treasure is
+generally information, or magical power in the form of arcane
+tomes. In the case of a headquarters or study, it might also be fine
+gear belonging to a former (or current!) master of the location.
+Ruined libraries once of immense value, leaving only a slim number
+of texts intact, are fairly common in dungeons – some are also lairs
+to nesting creatures using papers to build with, and the like.
+● Armoury:
+Weapons stores, sometimes integrated into barracks or
+training spaces, often keep their form when dungeons transition,
+though the gear “on the rack” tends to change. The older gear, if
+unsuitable to new occupants, may be stashed atop some furnishing
+or in some cache.
+● Offertory: A religious, totemic, or similar room may (in terms of
+dungeon function) exist for purposes of providing treasure. Any
+number of cultures offer fairly valuable goods to their deities. This
+is usually a new feature; deciding what such a room was before can
+flavour it as much as the faith being practised does.
+● Lair Litter: If you're intending to have monstrous creatures that feed
+on people, then it very possible that the possessions those people
+had will end up in the litter pile the creature uses... Either one way
+or another.
+
+Fire Shrine: Treasury
+Fire shrines in Tenocha are where tools are heat-treated, where
+pottery is fired, where bread is baked, metal is worked, and so on.
+Of course, there are a whole bunch of fire shrines in each city, so I
+don't need to stuff all that into this one shrine. Still, I'm going to
+be pitting the characters against some pretty terrible stuff, so it'd
+be good to give them some nice loot, too. I decide that this
+particular shrine specializes in refining bronze and applying it to
+the nicer sorts of weapons and tools. So, there should be plenty of
+nice tools, a few racks of weapons to snag from in a chamber set
+aside for that purpose. Also, there will be a fair quantity of
+copper and tin, some cached and some scattered about from the
+period when everything when terribly wrong. With Tenocha
+being metal-deprived, even copper is pretty valuable stuff; that'll
+do..
+
+Secrets
+
+Any room or feature in a dungeon can be secret, and many often are;
+as you work through the possible rooms, considering “should this
+also be secret?” can be very fruitful. Still, some spaces require
+secrecy; they don't function at all unless they're hidden. When
+dealing with these, making a distinction between hidden from the
+characters and unknown even to the residents can be useful. Examples:
+● Passage: Some secret 'rooms' are mainly hallway, but even these
+often contain a small chamber in which torches, keys, or other goods
+are kept that are useful to those who know of their existence. The
+main point of many of these passages is to allow rapid movement;
+they are effectively 'secret shortcuts'.
+● Ambush Set: A number of secret areas terminate near 'choke points'
+in a fortress or other location where, at an opportune time, they can
+be opened for assault. A grand entranceway may be benign, right
+until an upper wall panel slides away to reveal a stand of archers
+stationed on a secret balcony above.
+● Saferoom: Dungeons that began life as a fortress or other guarding
+location may well have a space set aside for the most vulnerable
+among the elites to be taken in times of peril. Such rooms might
+have seen use before the arrival of the characters – or the elites
+might never have had a chance to use their last line of defence.
+● Watchroom:
+Often tied to secret passages, a watchroom is a
+chamber that allows discreet observation of one or more other
+rooms. This space might or might not also be any of the above
+forms of secret room as well.
+● Oubliette:
+These are secret prisons. Some oubliettes are built so
+that the prisoners will simply be lost to history. Others are built so
+that the prisoners could be visited by the elites of the original
+building, but remain unknown to the ruck and run of the other
+occupants, often to sinister purpose. A walled-up space containing
+the shackled remains of some long forgotten prisoner may well lurk
+behind some facade within your dungeon.
+
+Fire Shrine: Secrecy?
+
+As an industrial space, it seems kind of odd to be having secret
+rooms around the Fire Shrine. So, I'm largely going to pass on
+secret spaces for this one. I make a quick note to myself that just
+says “Awareness?”, to remind myself that I need to put in some
+other kind of action for perceptive characters; building up a
+standard dungeon skill and having it lie useless isn't much fun.
+
+Switches
+
+Switches that control something in the dungeon can exist in rooms
+unto themselves (often as puzzle-rooms that control a switching
+function), or as features inside other rooms. Rather than breaking
+these apart, it's often more useful to decide what you might want to
+see switched, and how the switch operates, and then determine if that
+switch needs a room for itself or ought to go into another space. A
+switch has two main considerations:
+● The Form: The obvious form for a switch is a lever that can be
+thrown, but it's hardly the only form. A thrown switch can also take
+the form of an fixture that is moved (often as a secret). A lock-andkey arrangement makes for a good switch, and allows the 'key' part
+of the set to be hidden elsewhere. Lock-and-key sets also include
+pedestals into which an item can be set. Pressure plates or other
+features that act as a switch but don't stay thrown without piling
+things onto them or binding them in some other way, can also be
+good – or ones that require moving something very heavy onto
+them to throw them.
+● The Function: A switch might reveal some secret door (or open
+one), might turn a gauntlet, hazard, or series of traps on or off. It
+might drop an obvious drawbridge or a visible but extremely solid
+door. It can release dangerous creatures, in effect being either a trap
+or a source of assistance. It can trigger a machine into draining
+water from an area or flooding it. It can activate a more complex
+device, or even rearrange rooms.
+
+Fire Shrine: A Final Switch
+
+I've decided that the primary goal in the Fire Temple will be to
+seal off the artifact that's malfunctioning, lowering it into a
+containment chamber prepared specifically against this kind of
+thing. Of course, if it were as easy as flipping a lever, it probably
+would have happened, so I'm going to make this a lock-and-key
+switch. Just inside the artifact room, I note, I'm going to have a
+round pedestal that accepts an ornate sceptre that was carried by
+the shrine elder. Drop the sceptre into the pedestal, and it will
+then rotate freely, working as a winch that lowers the artifact
+down, after which a panel can easily be pulled over the pitchamber. Having sorted this out, I also note that I'm going to
+need to figure out where that sceptre is – the diabolicals would
+likely have broken it if they knew what it was and found it, so it's
+either simply laying about discarded, or the elder hid it away
+somewhere.
+
+Gauntlets
+
+A gauntlet is an area that is filled with a variety of mechanistic
+dangers, making passage through it perilous. This differs from a
+hazard (which is a single, all-encompassing danger), and while it may
+be made of trap-like structures, the dangers are pretty obvious. Some
+gauntlets are intentionally dangerous – others were never meant to be
+navigated while they were running, and it's only the damaged or
+locked-up nature of the dungeon that forces use. Examples:
+● Clockwork Climb: The internal machinery of a windmill or large
+clock, typically with the access stairs rotted or deliberately removed,
+a clockwork climb has it's exit at the ceiling level. Getting to the
+exit, thus, requires a climb up the clockwork itself.
+● Indiana Hallway: The classic gauntlet, designed as a gauntlet, is a
+long room with pressure plates and dart-launchers, swinging
+bladed pendulums, or a huge rolling weight. If the characters aren't
+going to automatically spot the danger, this is really a trap.
+● Fans: Present to provide ventilation, a fan room is filled with
+whirling fans pulling and pushing at the characters with air
+pressure. A large floor fan may dominate the room. Safety covers
+may be present but damaged, or (more likely) entirely absent. A fan
+room will link to ventilation lines, which may be navigable by small
+creatures or large, depending on size.
+● Pumps: A gauntlet built as a pumping station is generally one where
+sections of the floor or ceiling regularly rise and fall to such an
+extent that there isn't room to be on or under them when they do so.
+Quick movement from one spot to the next is needed to avoid being
+smashed into another surface. Disabling the pumps might cause the
+dungeon to flood, if they're keeping it drained – or, if the pumps are
+pumping oil to lights and other items, might cause darkness and a
+'pressure blow' of flammable liquid.
+● Furnace & Foundry: Navigating the inside of a furnace, or a foundry
+line that is automated to some degree, can mean weaving and
+ducking around open flames and hot, pouring metal.
+
+Fire Shrine: Gauntlets
+Thinking about the above, I note down that I'm interested in
+putting in both a ventilation system, to cool the temple. I'm also
+thinking I might include some kind of fiery gauntlet as well –
+maybe something foundry-like. The dungeon is meant to have
+started life as an industrial workshop, after all; highlighting that
+fact seems like it has possibilities.
+
+Hazards
+
+A hazard is a room that contains some singular, basically static,
+overriding negative feature. In a few cases, the feature would be no
+more than an inconvenience, if it weren't laced with monsters. In
+others, the hazard is obviously dangerous, but finding a way to
+render it safe to navigate is more an open-ended puzzle than an
+occasion to roll dice for getting through. Some examples:
+● Pressure Door: This entire room is flooded with water, to the point
+where the door to it is creaking and immobile with the pressure.
+● The Floor Is Lava: Or acid.
+Or a pit crawling with poisonous
+vermin. Or a pool filled with deadly and ravenous fish. Exactly
+how a room got filled in this fashion may need some explaining, if
+this is going to make any sense, though plain water cisterns as the
+original feature are often pretty solid. The room may have a thin
+ledge running around the edge, or a bridge spanning it (if it's meant
+as a puzzle, no; if it's a dangerous battlefield, yes).
+● Pit: As “the floor is lava”, but the room simply has no floor – or at
+least, it's an awful long way down. Often, such rooms are dried-out
+cisterns, or intentionally designed bone pits. The current residents
+of a dungeon use them as garbage dumps or septic tanks.
+● Webs: A room covered in giant webs, often with spiders.
+● Otherworldly: The room contains some kind of unnatural hazard.
+This could be a vortex of magical energy. It could be that the
+chamber itself has living and digesting surfaces, or is a pit filled
+with half-animate skeletal remains.
+
+Wait. Don't These Categories Overlap?
+
+Yes! The difference in category between a hazard and a gauntlet
+(and sometimes a trap) is purely a matter of attempting to prompt
+a variety of ideas. If you have a good idea, it doesn't matter
+“which category it goes in”so long as you remember to mix it up.
+
+Fire Shrine: Hazards
+
+Having some kind of fire or heat-based hazard in the fire temple
+seems like a pretty obvious fit. Thinking about it, though, I'm not
+so sure heat should be a hazard confined to one room. Looking
+back at the gauntlets, I realize it might be fun to make heat a
+universal problem, that can only be corrected by activating the
+ventilation gauntlet, and then escaping it, which would allow me
+to make that gauntlet a dead end.
+
+Traps
+
+Like gauntlets and hazards, traps are dangerous features – they differ
+first and foremost in that they are hidden, while the others are overt.
+Some “traps” are simple affairs, such as weak floorboards, while
+others are much more complex matters. You'll want to consider if the
+location was designed to have traps, if hidden perils resulted from
+age or from the events that caused it to pass into new hands, or if the
+dangers are the results of time; each gives you different options. A
+few examples of traps:
+● Alarm: Alarm traps summon enemies to the area. This could be a
+bunch of pots and pans stacked against the other side of a door the
+characters are likely to open, a tripwire and gong, or even a
+summoning circle that activates as characters cross a round room.
+The summoning trap can also be disguised as an switch-throwing
+inscription that apparently must be read aloud, to trick characters
+into activating it.
+● Instant Damage: Dart launchers and spring-loaded pain, sprays of
+caustic chemicals and explosions.
+Instant damage traps are
+sometimes semi-natural, such as containers and doors that are
+under invisible pressure, and snap violently when unjammed. Pitfall
+traps are also effectively instant, and can be naturally occuring.
+● Countdown: A countdown trap, when triggered, starts to slowly
+move to do harm, but the characters have time to try and
+circumvent or disable it. Collapsing walls and ceilings, crushing
+walls sliding in, the room suddenly beginning to flood. Countdown
+traps are almost always combined with holding traps in some way.
+● Holding: The simple form of a holding trap is “the doors all lock”.
+Leg-catching traps and nets are also holding traps. By themselves,
+holding traps aren't much; they're usually combined with some
+other kind of trap (a pit trap has the tidy side effect of potentially
+being both a holding and damage trap; if there's a creature lairing at
+the bottom, it serves triple duty).
+
+Fire Shrine: Traps?
+
+Nothing original to the shrine seems like it suits being used as a
+trap, but the diabolicals that are now running the place would
+certainly like a bit of warning if it can be arranged. I decide to go
+with something gross and fantastic, and have a few diabolicals
+existing as nothing more than strands of viscera and sets of lungs
+splattered up on walls and floors; if they feel their parts being
+disturbed, they'll make some noise and raise an alarm.
+
+Original Features
+
+Some rooms that are obvious original parts of a dungeon don't fit any
+of the functions above, and seem unlikely (or even impossible) for the
+new residents to alter heavily. These may provide places to rest, great
+set pieces for fighting, or simply be sensibly required. When you can
+easily think of rooms like this, also try to take a few moments to flesh
+out a few details for them – things characters might find that will give
+them a feel for what happened. In rooms with a lot of mechanical
+effect, there's less time to pause and consider the history of a place;
+these rooms can be used to give some space to reflect on that.
+
+Fire Shrine: Originals
+Looking at my list so far, I'm thinking about having a lobby, and
+artifact room, some storage for tools and copper, a ventilation
+room, and a foundry. I think that I'm pretty heavily set for
+keeping the original 'stuff' of the dungeon visible, but just for
+good measure, I'm going to put in an office as well; table, chairs, a
+few clay tablets are 'letters' sent about concerns with the artifact,
+an abacus for accounts.
+
+Recent & Inverted Features
+
+On the other side from the original features, heavily reconstructed
+rooms without strong functions to adventuring, help give a sense that
+the new residents have an existence unto themselves. In addition,
+inverted features – such as a desecrated altar turned to an opposing
+deity or force – push forward the contrast between layers of
+occupation.
+
+Fire Shrine: An Inversion
+Shrines are a place where the social elite go when there are kids
+on the way, to engage in a ritual called quickening (that may give
+the child elemental abilities, if they're disposed that way). I think
+it'd good to turn that idea on it's head, so I decide that the room
+that's built for this ritual has been inverted, and turned into a
+sacrificial chamber where the mad denizens of the shrine have
+been doing damage to each other. A desecrated ritual space
+dedicated to healthy life and turned into anything but that should
+go in to the dungeon pretty well, I think, giving some air time to
+the diabolicals as being not just monstrous, but dependant to
+some extent on cult and ritual practice.
+
+Encounters!
+
+To set up encounters in your dungeon, you'll need to sort out what
+kind of enemies are going to be about, pull up statistics for them,
+dream up some general kinds of encounters, and then place them.
+Placing will come along in a bit, and the stats for monsters will come
+out of the system and setting that you're going to be using. For now,
+two things need noting:
+● Have A Theme, But Don't Worry About Purity: The way the
+dungeon was built and changed hands (if it did change hands)
+should already have given you a general theme for your denizens.
+For, instance, a tomb where the dead have begun to rise leads to
+obvious monsters – dead that are rising. But you don't necessarily
+need to hew completely to that theme; if the tomb was abandoned
+years ago, having wild beasts lairing in the entryway makes perfect
+sense. If the setting has a rich ecology of underground creatures,
+and the dungeon is buried, then having a few such creatures here
+and there is also sensible. If creatures can be summoned up with
+power, and there's power around, then including such a thing
+makes sense, even if it's off-theme. Make up a list of things that
+you'd like to include, ensure that your theme will comes through
+fairly clearly, and you're set.
+● Consider Combat Types: There are a great any ways that fights can
+occur – guards on patrol, a handful of enemies rushing to an alarm,
+a monster simply wandering down a hallway when the pace gets a
+bit too slow. However, in addition to such stuff, there are three
+signature kinds of combats you'll want to consider making a special
+point of including, and what those might look like – the light ambush,
+the pitched battle, and the roused brute. A light ambush combat is
+where the whole group is standing outside a sarcophagus, and the
+unarmed skeleton suddenly goes into action – the high note here is
+that the creature surprises the characters, not that the character is
+exceptionally dangerous in and of itself. A pitched battle is a
+scenario where there is unquestionably going to be a major brawl,
+usually in interesting terrain. A canny, well-set group may be able
+to “start off the fight right”, but there are enough foes, in a wide
+enough pattern, that there is going to be a significant fight. A
+roused brute is a threat that's held and hinted at for a fair bit of the
+dungeon – the sleeping dragon that the characters know must be
+here, and can hear breathing from well away, for example, and
+which (like the pitched battle) will still prove a dangerous adversary
+even if the characters do prep themselves up in advance. In
+addition to these notables, have a general assortment of foes on
+hand just to round out the corners.
+
+Fire Shrine: Encounters
+
+Working through all this for the fire shrine, I end up with the
+following:
+The Theme List: This part seems pretty obvious on the face of it,
+but a little detail would be good, so: Mad cultists in skinless,
+eyeless, handless, toothless, lungless, and gutless varieties; some
+missing multiple chunks. Rat bodies stripped of claws, eyes, teeth,
+killed after being stripped down by ritual. Diabolicals as... Lungand-guts screamers, flying swarms of eyes-teeth-claws,
+whirlwinds of hands holding dozens of weapons, and strange
+flitting ribbons of skin far longer than a person's body.
+Light Ambush: For “things that jump out”, I've got two big
+options – the lunatic that looks like a corpse, but isn't, and the
+small diabolical that jumps out. The first one will probably only
+work well once, so I'm note to put it right near the start. The
+second one will work almost anywhere; I'll keep that in reserve.
+Pitched Battle: I'm thinking that there really should be a pretty
+fair mob near wherever the quickening room gets put down; I'll
+keep that in mind as the region to put my pitched battle. This is
+going to be a pretty small dungeon, though, so I'm going to keep
+it down to just the one.
+Roused Beast: Considering this one, I'm tempted to alter my plan
+a bit and include a fully-realized diabolical somewhere, but it
+might be better to go with something a little more unusual.
+Looking up at the monster list, I decide that “the skin-ribbon”
+idea would do well if it also has a little more offence, but “the
+swarm of hands and weapons” might, too. Thinking on my
+mythology of horrible things, I dimly recall the existence of the
+Hekatonkheires – hundred-handed giants. Since I like giving
+diabolicals obscure named out of mythology, that's going to be
+the one. Hekatonkheire, the hundred-handed, who hasn't quite
+managed to manifest yet. I'll look for a place to put it that's a bit
+away from the quickening chamber, so I can be assured that it'll
+be a distinct encounter, even if alarms are raised. I can hint at it's
+presence by having almost everyone be missing a hand, and
+possibly by having character hear it scraping at walls with it's
+weapons. Also, it's a great candidate for a weakness; I note it has
+a single eye, deep in it's centre, to strike out.
+
+Mapping: Building Sections
+
+There are a lot of ways to get a 'blank map' for your dungeon,
+including some pretty great random generators online. You might just
+want to use one of these! However, rather than sending you looking
+for sites that might not fit the needs you've run into using this
+method, here's another method:
+
+Tracing Templates
+
+The last three pages of this article give a 'blank record sheet' for a
+dungeon section and a couple of pages of little templates. To use
+these, print all three pages, and then trace four of the sections (lightly,
+in pencil) onto the record sheet, aiming to get a total of six to nine
+rooms. When you do this, you'll notice that two templates, set sideby-side, are one square wider than the record grid. This is deliberate!
+Overlap them by one square in the centre of the record grid. You
+might want to skip on some templating, and just draw it yourself;
+that's great – and if the templates don't make it easier, don't use them.
+
+What's The Scale, Here?
+That's up to you. For my own use, I think of each square as being ten
+feet across. You might be better served by having each square be five
+feet to encourage tight situations and cramped tactics, or (for really
+open feels and grand scaling) make each square twenty feet across.
+
+Removing Exits
+
+This will give you a blank map; your next step is to remove some of
+the entrances and exit squares at the edges. In the map to the right,
+for example, four templates were overlapped, and all but one of the
+exits were taken out. Depending on how you're thinking of getting
+characters in and out of your dungeon, you might want to remove
+most or even all of the “edge” exits – if your dungeon relies on lifts
+and other features, entries and exits might happen inside rooms,
+rather than on the edges.
+
+How Many Sections?
+
+This depends heavily on how densely packed with stuff you intend
+your rooms to be, how long the dungeon is meant to last you (how
+many sessions?), and how much material you came up with while
+looking at and considering rooms. The fire shrine I'm building is
+meant to be densely packed in, to only last a couple of sessions at
+most, and I haven't piled up all that much material. So, I'm just going
+to build the one section.
+
+Mapping: Featuring Up
+
+Looking over the map, number all your rooms, starting at the
+entrance and continuing from there in some way you can easily track
+as the party moves on. Then, start dropping in the rooms you've
+thought up, in whatever way seems best to you. Keep a spare
+thought to the side for where you may want to add monsters so that
+you don't deny yourself great possibilities later, but focus mainly on
+room and feature placement. You'll also want to be sure that most of
+the dungeon will see use; this means putting some of the objectives
+relatively far out from the entrance (though not necessarily all). You'll
+also want to avoid being entirely linear; if the characters are running a
+straight line from entry to end, the dungeon won't feel much like a
+place – scrub out a few doors and put a few new ones in to make sure
+at least a little tracking-back is going to happen.
+
+Fire Shrine: Featuring
+Looking at my rooms and feature list, I have: Lobby, Artifact
+room (with winch), weapon store, copper stores & scattered,
+ventilation (off; turn it on!), something something foundry,
+quickening / sacrifice room, office. I'll place those on the map
+next page.
+The most obvious placement on my list goes first; (❶) is the
+lobby. I think that the space for (❷) looks good for an office, so
+that's that. But I've got pause and get the pacing. So, one end of
+the “split” this map makes is at (❽), and the other end is at (❾).
+I decide I'm going to put the artifact room in (❽), and put the
+sceptre/key that works it over in (❾); I'm pretty sure the whole
+place will get some running, now. “The sceptre is here” is hardly
+a room, though, so: (❾) will be the foundry gauntlet, and the
+sceptre will be laying, visible, at the far end, next to a cloak that
+was torn off the shrine elder; I make a few little changes to the
+map there to fit what I'm thinking. I decide that (❸) can be the
+ventilation gauntlet, which has a body stuck in a far fan jamming
+it, and come up with a mechanic – characters don't regain spent
+breath except in the lobby unless it gets turn on; it's just too hot.
+The copper and weapons store, then, can go right up near the
+workshop, at (❹) and (❺). The quickening chamber, on the
+other hand, can go a bit away over at (❼). And... I only had
+eight rooms noted, and have a space left. Well, (❻) looks like it'd
+make a good room for coming and going and the like, so it can
+have tables, personal footlockers, and such, overturned, and be
+called “general use” space.
+
+The Map
+❼
+❽
+❻
+❾
+
+❷
+
+❺
+
+❶
+❸
+❹
+
+Detail Key
+Artifact
+
+Treasure
+
+Sceptre-Key
+
+Foundry line (Hot!)
+
+Table / Desk
+
+Vent Fan
+
+Mapping: Add Encounters
+
+Running through your map, either split it mentally into 'chunks', and
+assign a big fight first to each one as you start in on it, or just place
+down all your big fights before doing anything else. Then, ramble
+around the rest of the area, placing general foes and set pieces
+however you wish. Consider sight lines and hearing a bit – will the
+foes here come to assist each other? If so, you might want to space
+them out or mix in the non-theme encounters, so that you can easily
+excuse keeping the bits separated. Check if you have creatures that
+will combine especially well with your various traps, gauntlets, and
+the like – but watch out that you're not setting up encounters that are
+total killers by accident (whether you want to put in killer encounters
+on purpose is your business; is that fun for your group?).
+
+Room To Breathe
+
+Somewhere in this mess should be at least one spot where there's not
+really much of anything going on – and it's not a bad thing for that
+space to be one that can be temporarily secured. If there are areas that
+can be easily cleared, and then secured, that works fairly well, too –
+but the goal is always to keep the pace moving around. Going from
+one slugfest to the next is nowhere near as good as moving from
+brawl to gauntlet to puzzle to quiet and back again, a few times over.
+
+Mapping: Add Treasure
+
+Depending on your game system, treasure might be something you
+need to watch the balance on with a close eye. So, while you'll always
+want to walk through the rooms and throw a little something on
+almost every line for “treasure”, exactly how much and of what can
+vary pretty wildly. Check your rules, and then wing it.
+
+Polishing Up
+
+Again depending on your game system, the statistics for your
+monsters might be as easy as a single 'threat' number apiece, or each
+creature might need to be lovingly built from the ground up. If you
+have any special rules you'll need to read – drowning and falling and
+all the other fine detail that can be pulled into focus in the more
+complex dungeon setups, you'll want to read those over, as well.
+Then, it's time to play.
+
+Fire Shrine: Adding Encounters
+
+Sitting down with my list of horrible, I come up with the
+following:
+♦ The North Wing: (❶) Can be the apparently-but-not-really a
+corpse; best to get that right up front. (❼) Is the quickening
+chamber, and it's pretty well-placed to have the things I intend
+to have happening there also spilling into (❽). So, that whole
+end of the hallway is the site for my pitched battle with all kinds
+of lunatics; I'll put a screamer all over the door into that area
+from (❻) to both block vision and kick off the action. Speaking
+of (❻), I'd like to polish up that wing, so I add a pair of lunatics
+at the south end of that area hunting through the rubbish for
+rats to sacrifice, spurred on by a small diabolical. None of them
+will have mouths, though; I don't want them alerting the others.
+♦ The East Wing: I want to put Hekatonkheire down first in the
+other wing, and it's pretty obvious to me that the armoury is the
+place to go for him. So that's over in (❺). I think I'll leave both
+(❷) and (❸) vacant – the gauntlet there seems good, and the
+office can be a 'safe' space. Down in (❹), I'll put my other
+jumping-out critter; a rat-claw-swarm diabolical. That just
+leaves (❾), which is a gauntlet of blazing hot plates in
+switchbacks I was thinking was kind of weak. But... Throw in
+the big ribbons-of-skin thing, and have it trying to grab at the
+characters as they navigate, there, and it tops up pretty well.
+
+Fire Shrine: Adding Treasure
+
+In terms of basic material loot, I've already covered the main stuff
+with the copper and tools that are in the south-east corner; it's a
+pretty decent haul. But, still, I walk through, noting fine ritual
+gear in the quickening chamber, ornate braziers lighting the space
+up in the artifact chamber, and just a note saying “personal
+possessions” in the multi-use space. In the west, I put a note that
+there's lots of added copper in the foundry, and a small purse of
+gold among the possessions in the office.
+
+Fire Shrine: Polishing Up
+
+I crack open the engine, and the setting material, and whip up a
+second page of simple statistics for the monsters... And I'm ready
+to go.
+
+Notes
+
+This page brought to you by my intense, irrational
+need to have a nice round 64 pages.
+
+Feedback & Updates
+
+If you're interested in giving feedback on this (or any of the other
+stuff I've got out there), I can be reached by email at
+levi.kornelsen@gmail.com. If you'd like to track what I'm up to in
+development, look me up (Levi Kornelsen) on Google+; that's my
+primary network these days.
+
+Changes!
+Iteration 2:
+- Unified all the situation generators into one half-page file.
+- Did a bit of work to unify the style with all the other game bits.
+- Made a few minor corrections to grammar.
+
+

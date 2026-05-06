@@ -1,0 +1,136 @@
+{
+	"_info": "Ranger events — scouting, hunting, exploration. ranger_outing triggers the decision; find events are picked freely from the pool afterwards.",
+
+	"ranger_outing": {
+		"title": "Into the Forest",
+		"text": "The hunters are restless. The land beyond the tree line is uncharted — game, water, danger, opportunity. Nobody knows.\n\nThe rangers are ready to go. {chieftain} must decide: lead them, or stay?",
+		"choices": [
+			{
+				"label": "Ride with the rangers — a chieftain leads from the front",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "Chieftain {chieftain} rode out with the rangers to scout the surrounding land.",
+				"follow_text": "You ride at the front. The forest closes around you. The rangers move quietly — these men read the land like a page. By the second day, something catches your eye."
+			},
+			{
+				"label": "Stay and work — fields need tending, the palisade won't build itself (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "The rangers were sent out while {chieftain} stayed to oversee work in the settlement.",
+				"follow_text": "The rangers disappear into the tree line at dawn. You spend the days hauling timber, settling disputes over plot boundaries, and listening to the elders argue about the grain stores. On the fourth day the rangers return — with a story."
+			},
+			{
+				"label": "Send the rangers, but assign half the men to clearing new fields",
+				"effect": {},
+				"next_event": "",
+				"log_text": "Rangers scouted the forest while the remaining men cleared new farmland.",
+				"follow_text": "Two groups head out in different directions. A week later both return with something to show for it — the rangers with news, the field crew with blistered hands and twice the cleared land."
+			}
+		]
+	},
+
+	"ranger_find_hunt": {
+		"title": "The Good Land",
+		"text": "The rangers found it on the third day: a wide valley, barely touched, thick with deer and boar. Streams running clear. Enough game to feed the settlement through two winters.\n\nIt is two hours' march from the village — manageable, but not close.",
+		"choices": [
+			{
+				"label": "Establish a regular hunting rotation — we use it, carefully (+10 population)",
+				"effect": { "population": 10 },
+				"next_event": "",
+				"log_text": "Hunting parties were established in the valley to the northeast.",
+				"follow_text": "The first hunting party returns with more meat than the smokehouse can hold. The smell drifts through the whole village. For the first time since the founding, no one goes to bed hungry."
+			},
+			{
+				"label": "Keep it quiet — no paths, no fires, no word to neighbours (-5 alignment)",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "The hunting valley was kept secret — known only to the chieftain's trusted rangers.",
+				"follow_text": "The rangers swear silence. The meat appears without explanation. Some in the village have begun to wonder where it comes from. Trust is a slow fire — and secrecy is a slow frost."
+			}
+		]
+	},
+
+	"ranger_find_ore": {
+		"title": "Red Stone",
+		"text": "One of the rangers noticed it on a hillside: reddish rock, heavy, flaking where it catches the light. He brought a fist-sized chunk back.\n\nThe bronze caster turns it in her hands for a long time before she speaks: 'This could be worked. Not easily. But it could be worked.'",
+		"choices": [
+			{
+				"label": "Open a small mining operation — it will be hard, but worth it (-5 alignment, +15 population long-term)",
+				"effect": { "alignment": -5, "population": 15 },
+				"next_event": "",
+				"log_text": "A mining operation was opened at the ore vein in the eastern hills.",
+				"follow_text": "The first crew comes back filthy and aching. The ore is real — but the work is brutal, and two men quit within a week. Over months, a small but steady flow of raw metal begins to change what the village can make and trade."
+			},
+			{
+				"label": "Mark the location and wait — we don't have the hands for it yet (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "The ore vein was marked and noted — left for a better time.",
+				"follow_text": "The location is scratched onto a piece of bark and stored with the elder's things. Wise, the council says. Patient. The rock will still be there when you are ready."
+			}
+		]
+	},
+
+	"ranger_find_spring": {
+		"title": "The Hidden Spring",
+		"text": "In a mossy hollow an hour east, the rangers found a spring — cold, clean, faster-flowing than the village well. Wild garlic and herbs grow thick around it. The ground stays soft even in dry weeks.\n\nThe elder says she has heard of places like this. 'Old ground,' she calls it. 'Leave an offering before you take.'",
+		"choices": [
+			{
+				"label": "Lay a path to it and make it common — everyone's spring (+10 alignment)",
+				"effect": { "alignment": 10 },
+				"next_event": "",
+				"log_text": "A communal path was cut to the eastern spring, open to all.",
+				"follow_text": "Within a season the path is worn smooth. Women go at dawn for the cold water. Children play in the hollow. The elder leaves a small carved figure at the waterside — nobody moves it."
+			},
+			{
+				"label": "Use it quietly — say nothing to the neighbouring clans (-5 alignment)",
+				"effect": { "alignment": -5 },
+				"next_event": "",
+				"log_text": "The spring was kept from outsiders — used only by the settlement's own.",
+				"follow_text": "Clean water, kept close. A practical choice. The neighbours' wells ran low that dry summer. Yours did not. No one asks why."
+			}
+		]
+	},
+
+	"ranger_find_ford": {
+		"title": "The Shallow Crossing",
+		"text": "The river that cuts east of the settlement is not as wide as it looks. Half a day downstream, the rangers found a ford — knee-deep at worst, gravel underfoot, easy for a laden cart.\n\nTraders move goods. Whoever controls a crossing controls what passes through.",
+		"choices": [
+			{
+				"label": "Open it to trade — spread the word, welcome merchants (+5 alignment, +10 population)",
+				"effect": { "alignment": 5, "population": 10 },
+				"next_event": "",
+				"log_text": "The ford was opened and word sent out — merchants are welcome.",
+				"follow_text": "Within a year, the ford has a name and a reputation. A small market grows at the crossing on dry-season days. Strangers come, and some stay. The settlement is no longer just a village — it is a place on the road."
+			},
+			{
+				"label": "Control the crossing — charge passage, turn away rivals (-5 alignment, +10 population)",
+				"effect": { "alignment": -5, "population": 10 },
+				"next_event": "",
+				"log_text": "A toll post was raised at the ford — passage costs a tithe.",
+				"follow_text": "A post and a guard. Simple enough. Most merchants pay without trouble. One caravan turned back and took the long way around. Word gets out that your crossing is not free. Some call it fair. Others call it something else."
+			}
+		]
+	},
+
+	"ranger_find_bees": {
+		"title": "The Old Oak",
+		"text": "A dead oak at the forest edge, gnarled and ancient. The rangers almost missed what was inside: a massive hive, deep in the heartwood, buzzing low and steady.\n\nHoney, wax, propolis — small things, but the village has none of them. The healer's eyes go wide when she hears.",
+		"choices": [
+			{
+				"label": "Harvest carefully with smoke and patience — take only what the hive can spare (+5 alignment)",
+				"effect": { "alignment": 5 },
+				"next_event": "",
+				"log_text": "The oak hive was harvested carefully — the colony left intact.",
+				"follow_text": "The healer gets the wax and half the honey. The rest goes into a communal pot for the midwinter feast. The hive is still there, still humming. The rangers check on it now, when they pass."
+			},
+			{
+				"label": "Cut the whole tree and take everything — waste nothing (-5 alignment, +5 population)",
+				"effect": { "alignment": -5, "population": 5 },
+				"next_event": "",
+				"log_text": "The oak was felled and the hive taken whole.",
+				"follow_text": "The tree comes down with a crash that scatters bees across the clearing. Half the honey is lost to the ground. What remains fills two clay jars — more than the village has seen in years. Worth it, most say. The rangers who made the cut say nothing."
+			}
+		]
+	}
+}
