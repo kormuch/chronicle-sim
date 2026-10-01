@@ -61,6 +61,7 @@ game_state = {
     "generation":     int,
     "year":           int,
     "season":         int,        # 1=Spring 2=Summer 3=Autumn 4=Winter
+    "season_phase":   String,    # "adventure" or "village" — alternates per decision
     "decision_count": int,
     "flags":          Dictionary, # set_flag effects land here
 }
@@ -68,7 +69,7 @@ chronicle_log: Array    # full history; entries include year, season, gen
 undo_stack: Array       # max 5 snapshots
 ```
 
-Season advances every decision. `{season_name}` available as template var.
+**Season flow:** Each season has two phases: adventure → village. Season advances after the village phase completes. `{season_name}` available as template var.
 
 ---
 
@@ -77,14 +78,16 @@ Season advances every decision. `{season_name}` available as template var.
 All events in `events/*.json` — merged at startup into `GameManager.EVENTS`. Never hardcode events in GDScript.
 
 **Current packs:**
-- `founding_era.json` — 6 events (Founding Era)
-- `mid_era.json` — 10 events (Growth Era)
-- `rangers.json` — 6 events (scouting/exploration)
+- `founding_era.json` — 6 events (Founding Era, type: village)
+- `mid_era.json` — 10 events (Growth Era, type: village)
+- `rangers.json` — 6 events (scouting/exploration, type: adventure)
+- `adventure_ashkin.json` — 5 events (first adventure chain: Ashkin encounter, type: adventure + village aftermath)
 
 **Event schema:**
 ```json
 "event_id": {
     "_info": "author note — ignored by engine",
+    "type": "village",           // "adventure" or "village" (default: "village")
     "title": "String",
     "text": "Supports: {chieftain} {year} {season_name} {settlement_type} {trades} {population} {location_name} {founding_text}",
     "conditions": {

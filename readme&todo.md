@@ -35,13 +35,22 @@ GameManager.gd      Singleton/Autoload — all game logic, state, events, persis
 Main.gd             UI controller — pure display, no own game state
 Main.tscn           Minimal scene, loads only Main.gd
 project.godot       Godot project config
-events/             External event JSON files — one file per thematic pack
+events/             Legacy event JSON files — one file per thematic pack (old system)
   founding_era.json 6 events (Founding Era)
   mid_era.json      10 events (Growth Era)
+story/              Modular story system (new system)
+  meta.json         Central definition: game states, eras, timeline (year/season → adventure slots)
+  damage_tables.json MERP-inspired combat damage tables per weapon + enemy + group status
+  adventures/       Individual adventure JSONs — one file per CYOA adventure
+    smoke_and_ashes.json    Ashkin combat rescue (13 scenes, 4 force-size choices)
+    dead_mans_trail.json    Dead man in river → ritual site mystery (14 scenes, no combat)
+story-editor.html   Visual story editor (standalone HTML) — timeline grid, node graph, scene editing
+story-editor.bat    Launcher for story-editor.html
 material/           Story reference & design material (not loaded by engine)
   storydesign/
     horror-mystery-plots-summary.md       Distilled: 5 levels of fear, 3-clue rule, pacing
     situation-generators-summary.md       6 situation generators (Long Knives, Quest, Transgression…)
+    ranger-vignettes.md                   Ranger micro-stories for atmospheric flavour
     *.pdf / *.txt                         Source PDFs + extracted text
   storymaterial/
     darkening-of-mirkwood-en.md           Full English extract (TOR 30-year campaign)
@@ -120,6 +129,7 @@ Currently implemented:
 ```json
 "event_id": {
     "_info": "Optional author note — ignored by engine",
+    "type": "village",
     "title": "String",
     "text":  "String with template vars: {chieftain} {year} {settlement_type} {trades} {population} {location_name} {founding_text}",
     "conditions": {
@@ -143,6 +153,7 @@ Currently implemented:
 }
 ```
 
+- `type` is `"adventure"` or `"village"` (default: `"village"`). Each season picks one adventure event, then one village event. Season advances after village.
 - `conditions` is fully optional — omit any field to use the default (no restriction).
 - `effect` supports `alignment` (clamped -100/+100), `population` (min 1), and `set_flag` (string). All optional.
 - Use `alignment` for moral choices (how you treat people). Use `set_flag` for infrastructure and decisions with delayed consequences.
@@ -223,8 +234,9 @@ All files in `material/` are design inputs — not loaded by the engine. Used to
 
 ### Season System
 
-Each decision advances the season counter: Spring → Summer → Autumn → Winter → Spring → …
-`game_state["season"]` (1–4) is set after every `apply_choice()` call.
+Each season has two phases: **adventure** (out in the world) → **village** (back home, event + decision waiting).
+`game_state["season_phase"]` tracks the current phase (`"adventure"` or `"village"`).
+Season counter advances only after the village phase completes: Spring → Summer → Autumn → Winter → Spring → …
 `{season_name}` is available as a template variable in event text.
 Chronicle log entries include `"season"` for graph export.
 
@@ -233,7 +245,86 @@ Full season design concept: `design/seasons-graph-concept.md`
 Planned (not yet implemented):
 - `conditions.season` filter in event JSON — event only fires in matching season
 - `type: story` events with **[Listen] / [Skip]** buttons
-- `tools/design_graph.py` — Mermaid export of the full event network for authors
+
+---
+
+### Modular Story System (`story/`)
+
+Replaces the flat event pool with structured timeline + CYOA adventures. Both systems coexist — GameManager routes to modular or legacy loading depending on whether `story/meta.json` exists.
+
+**Structure:** Era → Year → Season → Adventure Slot. Each slot is either a fixed `adventure` (ID) or a `pool` (random pick from list). Adventures are self-contained branching stories that communicate with the wider game only through global game state.
+
+**`story/meta.json`** — central definition:
+- `game_states`: all global state variables (bool/number/string) with defaults and descriptions
+- `eras`: array of eras, each with `id`, `name`, `years`, and `timeline` (year × season grid)
+
+**`story/adventures/*.json`** — individual adventure files:
+```json
+{
+  "id": "adventure_id",
+  "title": "Human Title",
+  "conditions": ["population >= 30"],
+  "entry": "first_scene_id",
+  "scenes": {
+    "scene_id": {
+      "text": "Narrative. Supports {chieftain} {year} etc.",
+      "choices": [
+        { "label": "Button text", "next": "other_scene", "conditions": ["flag == true"] }
+      ]
+    },
+    "end_scene": {
+      "text": "Resolution.",
+      "end": true,
+      "effects": ["alignment += 10", "set flag = true"],
+      "log": "One-line chronicle entry."
+    }
+  }
+}
+```
+
+**Condition syntax:** `key op value` — operators: `==`, `!=`, `>=`, `<=`, `>`, `<`. Implicit AND when multiple conditions. Used on adventure level (gate the whole adventure) and choice level (show/hide options).
+
+**Effect syntax:** `key += N`, `key -= N`, `key = N`, `set flag = value`, `set flag = true`, `advance_generation`. Effects only on end scenes.
+
+### Combat System
+
+MERP-inspired damage tables + TOR-inspired stances. Fast (1 click per round) but narratively rich.
+
+**Chieftain stats:** Might, Wits, Grit (9 points total, randomized at generation). Endurance = Grit × 3 + 5. Heals +3 per season.
+
+**Weapons:** spear, club, shortsword, axe, bow. Each has a damage table in `story/damage_tables.json` with entries per hit tier (fumble → miss → glancing → solid → critical → devastating). Starting weapon randomized at generation.
+
+**Combat flow per round:**
+1. Player picks a **stance** (Forward/Open/Defensive/Rearward — each with stat, bonus, conditions)
+2. Roll: 2d6 + Stat + Weapon Bonus + Stance Bonus vs Difficulty → hit tier
+3. Player attack: pick entry from weapon's damage table → deal damage to enemy HP
+4. Enemy attack: pick entry from enemy's damage table → deal damage to chieftain Endurance
+5. Group status shifts: strong → holding → wavering → breaking (based on chieftain performance)
+6. Repeat until enemy HP ≤ 0 (win), chieftain Endurance ≤ 0 (lose), or max rounds reached (stalemate)
+7. Route to win/lose/stalemate scene
+
+**Weapon Legend:** 0–4 scale. Grows on Devastating hits. Named weapons can be inherited or found.
+
+**Rally mechanic:** +2 combat bonus at cost of -5 alignment (driving men beyond their limit).
+
+**Stances:**
+- **Forward** — risky, high bonus. Stat: usually Might.
+- **Open** — balanced, no bonus. Stat: Might.
+- **Defensive** — requires shield (`has_shield == true`). Stat: Grit.
+- **Rearward** — requires bow (`weapon_base == bow`). Stat: Wits.
+
+### Claude Skill: Adventure Designer
+
+A Claude Code skill at `~/.claude/skills/chronicle-sim-adventure-design-helper/` for designing new adventures. Four phases:
+
+1. **Understand** — core tension, era, game states read/written
+2. **Apply Frameworks** — cross-reference against situation generators (Kornelsen), horror/mystery/plots (Ross, Alexander), Chronicle Sim-specific patterns
+3. **Iterate** — present scene flow, challenge weak choices
+4. **Output** — export as adventure JSON to `story/adventures/`
+
+The skill speaks German with the developer, English in adventure text. References `material/storydesign/` and `material/storymaterial/` for structural guidance.
+
+---
 
 ## Current Gaps (as of May 2026)
 
@@ -249,37 +340,28 @@ Planned (not yet implemented):
 ## TODO
 
 ### Done ✅
-- Architecture: Main.gd (UI) / GameManager.gd (logic) separation
-- JSON-driven event system with external loader
-- NPC council generation (procedural names, roles, moods)
-- Alignment system (-100 to +100), clamped, affects mood + naming
-- Chronicle display grouped by generation/year
-- Undo system (5 snapshots)
-- Single-slot save/load (JSON)
-- 16 events: 6 Founding Era, 10 Growth Era (mid_era)
-- Story design frameworks imported (horror-mystery, situation generators)
-- Story template imported (Darkening of Mirkwood, EN + DE)
-- Season counter (1–4) in game_state, increments per decision, shown in status bar
-- `{season_name}` template variable available in event text
-- Season field in chronicle log entries
-- `tools/chronicle_graph.py` — Mermaid history graph from savegame.json
-- Season & graph concept documented in `design/seasons-graph-concept.md`
+
+See `implemented_features.md` for full list.
 
 ### Open
 
 | Task | Priority | Notes |
 |---|---|---|
-| **Technical test: Save / Load** | high | Manually test save → restart → load flow; check chronicle, state, undo stack integrity |
+| **Technical test: Save / Load** | high | 3 code bugs fixed. Manually test with `tools/validate_save.py --gen` test saves; check chronicle, state, undo stack integrity |
 | **Write Founding Era events (24 more)** | high | Target: 30 total. Use situation generators + event recipe. Conflict types: extern, intern, spiritual |
 | **Write Growth Era events (20 more)** | high | Target: 30 total (currently 10 in mid_era.json). Trade, expansion, dynasty themes |
 | `conditions.season` filter | medium | Event only fires in matching season — extend picker + JSON schema |
 | `type: story` events + Skip button | medium | Offer but don't force — Main.gd needs skip button, GameManager needs type-aware picker |
-| `tools/design_graph.py` | low | Mermaid export of full event network from events/*.json for author overview |
 | Event weighting/scoring | medium | Instead of random pick from eligible pool, weight events by how well conditions match |
 | NPC ageing across generations | low | NPCs should age +25 years on advance_generation, die above ~80 |
 | NPC mood recalculation | low | Currently set once at generation; should recalculate dynamically when alignment changes |
 | **NPC alignment reactions** | low | Council NPCs react differently to events based on chieftain's alignment — e.g. pure alignment: elder Mira approves, dark-leaning: enforcer Drak steps forward. Reactions shown as flavor text below event. Schema: optional `alignment_reactions` block per choice, with `min`/`max` range + `npc_role` + `text` |
 | **Key event memory** | low | Certain events are flagged as `memorable: true` in JSON. These are stored in `game_state.memories[]` (event_id + year + gen + outcome). Later events can reference them via `conditions.requires_memory` or inject them into `text` via `{memory_X}` template var — e.g. "The river that flooded in Year 3 still shapes how elders vote." |
+| **Nal Ra — recurring sorcerer NPC** | medium | "Zauberer" Nal Ra als wiederkehrende Figur in Events einbauen. Nicht im Council, sondern als externer NPC der in verschiedenen Eras auftaucht — Wanderer, Berater, Bedrohung je nach Alignment. Events mit `requires_flag` / `set_flag` verketten (z.B. `flag_nal_ra_met`, `flag_nal_ra_trusted`). Kann über Generationen altern oder mysteriös zeitlos sein. |
+| **Bestiary — germanische/nordische Wesen** | medium | Siehe Bestiary-Sektion unten. Wesen für Adventure- und Village-Events. |
+| **Enemy Faction System** | high | `game_state.enemy_faction` — bei Spielstart zufällig gewürfelt (z.B. "ashkin" oder "drowalb"). Picker filtert Events zusätzlich nach `conditions.enemy_faction`. Jeder Gegnertyp hat eigene Event-Kette. Sorgt für Replay-Varianz: gleiches Spiel, andere Feinde. Erweiterbar durch neue JSON-Files pro Faction. |
+| **Drachenhatz — Hauptquest** | high | Mehrteiliges Abenteuer über ~5 Jahre: Lindwurm/Moordrache nistet sich ein → Vieh gerissen, Handelswege unsicher → Vorbereitung nötig (Spieße, erfahrene Krieger, Ressourcen investieren) → Höhle finden und angreifen → Hort als Belohnung. **Zeitdruck:** Wenn zu lange gewartet wird, plündert jemand anderes den Hort und tötet den Drachen (kein Reward, kein Ruhm). Braucht `conditions.decision_count` oder `conditions.year_min` als neuen Condition-Typ. 6–7 Events, Mix aus adventure + village. |
+| **Drowalb — Event-Kette** | medium | Zweite Enemy-Faction neben Ashkin. Drowalb = Dunkelwesen/Nachtalben. Andere moralische Fragen als Ashkin (nicht tragisch sondern unheimlich). Eigenes JSON-File analog `adventure_ashkin.json`. |
 | Multiple save slots | low | Currently hardcoded to savegame.json |
 | UI polish | low | Replace Godot default theme before itch.io launch |
 
@@ -335,12 +417,14 @@ Der Entwickler (Korbinian) verfügt über umfangreichen RPG-Content (digital & P
 
 ### Content-Roadmap (Eras als DLC-Einheiten)
 
-| Era | Thema | Events (Ziel) | Status |
-|---|---|---|---|
-| Founding Era | Gründung, erste Winter, erste Konflikte | 30 | 6 vorhanden |
-| Growth Era | Handel, Expansion, erste Dynastien | 30 | 10 vorhanden (mid_era) |
-| Crisis Era | Seuche, Krieg, innerer Zerfall | 30 | 0 |
-| Legacy Era | Vermächtnis, Niedergang oder Aufstieg | 30 | 0 |
+| Era | In-World-Name | Thema | Events (Ziel) | Status |
+|---|---|---|---|---|
+| Founding Era | — | Gründung, erste Winter, erste Konflikte | 30 | 6 vorhanden |
+| Growth Era | — | Handel, Expansion, erste Dynastien | 30 | 10 vorhanden (mid_era) |
+| Crisis Era | **Aschenzeit** | Seuche, Krieg, innerer Zerfall | 30 | 0 |
+| Legacy Era | — | Vermächtnis, Niedergang oder Aufstieg | 30 | 0 |
+
+> **Aschenzeit** — der Name, den Überlebende dieser Generation dem Zeitraum geben: eine Epoche, in der das Aufgebaute verbrennt und nur Asche bleibt. In-game als historischer Epochenbegriff nutzbar (z.B. in Event-Texten: *"Die Alten nennen es die Aschenzeit."*).
 
 **Ziel für itch.io-Launch:** Founding + Growth Era vollständig (60 Events), Crisis Era als Ankündigung.
 
@@ -352,6 +436,68 @@ Der Entwickler (Korbinian) verfügt über umfangreichen RPG-Content (digital & P
 | Mechanik-Complete | NPC-Alterung, Ressourcen-Ansatz, Event-Gewichtung |
 | UI-Polish | Godot-Default-Theme ersetzen, Touch-tauglich wenn Mobile |
 | itch.io-Launch | Trailer (Screenshot-GIF reicht), kurze Beschreibung, $4–6 |
+
+---
+
+## Bestiary — Germanische & Nordische Wesen
+
+Eigene Namen bevorzugt, keine Tolkien-Kopien. Wesen sollen ins Event-System passen: moralische Entscheidung, Konsequenz, Flagging über Generationen.
+
+### Untote & Grabhügel
+
+| Wesen | Beschreibung | Event-Potenzial |
+|---|---|---|
+| **Grabunholde** (Draugar) | Körperliche Untote aus Grabhügeln. Bewachen Besitz/Territorium. Übermenschlich stark, verbreiten Seuchen. | Dorf expandiert in Richtung alter Grabhügel. Aufwecken oder meiden? Schatz darin? Generationen später vergessen warum der Hügel tabu war. |
+| **Nachzehrer** | Leichen die im Grab an sich selbst kauen und Lebenskraft der Verwandten aussaugen. Seuchen folgen. | Pest im Dorf. Alte Frau sagt: ein Toter wurde falsch bestattet. Grab öffnen oder beten? |
+| **Wiedergänger** | Ruhelose Tote die eine Schuld eintreiben. Kommen jede Nacht zurück bis die Sache gelöst ist. | Unrecht aus einer früheren Generation holt das Dorf ein. Flag-Kette: `flag_unjust_exile` → Wiedergänger-Event 2 Generationen später. |
+
+### Naturgeister & Wildnis
+
+| Wesen | Beschreibung | Event-Potenzial |
+|---|---|---|
+| **Irrlichter** | Leuchtende Flammen in Moor und Sumpf. Locken Wanderer vom Weg ab. | Adventure: Rangers folgen einem Licht im Moor. Falle oder Wegweiser zu etwas Verborgenem? |
+| **Waldschrat** | Knorriger Waldgeist, Hüter alter Bäume. Nicht böse, aber territorial. | Das Dorf rodet Wald. Der Schrat reagiert — Sabotage an Werkzeug, kranke Tiere. Opfer bringen oder weiterholzen? |
+| **Moosweib / Holzweib** | Scheue weibliche Waldwesen. Helfen manchmal, verschwinden wenn man sie beleidigt. | Heiler-NPC trifft eines im Wald. Heilkräuter-Wissen im Tausch — aber wogegen? |
+| **Nix / Nixe** | Wassergeister in Flüssen und Seen. Ziehen Menschen unter oder warnen vor Hochwasser. | Dorf baut Mühle am Fluss. Nixe fordert Tribut. Ignorieren → Hochwasser-Flag. |
+| **Alp** | Nachtmahr, setzt sich auf die Brust schlafender Menschen. Bringt Albträume und Erschöpfung. | Halbes Dorf schläft schlecht, Produktivität sinkt. Heiler sucht Ursache — alter Fluch oder reale Krankheit? |
+
+### Riesen & Ungeheuer
+
+| Wesen | Beschreibung | Event-Potenzial |
+|---|---|---|
+| **Trolle** | Groß, langsam, steinhart. Versteinern bei Sonnenlicht (Variante). Leben unter Brücken oder in Bergen. | Adventure: Brücke über den Fluss blockiert. Troll verlangt Wegzoll — in Vieh, nicht Gold. Verhandeln, kämpfen, Umweg? |
+| **Lindwurm** | Schlangenartiger Drache ohne Flügel. Vergiftet das Land um seinen Bau. | Langzeit-Arc: Lindwurm nistet sich in den Bergen ein. Erst Gerüchte, dann totes Vieh, dann Angriff. Über 2–3 Generationen eskalierend. |
+| **Fenriswolf** | Überdimensionaler Wolf. Nicht DER Fenrir, aber sein Echo — ein Rudel das zu intelligent jagt. | Jagd-Adventure: Rudel dezimiert Wild. Chieftain muss entscheiden — großes Jagdaufgebot oder Gebiet aufgeben. |
+
+### Flüche & Übersinnliches
+
+| Wesen | Beschreibung | Event-Potenzial |
+|---|---|---|
+| **Wechselbalg** | Elfenkind das gegen ein Menschenkind getauscht wurde. Schreit, frisst, gedeiht nicht. | Village: Kind im Dorf verhält sich seltsam. Aberglaube vs. Mitgefühl. Alignment-Entscheidung. |
+| **Wilde Jagd** | Geisterheer am Himmel, zieht in Sturmnächten übers Land. Wer draußen ist wird mitgerissen. | Seasonal (Winter): Warnung kommt. Dorf verbarrikadiert sich — aber der Ranger ist noch draußen. |
+| **Düsterweber** | (Eigenkreation) Gestalt die Zwietracht sät. Nie direkt gesehen, aber überall wo Streit entsteht war sie kurz vorher da. | Langzeit: Ratsmitglieder streiten sich zunehmend. Ist es Politik oder übernatürlich? Flag-Kette über mehrere Events. |
+
+### Verwilderte & Horden
+
+| Wesen | Beschreibung | Event-Potenzial |
+|---|---|---|
+| **Ashkin** | Verwilderte Menschen aus der Vorzeit, keine Sprache, Rudelangriffe, aschgraue Haut. Keine Monster — eher das, was aus Menschen wird wenn Zivilisation zerfällt. | Adventure: Ashkin-Spuren am Dorfrand. Späher berichten von einem Lager. Vertreiben, verhandeln (geht das überhaupt?), oder Grenze befestigen? |
+
+### Wassergeister & Tiefenwesen
+
+| Wesen | Beschreibung | Event-Potenzial |
+|---|---|---|
+| **Schlundwurm** | Lebt in tiefen Flussarmen, zieht Tiere und Menschen unter Wasser. Kein Drache — eher riesiger Aal mit Zähnen. | Adventure: Fischer verschwinden. Ranger finden Spuren am Ufer. Falle bauen, Flussarm meiden, oder Opfer bringen? |
+
+### Seher & Verborgene Mächte
+
+| Wesen | Beschreibung | Event-Potenzial |
+|---|---|---|
+| **Altweib vom Hügel** | Alte Seherin, lebt abseits, zieht Fäden hinter den Kulissen. Nicht klar ob Mensch oder etwas anderes. Weiß zu viel. | Village: Alte Frau taucht im Dorf auf, warnt vor etwas Konkretem. Ignorieren → Flag. Zuhören → anderer Flag. Generationen später zeigt sich wer recht hatte. |
+
+### Nal Ra — der Zauberer (wiederkehrender NPC)
+
+Nicht Wesen sondern Figur — steht aber in Beziehung zum Bestiary. Kann Wissen über Wesen haben, kann selbst zum Problem werden. Alignment-abhängig: bei Pure ein Berater, bei Dark ein Rivale.
 
 ---
 

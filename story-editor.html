@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chronicle Sim — Story Editor</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d0d1a; --bg2: #13132a; --bg3: #1a1a35; --bg4: #222244;
+  --fg: #bbb; --fg2: #888; --fg3: #555;
+  --accent: #7b68ee; --accent2: #9999cc;
+  --green: #7dffaa; --red: #ff7777; --orange: #ffd580; --blue: #77bbff;
+  --node-w: 180px; --node-h: 76px;
+}
+body { background: var(--bg); color: var(--fg); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; height: 100vh; overflow: hidden; }
+button { background: var(--bg4); color: var(--fg); border: 1px solid var(--fg3); border-radius: 4px; padding: 4px 10px; cursor: pointer; font-size: 13px; }
+button:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.danger { border-color: #a33; }
+button.danger:hover { background: #a33; }
+input, textarea, select { background: var(--bg2); color: var(--fg); border: 1px solid var(--fg3); border-radius: 4px; padding: 4px 8px; font-size: 13px; font-family: inherit; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+textarea { resize: vertical; }
+label { color: var(--fg2); font-size: 12px; display: block; margin-bottom: 2px; }
+
+/* Layout */
+#toolbar { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: var(--bg2); border-bottom: 1px solid var(--fg3); height: 44px; }
+#toolbar h1 { font-size: 15px; color: var(--accent2); white-space: nowrap; }
+#toolbar .breadcrumb { color: var(--fg2); font-size: 13px; flex: 1; }
+#toolbar .breadcrumb span { cursor: pointer; color: var(--accent2); }
+#toolbar .breadcrumb span:hover { text-decoration: underline; }
+#layout { display: flex; height: calc(100vh - 44px); }
+
+/* Sidebar */
+#sidebar { width: 230px; min-width: 230px; background: var(--bg2); border-right: 1px solid var(--fg3); overflow-y: auto; padding: 12px; }
+.sb-section { margin-bottom: 20px; }
+.sb-section h3 { font-size: 12px; text-transform: uppercase; color: var(--fg3); letter-spacing: 1px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+.sb-item { padding: 6px 8px; border-radius: 4px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 2px; }
+.sb-item:hover { background: var(--bg3); }
+.sb-item.active { background: var(--accent); color: #fff; }
+.sb-item .sub { color: var(--fg2); font-size: 11px; }
+.sb-state { padding: 4px 8px; font-size: 12px; color: var(--fg2); border-left: 2px solid var(--fg3); margin-bottom: 4px; cursor: pointer; border-radius: 0 4px 4px 0; }
+.sb-state:hover { background: var(--bg3); }
+.sb-state.active { border-left-color: var(--accent); color: var(--fg); }
+.sb-state .type { color: var(--fg3); }
+
+/* Main panel */
+#main { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+
+/* Timeline view */
+#timeline { padding: 16px; overflow: auto; flex: 1; }
+.tl-grid { display: grid; grid-template-columns: 60px repeat(4, 1fr); gap: 2px; }
+.tl-header { background: var(--bg3); padding: 8px; text-align: center; font-size: 12px; color: var(--fg2); font-weight: 600; }
+.tl-year { background: var(--bg3); padding: 8px; text-align: center; font-size: 13px; color: var(--accent2); display: flex; align-items: center; justify-content: center; }
+.tl-cell { background: var(--bg2); padding: 8px; min-height: 60px; border-radius: 2px; cursor: pointer; position: relative; font-size: 12px; }
+.tl-cell:hover { background: var(--bg3); }
+.tl-cell .adv-name { color: var(--green); font-size: 11px; }
+.tl-cell .pool-name { color: var(--orange); font-size: 11px; }
+.tl-cell .empty-slot { color: var(--fg3); font-style: italic; }
+
+/* Adventure editor */
+#adventure-editor { flex: 1; display: flex; overflow: hidden; }
+#graph-container { flex: 1; position: relative; overflow: auto; background: var(--bg); }
+#graph-canvas { position: relative; width: 3000px; height: 2000px; }
+#graph-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.scene-node { position: absolute; width: var(--node-w); background: var(--bg3); border: 2px solid var(--fg3); border-radius: 6px; cursor: grab; user-select: none; overflow: hidden; }
+.scene-node:hover { border-color: var(--fg2); }
+.scene-node.selected { border-color: var(--accent); box-shadow: 0 0 12px rgba(123,104,238,0.3); }
+.scene-node.entry { border-left: 4px solid var(--green); }
+.scene-node.end-node { border-left: 4px solid var(--orange); }
+.scene-node .node-header { padding: 6px 8px; font-size: 12px; font-weight: 600; color: var(--accent2); background: var(--bg4); border-bottom: 1px solid var(--fg3); display: flex; justify-content: space-between; }
+.scene-node .node-header .badge { font-size: 9px; padding: 1px 5px; border-radius: 3px; font-weight: 400; }
+.scene-node .node-header .badge.entry-badge { background: var(--green); color: #000; }
+.scene-node .node-header .badge.end-badge { background: var(--orange); color: #000; }
+.scene-node .node-body { padding: 6px 8px; font-size: 11px; color: var(--fg2); max-height: 42px; overflow: hidden; line-height: 1.3; }
+.scene-node .node-choices { padding: 4px 8px 6px; font-size: 10px; color: var(--fg3); }
+.scene-node .node-choices .choice-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); margin-right: 3px; }
+
+/* Detail panel */
+#detail { width: 340px; min-width: 340px; background: var(--bg2); border-left: 1px solid var(--fg3); overflow-y: auto; padding: 12px; display: none; }
+#detail.visible { display: block; }
+#detail h3 { font-size: 13px; color: var(--accent2); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+.field { margin-bottom: 12px; }
+.field input[type="text"], .field textarea, .field select { width: 100%; }
+.field textarea { min-height: 80px; }
+.choice-item { background: var(--bg3); border-radius: 4px; padding: 8px; margin-bottom: 6px; position: relative; }
+.choice-item .choice-remove { position: absolute; top: 4px; right: 4px; background: none; border: none; color: var(--fg3); cursor: pointer; font-size: 14px; padding: 0 4px; }
+.choice-item .choice-remove:hover { color: var(--red); }
+.effect-item { display: flex; gap: 4px; align-items: center; margin-bottom: 4px; }
+.effect-item input { flex: 1; }
+.effect-item button { padding: 2px 6px; font-size: 12px; }
+.cond-item { display: flex; gap: 4px; align-items: center; margin-bottom: 4px; }
+.cond-item input { flex: 1; font-size: 12px; }
+
+/* Slot editor modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.modal { background: var(--bg2); border: 1px solid var(--fg3); border-radius: 8px; padding: 20px; min-width: 340px; max-width: 500px; }
+.modal h3 { margin-bottom: 12px; color: var(--accent2); }
+.modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--fg3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--fg2); }
+
+/* Graph toolbar */
+#graph-toolbar { padding: 8px 12px; background: var(--bg2); border-bottom: 1px solid var(--fg3); display: flex; gap: 8px; align-items: center; }
+#graph-toolbar .adv-title { flex: 1; font-size: 13px; color: var(--accent2); }
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <h1>Story Editor</h1>
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <button onclick="importYAML()">Import YAML</button>
+  <button onclick="exportYAML()">Export YAML</button>
+  <button onclick="exportJSON()">Export JSON</button>
+  <button onclick="exportModular()">Export Modular</button>
+  <input type="file" id="file-input" accept=".yaml,.yml,.json" style="display:none" onchange="handleFileImport(event)">
+  <input type="file" id="folder-input" webkitdirectory style="display:none" onchange="handleFolderImport(event)">
+  <button onclick="importModular()">Import Modular</button>
+</div>
+
+<div id="layout">
+  <aside id="sidebar"></aside>
+  <div id="main">
+    <div id="timeline" style="display:none"></div>
+    <div id="adventure-editor" style="display:none">
+      <div id="graph-toolbar"></div>
+      <div id="graph-container">
+        <div id="graph-canvas">
+          <svg id="graph-svg"></svg>
+        </div>
+      </div>
+    </div>
+    <div id="welcome" style="padding:40px;text-align:center;color:var(--fg3)">
+      <p style="font-size:18px;margin-bottom:8px">Chronicle Sim — Story Editor</p>
+      <p>Select an era in the sidebar to view the timeline.</p>
+    </div>
+  </div>
+  <aside id="detail"></aside>
+</div>
+
+<div id="modal-root"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<script>
+// ── Data Model ──────────────────────────────────────────────
+let data = {
+  title: "Chronicle Sim",
+  version: 1,
+  gameStates: {
+    alignment: { type: "number", default: 0, description: "Moral alignment, -100 (Dark) to +100 (Pure)" },
+    population: { type: "number", default: 50, description: "Current village population" },
+    has_storehouse: { type: "bool", default: false, description: "Communal storehouse was built" },
+    has_palisade: { type: "bool", default: false, description: "Village border secured with palisade" },
+    winter_grudge: { type: "bool", default: false, description: "Weak families remember the harsh rationing" },
+    sword_of_dawn: { type: "string", default: "", description: "Status of the legendary sword: '', 'rumored', 'found', 'broken'" }
+  },
+  eras: [
+    {
+      id: "founding", name: "Founding Era", years: 4,
+      timeline: [
+        { year: 1, seasons: { spring: { type: "adventure", adventure: "village_founding" }, summer: { type: "pool", pool: ["trade_caravan", "wandering_healer"] }, autumn: null, winter: { type: "adventure", adventure: "first_winter" } } },
+        { year: 2, seasons: { spring: { type: "adventure", adventure: "border_dispute" }, summer: null, autumn: null, winter: null } },
+        { year: 3, seasons: { spring: null, summer: null, autumn: null, winter: null } },
+        { year: 4, seasons: { spring: null, summer: null, autumn: null, winter: null } }
+      ]
+    }
+  ],
+  adventures: {
+    village_founding: {
+      title: "The Village Awakens",
+      description: "The council gathers for the first time. What is the first concern?",
+      conditions: [],
+      entry: "arrival",
+      scenes: {
+        arrival: {
+          text: "The council gathers for the first time. Chieftain {chieftain} looks at the assembled faces. What is the first concern?",
+          choices: [
+            { label: "Build a communal storehouse", next: "storehouse_built", conditions: [] },
+            { label: "Secure the village borders first", next: "palisade_built", conditions: [] }
+          ],
+          effects: [], log: "", end: false, _x: 300, _y: 40
+        },
+        storehouse_built: {
+          text: "The beams rise quickly — every hand helps. In the evenings, people gather around the half-built frame and share stories of the old lands. Something is being made here.",
+          choices: [], effects: [{ expr: "set has_storehouse = true" }], log: "A communal storehouse was built as the first structure.", end: true, _x: 160, _y: 220
+        },
+        palisade_built: {
+          text: "Fences and watch posts appear at the village edge. The work takes two weeks. When it is done, the village feels smaller inside — but safer.",
+          choices: [], effects: [{ expr: "set has_palisade = true" }], log: "The village borders were secured first — a palisade and watch posts.", end: true, _x: 440, _y: 220
+        }
+      }
+    },
+    first_winter: {
+      title: "The First Winter",
+      description: "Winter arrives earlier than expected. The village faces its first test of survival.",
+      conditions: ["population >= 30"],
+      entry: "arrival",
+      scenes: {
+        arrival: {
+          text: "Winter arrives earlier than expected. Frost covers the fields before the last harvest is in. Provisions are running low. The council gathers — what does Chieftain {chieftain} decide?",
+          choices: [
+            { label: "Share equally — no one is left behind", next: "sharing", conditions: [] },
+            { label: "The strong eat first — survival demands it", next: "rationing", conditions: [] },
+            { label: "Send scouts for emergency supplies", next: "scouting", conditions: ["has_palisade == true"] }
+          ],
+          effects: [], log: "", end: false, _x: 340, _y: 30
+        },
+        sharing: {
+          text: "The food is divided equally. It is not much — but no bowl is empty. The children still cry at night from hunger, but every morning, every face is accounted for.",
+          choices: [{ label: "Hold the course through the worst weeks", next: "sharing_end", conditions: [] }],
+          effects: [], log: "", end: false, _x: 120, _y: 200
+        },
+        sharing_end: {
+          text: "Spring comes late, but it comes. Everyone survived. Leaner than hoped — but no empty place by the fire.",
+          choices: [], effects: [{ expr: "alignment += 10" }, { expr: "population -= 2" }], log: "All shared equally — the community survived the first winter.", end: true, _x: 120, _y: 380
+        },
+        rationing: {
+          text: "The strongest eat first. The logic is cold but clear: without hunters and builders, no one survives spring. The weak watch from the edges.",
+          choices: [
+            { label: "Continue — weakness is death", next: "rationing_end", conditions: [] },
+            { label: "Reconsider — redistribute what's left", next: "sharing", conditions: [] }
+          ],
+          effects: [], log: "", end: false, _x: 340, _y: 200
+        },
+        rationing_end: {
+          text: "When spring arrives, three families mourn. The children of the weak watch with wide eyes at the tables of the strong. Some will never forget this winter.",
+          choices: [], effects: [{ expr: "alignment -= 15" }, { expr: "population -= 8" }, { expr: "set winter_grudge = true" }], log: "The strong were favoured. Some of the weak did not survive.", end: true, _x: 340, _y: 380
+        },
+        scouting: {
+          text: "Three rangers slip through the palisade gate before dawn. The forest is deep and frozen. Two days pass with no word.",
+          choices: [
+            { label: "Wait — they know what they're doing", next: "scouts_return", conditions: [] },
+            { label: "Send a search party after them", next: "scouts_lost", conditions: [] }
+          ],
+          effects: [], log: "", end: false, _x: 580, _y: 200
+        },
+        scouts_return: {
+          text: "On the third morning, the rangers return with a deer and wild roots. Not enough to feast — but enough to bridge the worst week.",
+          choices: [], effects: [{ expr: "alignment += 5" }, { expr: "population -= 1" }], log: "Rangers found emergency supplies. The winter was hard but manageable.", end: true, _x: 500, _y: 380
+        },
+        scouts_lost: {
+          text: "The search party finds tracks leading to a frozen riverbank. One ranger made it back, frostbitten. The other two are gone.",
+          choices: [], effects: [{ expr: "alignment -= 5" }, { expr: "population -= 5" }], log: "Two rangers were lost in the winter forest. A bitter price.", end: true, _x: 680, _y: 380
+        }
+      }
+    },
+    border_dispute: {
+      title: "The Boundary Stones",
+      description: "A neighbouring settlement claims land your village has been using.",
+      conditions: [],
+      entry: "dispute",
+      scenes: {
+        dispute: {
+          text: "Strangers have moved the boundary stones. The land between the river and the old oak — your people have farmed it since arriving. Now a neighbouring settlement claims it as theirs.",
+          choices: [
+            { label: "Negotiate — find a fair compromise", next: "negotiate_end", conditions: [] },
+            { label: "Stand firm — this land is ours", next: "stand_firm_end", conditions: [] }
+          ],
+          effects: [], log: "", end: false, _x: 300, _y: 40
+        },
+        negotiate_end: {
+          text: "After three days of talks, you agree to share the river access. Neither side is fully satisfied — but no blood was spilled.",
+          choices: [], effects: [{ expr: "alignment += 5" }], log: "A fair compromise was reached with the neighbouring settlement.", end: true, _x: 160, _y: 220
+        },
+        stand_firm_end: {
+          text: "Your warriors stand at the boundary. The neighbours retreat, but their eyes promise this isn't over.",
+          choices: [], effects: [{ expr: "alignment -= 5" }], log: "The boundary was held by force. The neighbours will remember.", end: true, _x: 440, _y: 220
+        }
+      }
+    },
+    trade_caravan: {
+      title: "Travelling Merchants",
+      description: "Merchants from the south offer bronze tools in exchange for food stores.",
+      conditions: [],
+      entry: "merchants",
+      scenes: {
+        merchants: {
+          text: "Merchants from the south are resting at the village edge. They offer bronze tools in exchange for food stores.",
+          choices: [
+            { label: "Negotiate fairly — a just exchange", next: "fair_end", conditions: [] },
+            { label: "Take advantage — they don't know the value", next: "cheat_end", conditions: [] }
+          ],
+          effects: [], log: "", end: false, _x: 300, _y: 40
+        },
+        fair_end: {
+          text: "The merchants laugh as they depart and promise to return. Your name travels well along the trade roads.",
+          choices: [], effects: [{ expr: "alignment += 5" }], log: "A fair exchange was agreed. The merchants will return.", end: true, _x: 160, _y: 220
+        },
+        cheat_end: {
+          text: "You got the better deal. The merchants won't return — and word will spread.",
+          choices: [], effects: [{ expr: "alignment -= 10" }], log: "The merchants were cheated. They will not return.", end: true, _x: 440, _y: 220
+        }
+      }
+    },
+    wandering_healer: {
+      title: "The Wandering Healer",
+      description: "A cloaked figure offers to heal the sick — for a price.",
+      conditions: [],
+      entry: "healer",
+      scenes: {
+        healer: {
+          text: "A cloaked woman arrives at the village gate. She says she can heal the sick — but she needs a place to stay and access to your herb garden.",
+          choices: [
+            { label: "Welcome her — knowledge is precious", next: "welcome_end", conditions: [] },
+            { label: "Turn her away — strangers bring trouble", next: "refuse_end", conditions: [] }
+          ],
+          effects: [], log: "", end: false, _x: 300, _y: 40
+        },
+        welcome_end: {
+          text: "The healer stays through the season. Three children who would have died now live. She leaves quietly one morning, her debt paid.",
+          choices: [], effects: [{ expr: "alignment += 10" }], log: "A wandering healer was welcomed. She saved lives.", end: true, _x: 160, _y: 220
+        },
+        refuse_end: {
+          text: "The woman leaves without a word. That winter, the coughing sickness takes two elders.",
+          choices: [], effects: [{ expr: "alignment -= 5" }], log: "A healer was turned away. The village paid for it later.", end: true, _x: 440, _y: 220
+        }
+      }
+    }
+  }
+};
+
+// ── App State ───────────────────────────────────────────────
+let state = {
+  view: "welcome",       // "welcome" | "timeline" | "adventure"
+  selectedEra: null,      // era id
+  selectedAdventure: null,// adventure id
+  selectedScene: null,    // scene id
+  selectedState: null,    // game state id
+  dragging: null,         // { sceneId, offsetX, offsetY }
+};
+
+const SEASONS = ["spring", "summer", "autumn", "winter"];
+const SEASON_LABELS = { spring: "Spring", summer: "Summer", autumn: "Autumn", winter: "Winter" };
+
+// ── Render ──────────────────────────────────────────────────
+
+function render() {
+  renderSidebar();
+  renderBreadcrumb();
+  renderMainView();
+  renderDetail();
+}
+
+function renderBreadcrumb() {
+  const bc = document.getElementById("breadcrumb");
+  let parts = [];
+  if (state.view === "timeline" && state.selectedEra) {
+    const era = data.eras.find(e => e.id === state.selectedEra);
+    parts.push(`<span onclick="showTimeline('${state.selectedEra}')">${era.name}</span>`);
+  }
+  if (state.view === "adventure" && state.selectedAdventure) {
+    const era = data.eras.find(e => e.id === state.selectedEra);
+    if (era) parts.push(`<span onclick="showTimeline('${state.selectedEra}')">${era.name}</span>`);
+    const adv = data.adventures[state.selectedAdventure];
+    parts.push(`<span>${adv.title}</span>`);
+  }
+  bc.innerHTML = parts.join(" › ");
+}
+
+function renderSidebar() {
+  const sb = document.getElementById("sidebar");
+  const eraItems = data.eras.map(e =>
+    `<div class="sb-item ${state.selectedEra === e.id ? 'active' : ''}" onclick="showTimeline('${e.id}')">
+      ${e.name} <span class="sub">${e.years}y</span>
+    </div>`
+  ).join("");
+
+  const stateItems = Object.entries(data.gameStates).map(([id, s]) =>
+    `<div class="sb-state ${state.selectedState === id ? 'active' : ''}" onclick="selectGameState('${id}')">
+      <strong>${id}</strong> <span class="type">${s.type}</span>
+    </div>`
+  ).join("");
+
+  const advItems = Object.entries(data.adventures).map(([id, a]) =>
+    `<div class="sb-item ${state.selectedAdventure === id && state.view === 'adventure' ? 'active' : ''}" onclick="showAdventure('${id}')" style="font-size:12px">
+      ${a.title}
+    </div>`
+  ).join("");
+
+  sb.innerHTML = `
+    <div class="sb-section">
+      <h3>Eras <button onclick="addEra()" style="font-size:10px;padding:1px 6px">+</button></h3>
+      ${eraItems}
+    </div>
+    <div class="sb-section">
+      <h3>Adventures <button onclick="addAdventure()" style="font-size:10px;padding:1px 6px">+</button></h3>
+      ${advItems}
+    </div>
+    <div class="sb-section">
+      <h3>Game States <button onclick="addGameState()" style="font-size:10px;padding:1px 6px">+</button></h3>
+      ${stateItems}
+    </div>
+  `;
+}
+
+function renderMainView() {
+  document.getElementById("welcome").style.display = state.view === "welcome" ? "block" : "none";
+  document.getElementById("timeline").style.display = state.view === "timeline" ? "block" : "none";
+  document.getElementById("adventure-editor").style.display = state.view === "adventure" ? "flex" : "none";
+
+  if (state.view === "timeline") renderTimeline();
+  if (state.view === "adventure") renderAdventureGraph();
+}
+
+// ── Timeline ────────────────────────────────────────────────
+
+function renderTimeline() {
+  const era = data.eras.find(e => e.id === state.selectedEra);
+  if (!era) return;
+
+  const headers = `<div class="tl-header">Year</div>` + SEASONS.map(s => `<div class="tl-header">${SEASON_LABELS[s]}</div>`).join("");
+
+  let rows = "";
+  for (let i = 0; i < era.timeline.length; i++) {
+    const yr = era.timeline[i];
+    rows += `<div class="tl-year">${yr.year}</div>`;
+    for (const s of SEASONS) {
+      const slot = yr.seasons[s];
+      let content = "";
+      if (!slot) {
+        content = `<span class="empty-slot">empty</span>`;
+      } else if (slot.type === "adventure") {
+        const adv = data.adventures[slot.adventure];
+        content = `<span class="adv-name">${adv ? adv.title : slot.adventure}</span>`;
+      } else if (slot.type === "pool") {
+        content = slot.pool.map(id => `<span class="pool-name">${id}</span>`).join("<br>");
+      }
+      rows += `<div class="tl-cell" onclick="editSlot('${era.id}', ${i}, '${s}')">${content}</div>`;
+    }
+  }
+
+  document.getElementById("timeline").innerHTML = `
+    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+      <h2 style="font-size:16px;color:var(--accent2);flex:1">${era.name} — Timeline</h2>
+      <button onclick="addYear('${era.id}')">+ Year</button>
+      <button onclick="removeLastYear('${era.id}')" class="danger">- Year</button>
+    </div>
+    <div class="tl-grid">${headers}${rows}</div>
+  `;
+}
+
+// ── Adventure Graph ─────────────────────────────────────────
+
+function renderAdventureGraph() {
+  const adv = data.adventures[state.selectedAdventure];
+  if (!adv) return;
+
+  document.getElementById("graph-toolbar").innerHTML = `
+    <span class="adv-title">${adv.title}</span>
+    <button onclick="addScene()">+ Scene</button>
+    <button onclick="editAdventureMeta()">Settings</button>
+    <button onclick="autoLayoutScenes()">Auto-Layout</button>
+  `;
+
+  const canvas = document.getElementById("graph-canvas");
+  // Clear old nodes
+  canvas.querySelectorAll(".scene-node").forEach(n => n.remove());
+
+  for (const [id, scene] of Object.entries(adv.scenes)) {
+    const isEntry = id === adv.entry;
+    const isEnd = scene.end;
+    const classes = ["scene-node", isEntry ? "entry" : "", isEnd ? "end-node" : "", state.selectedScene === id ? "selected" : ""].filter(Boolean).join(" ");
+
+    const choiceDots = (scene.choices || []).map(() => `<span class="choice-dot"></span>`).join("");
+    const badges = [];
+    if (isEntry) badges.push(`<span class="badge entry-badge">entry</span>`);
+    if (isEnd) badges.push(`<span class="badge end-badge">end</span>`);
+
+    const node = document.createElement("div");
+    node.className = classes;
+    node.style.left = (scene._x || 100) + "px";
+    node.style.top = (scene._y || 100) + "px";
+    node.dataset.sceneId = id;
+    node.innerHTML = `
+      <div class="node-header">${id} ${badges.join("")}</div>
+      <div class="node-body">${truncate(scene.text, 60)}</div>
+      ${choiceDots ? `<div class="node-choices">${choiceDots} ${scene.choices.length} choice${scene.choices.length !== 1 ? 's' : ''}</div>` : ''}
+    `;
+    node.addEventListener("mousedown", (e) => startDrag(e, id));
+    node.addEventListener("click", (e) => { if (!state._dragged) selectScene(id); });
+    canvas.appendChild(node);
+  }
+
+  drawArrows();
+}
+
+function drawArrows() {
+  const svg = document.getElementById("graph-svg");
+  const adv = data.adventures[state.selectedAdventure];
+  if (!adv) { svg.innerHTML = ""; return; }
+
+  let paths = "";
+  const nodeW = 180, nodeH = 76;
+
+  for (const [id, scene] of Object.entries(adv.scenes)) {
+    if (!scene.choices) continue;
+    const sx = (scene._x || 100) + nodeW / 2;
+    const sy = (scene._y || 100) + nodeH;
+
+    scene.choices.forEach((choice, ci) => {
+      if (!choice.next || !adv.scenes[choice.next]) return;
+      const target = adv.scenes[choice.next];
+      const tx = (target._x || 100) + nodeW / 2;
+      const ty = (target._y || 100);
+
+      const midY = (sy + ty) / 2;
+      const offset = (ci - (scene.choices.length - 1) / 2) * 12;
+      const color = choice.conditions && choice.conditions.length > 0 ? "var(--orange)" : "var(--fg3)";
+      const dash = choice.conditions && choice.conditions.length > 0 ? "stroke-dasharray='6,4'" : "";
+
+      paths += `<path d="M ${sx + offset} ${sy} C ${sx + offset} ${midY}, ${tx} ${midY}, ${tx} ${ty}"
+        fill="none" stroke="${color}" stroke-width="1.5" ${dash} />`;
+      // arrowhead
+      paths += `<polygon points="${tx - 4},${ty - 6} ${tx + 4},${ty - 6} ${tx},${ty}" fill="${color}" />`;
+      // label
+      const lx = (sx + offset + tx) / 2;
+      const ly = midY - 4;
+      paths += `<text x="${lx}" y="${ly}" fill="var(--fg3)" font-size="9" text-anchor="middle">${escHtml(truncate(choice.label, 25))}</text>`;
+    });
+  }
+
+  svg.innerHTML = `<defs></defs>${paths}`;
+}
+
+// ── Scene Detail Panel ──────────────────────────────────────
+
+function renderDetail() {
+  const panel = document.getElementById("detail");
+
+  // Game state editor
+  if (state.selectedState && state.view !== "adventure") {
+    panel.classList.add("visible");
+    const id = state.selectedState;
+    const gs = data.gameStates[id];
+    if (!gs) { panel.classList.remove("visible"); return; }
+
+    panel.innerHTML = `
+      <h3>Game State <button class="danger" onclick="deleteGameState('${id}')" style="font-size:11px;padding:1px 6px">Delete</button></h3>
+      <div class="field"><label>ID</label><input type="text" value="${id}" id="gs-id" onchange="renameGameState('${id}', this.value)"></div>
+      <div class="field"><label>Type</label>
+        <select id="gs-type" onchange="updateGameState('${id}', 'type', this.value)">
+          <option value="bool" ${gs.type === 'bool' ? 'selected' : ''}>bool</option>
+          <option value="number" ${gs.type === 'number' ? 'selected' : ''}>number</option>
+          <option value="string" ${gs.type === 'string' ? 'selected' : ''}>string</option>
+        </select>
+      </div>
+      <div class="field"><label>Default</label><input type="text" value="${gs.default}" onchange="updateGameState('${id}', 'default', parseDefault(this.value, '${gs.type}'))"></div>
+      <div class="field"><label>Description</label><textarea onchange="updateGameState('${id}', 'description', this.value)">${gs.description}</textarea></div>
+    `;
+    return;
+  }
+
+  // Scene editor
+  if (state.view !== "adventure" || !state.selectedScene) {
+    panel.classList.remove("visible");
+    return;
+  }
+
+  panel.classList.add("visible");
+  const adv = data.adventures[state.selectedAdventure];
+  const sc = adv.scenes[state.selectedScene];
+  if (!sc) { panel.classList.remove("visible"); return; }
+
+  const sceneIds = Object.keys(adv.scenes).filter(id => id !== state.selectedScene);
+  const isEntry = state.selectedScene === adv.entry;
+
+  let choicesHtml = "";
+  if (!sc.end) {
+    choicesHtml = (sc.choices || []).map((c, i) => {
+      const optionsHtml = sceneIds.map(sid => `<option value="${sid}" ${c.next === sid ? 'selected' : ''}>${sid}</option>`).join("");
+      const condsHtml = (c.conditions || []).map((cond, ci) =>
+        `<div class="cond-item"><input type="text" value="${cond}" placeholder="key op value" onchange="updateChoice(${i}, 'conditions', ${ci}, this.value)"><button onclick="removeCondFromChoice(${i}, ${ci})">×</button></div>`
+      ).join("");
+      return `<div class="choice-item">
+        <span class="choice-remove" onclick="removeChoice(${i})">×</span>
+        <div class="field"><label>Label</label><input type="text" value="${escAttr(c.label)}" onchange="updateChoice(${i}, 'label', null, this.value)"></div>
+        <div class="field"><label>→ Next Scene</label><select onchange="updateChoice(${i}, 'next', null, this.value)"><option value="">—</option>${optionsHtml}</select></div>
+        <div class="field"><label>Conditions</label>${condsHtml}<button onclick="addCondToChoice(${i})" style="font-size:11px;margin-top:2px">+ condition</button></div>
+      </div>`;
+    }).join("");
+  }
+
+  let effectsHtml = "";
+  if (sc.end) {
+    effectsHtml = (sc.effects || []).map((eff, i) =>
+      `<div class="effect-item"><input type="text" value="${eff.expr}" onchange="updateEffect(${i}, this.value)"><button onclick="removeEffect(${i})">×</button></div>`
+    ).join("");
+  }
+
+  panel.innerHTML = `
+    <h3>Scene: ${state.selectedScene}
+      <span>
+        ${!isEntry ? `<button onclick="setEntry('${state.selectedScene}')" style="font-size:11px;padding:1px 6px">Set Entry</button>` : ''}
+        <button class="danger" onclick="deleteScene('${state.selectedScene}')" style="font-size:11px;padding:1px 6px">Delete</button>
+      </span>
+    </h3>
+    <div class="field"><label>Text</label><textarea rows="5" onchange="updateScene('text', this.value)">${escHtml(sc.text)}</textarea></div>
+    <div class="field"><label><input type="checkbox" ${sc.end ? 'checked' : ''} onchange="toggleEnd(this.checked)"> End scene</label></div>
+    ${sc.end ? `
+      <div class="field"><label>Effects</label>${effectsHtml}<button onclick="addEffect()" style="font-size:11px;margin-top:4px">+ effect</button></div>
+      <div class="field"><label>Log text</label><textarea rows="2" onchange="updateScene('log', this.value)">${escHtml(sc.log || "")}</textarea></div>
+    ` : `
+      <div class="field"><label>Choices</label>${choicesHtml}<button onclick="addChoice()" style="margin-top:6px">+ Choice</button></div>
+    `}
+  `;
+}
+
+// ── Actions: Navigation ─────────────────────────────────────
+
+function showTimeline(eraId) {
+  state.view = "timeline";
+  state.selectedEra = eraId;
+  state.selectedAdventure = null;
+  state.selectedScene = null;
+  state.selectedState = null;
+  render();
+}
+
+function showAdventure(advId) {
+  state.view = "adventure";
+  state.selectedAdventure = advId;
+  state.selectedScene = null;
+  state.selectedState = null;
+  render();
+}
+
+function selectScene(id) {
+  state.selectedScene = id;
+  state.selectedState = null;
+  renderDetail();
+  // Update node selection visuals
+  document.querySelectorAll(".scene-node").forEach(n => n.classList.toggle("selected", n.dataset.sceneId === id));
+}
+
+function selectGameState(id) {
+  state.selectedState = id;
+  state.selectedScene = null;
+  renderDetail();
+  renderSidebar();
+}
+
+// ── Actions: Eras ───────────────────────────────────────────
+
+function addEra() {
+  const id = prompt("Era ID (e.g., 'growth'):");
+  if (!id) return;
+  const name = prompt("Era Name:", id.charAt(0).toUpperCase() + id.slice(1) + " Era");
+  if (!name) return;
+  const years = parseInt(prompt("Number of years:", "12")) || 12;
+  const timeline = [];
+  for (let y = 1; y <= years; y++) {
+    timeline.push({ year: y, seasons: { spring: null, summer: null, autumn: null, winter: null } });
+  }
+  data.eras.push({ id, name, years, timeline });
+  showTimeline(id);
+}
+
+function addYear(eraId) {
+  const era = data.eras.find(e => e.id === eraId);
+  if (!era) return;
+  era.years++;
+  era.timeline.push({ year: era.years, seasons: { spring: null, summer: null, autumn: null, winter: null } });
+  render();
+}
+
+function removeLastYear(eraId) {
+  const era = data.eras.find(e => e.id === eraId);
+  if (!era || era.years <= 1) return;
+  era.years--;
+  era.timeline.pop();
+  render();
+}
+
+// ── Actions: Timeline Slots ─────────────────────────────────
+
+function editSlot(eraId, yearIdx, season) {
+  const era = data.eras.find(e => e.id === eraId);
+  const slot = era.timeline[yearIdx].seasons[season];
+
+  const advOptions = Object.entries(data.adventures).map(([id, a]) =>
+    `<option value="${id}" ${slot && slot.type === 'adventure' && slot.adventure === id ? 'selected' : ''}>${a.title} (${id})</option>`
+  ).join("");
+
+  const poolVal = slot && slot.type === "pool" ? slot.pool.join(", ") : "";
+
+  showModal(`
+    <h3>Year ${era.timeline[yearIdx].year} — ${SEASON_LABELS[season]}</h3>
+    <div class="field"><label>Type</label>
+      <select id="slot-type" onchange="document.getElementById('slot-adv').style.display=this.value==='adventure'?'block':'none';document.getElementById('slot-pool').style.display=this.value==='pool'?'block':'none'">
+        <option value="empty" ${!slot ? 'selected' : ''}>Empty</option>
+        <option value="adventure" ${slot && slot.type === 'adventure' ? 'selected' : ''}>Adventure</option>
+        <option value="pool" ${slot && slot.type === 'pool' ? 'selected' : ''}>Pool</option>
+      </select>
+    </div>
+    <div class="field" id="slot-adv" style="display:${slot && slot.type === 'adventure' ? 'block' : 'none'}">
+      <label>Adventure</label><select id="slot-adv-id"><option value="">—</option>${advOptions}</select>
+    </div>
+    <div class="field" id="slot-pool" style="display:${slot && slot.type === 'pool' ? 'block' : 'none'}">
+      <label>Pool (comma-separated IDs)</label><input type="text" id="slot-pool-ids" value="${poolVal}">
+    </div>
+    <div class="actions">
+      <button onclick="closeModal()">Cancel</button>
+      <button onclick="saveSlot('${eraId}', ${yearIdx}, '${season}')">Save</button>
+    </div>
+  `);
+}
+
+function saveSlot(eraId, yearIdx, season) {
+  const era = data.eras.find(e => e.id === eraId);
+  const type = document.getElementById("slot-type").value;
+  if (type === "empty") {
+    era.timeline[yearIdx].seasons[season] = null;
+  } else if (type === "adventure") {
+    const advId = document.getElementById("slot-adv-id").value;
+    if (advId) era.timeline[yearIdx].seasons[season] = { type: "adventure", adventure: advId };
+  } else if (type === "pool") {
+    const ids = document.getElementById("slot-pool-ids").value.split(",").map(s => s.trim()).filter(Boolean);
+    if (ids.length) era.timeline[yearIdx].seasons[season] = { type: "pool", pool: ids };
+  }
+  closeModal();
+  render();
+}
+
+// ── Actions: Adventures ─────────────────────────────────────
+
+function addAdventure() {
+  const id = prompt("Adventure ID (e.g., 'dark_forest'):");
+  if (!id || data.adventures[id]) return;
+  const title = prompt("Title:", id.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()));
+  if (!title) return;
+  data.adventures[id] = {
+    title, description: "", conditions: [], entry: "start",
+    scenes: {
+      start: { text: "The adventure begins...", choices: [], effects: [], log: "", end: false, _x: 300, _y: 60 }
+    }
+  };
+  showAdventure(id);
+}
+
+function editAdventureMeta() {
+  const adv = data.adventures[state.selectedAdventure];
+  const condsVal = (adv.conditions || []).join("\n");
+  showModal(`
+    <h3>Adventure Settings</h3>
+    <div class="field"><label>Title</label><input type="text" id="adv-title" value="${escAttr(adv.title)}"></div>
+    <div class="field"><label>Description</label><textarea id="adv-desc" rows="3">${escHtml(adv.description)}</textarea></div>
+    <div class="field"><label>Conditions (one per line)</label><textarea id="adv-conds" rows="3" placeholder="population >= 30&#10;has_palisade == true">${condsVal}</textarea></div>
+    <div class="field"><label style="color:var(--red)">Delete Adventure</label><button class="danger" onclick="deleteAdventure('${state.selectedAdventure}')">Delete</button></div>
+    <div class="actions">
+      <button onclick="closeModal()">Cancel</button>
+      <button onclick="saveAdventureMeta()">Save</button>
+    </div>
+  `);
+}
+
+function saveAdventureMeta() {
+  const adv = data.adventures[state.selectedAdventure];
+  adv.title = document.getElementById("adv-title").value;
+  adv.description = document.getElementById("adv-desc").value;
+  adv.conditions = document.getElementById("adv-conds").value.split("\n").map(s => s.trim()).filter(Boolean);
+  closeModal();
+  render();
+}
+
+function deleteAdventure(id) {
+  if (!confirm(`Delete adventure "${data.adventures[id].title}"?`)) return;
+  delete data.adventures[id];
+  state.selectedAdventure = null;
+  state.selectedScene = null;
+  state.view = state.selectedEra ? "timeline" : "welcome";
+  closeModal();
+  render();
+}
+
+// ── Actions: Scenes ─────────────────────────────────────────
+
+function addScene() {
+  const adv = data.adventures[state.selectedAdventure];
+  const id = prompt("Scene ID:");
+  if (!id || adv.scenes[id]) return;
+  // Position near center of viewport
+  const container = document.getElementById("graph-container");
+  const x = container.scrollLeft + container.clientWidth / 2 - 90;
+  const y = container.scrollTop + container.clientHeight / 2 - 40;
+  adv.scenes[id] = { text: "", choices: [], effects: [], log: "", end: false, _x: x, _y: y };
+  state.selectedScene = id;
+  render();
+}
+
+function deleteScene(id) {
+  const adv = data.adventures[state.selectedAdventure];
+  if (id === adv.entry) { alert("Cannot delete the entry scene. Set another scene as entry first."); return; }
+  if (!confirm(`Delete scene "${id}"?`)) return;
+  delete adv.scenes[id];
+  // Clean up references
+  for (const sc of Object.values(adv.scenes)) {
+    if (sc.choices) sc.choices = sc.choices.filter(c => c.next !== id);
+  }
+  state.selectedScene = null;
+  render();
+}
+
+function setEntry(id) {
+  data.adventures[state.selectedAdventure].entry = id;
+  render();
+}
+
+function updateScene(field, value) {
+  const sc = data.adventures[state.selectedAdventure].scenes[state.selectedScene];
+  sc[field] = value;
+}
+
+function toggleEnd(checked) {
+  const sc = data.adventures[state.selectedAdventure].scenes[state.selectedScene];
+  sc.end = checked;
+  if (checked) {
+    sc.choices = [];
+    if (!sc.effects) sc.effects = [];
+  } else {
+    sc.effects = [];
+    sc.log = "";
+    if (!sc.choices) sc.choices = [];
+  }
+  render();
+}
+
+// ── Actions: Choices ────────────────────────────────────────
+
+function addChoice() {
+  const sc = data.adventures[state.selectedAdventure].scenes[state.selectedScene];
+  sc.choices.push({ label: "New choice", next: "", conditions: [] });
+  renderDetail();
+  renderAdventureGraph();
+}
+
+function removeChoice(idx) {
+  const sc = data.adventures[state.selectedAdventure].scenes[state.selectedScene];
+  sc.choices.splice(idx, 1);
+  renderDetail();
+  renderAdventureGraph();
+}
+
+function updateChoice(idx, field, subIdx, value) {
+  const sc = data.adventures[state.selectedAdventure].scenes[state.selectedScene];
+  if (field === "conditions" && subIdx !== null) {
+    sc.choices[idx].conditions[subIdx] = value;
+  } else if (field === "conditions") {
+    // shouldn't happen
+  } else {
+    sc.choices[idx][field] = value;
+  }
+  drawArrows();
+}
+
+function addCondToChoice(choiceIdx) {
+  const sc = data.adventures[state.selectedAdventure].scenes[state.selectedScene];
+  if (!sc.choices[choiceIdx].conditions) sc.choices[choiceIdx].conditions = [];
+  sc.choices[choiceIdx].conditions.push("");
+  renderDetail();
+}
+
+function removeCondFromChoice(choiceIdx, condIdx) {
+  const sc = data.adventures[state.selectedAdventure].scenes[state.selectedScene];
+  sc.choices[choiceIdx].conditions.splice(condIdx, 1);
+  renderDetail();
+}
+
+// ── Actions: Effects ────────────────────────────────────────
+
+function addEffect() {
+  const sc = data.adventures[state.selectedAdventure].scenes[state.selectedScene];
+  sc.effects.push({ expr: "" });
+  renderDetail();
+}
+
+function removeEffect(idx) {
+  const sc = data.adventures[state.selectedAdventure].scenes[state.selectedScene];
+  sc.effects.splice(idx, 1);
+  renderDetail();
+}
+
+function updateEffect(idx, value) {
+  const sc = data.adventures[state.selectedAdventure].scenes[state.selectedScene];
+  sc.effects[idx].expr = value;
+}
+
+// ── Actions: Game States ────────────────────────────────────
+
+function addGameState() {
+  const id = prompt("State ID (e.g., 'has_boat'):");
+  if (!id || data.gameStates[id]) return;
+  data.gameStates[id] = { type: "bool", default: false, description: "" };
+  state.selectedState = id;
+  render();
+}
+
+function deleteGameState(id) {
+  if (!confirm(`Delete game state "${id}"?`)) return;
+  delete data.gameStates[id];
+  state.selectedState = null;
+  render();
+}
+
+function updateGameState(id, field, value) {
+  data.gameStates[id][field] = value;
+}
+
+function renameGameState(oldId, newId) {
+  if (newId === oldId || !newId) return;
+  if (data.gameStates[newId]) { alert("ID already exists"); return; }
+  data.gameStates[newId] = data.gameStates[oldId];
+  delete data.gameStates[oldId];
+  state.selectedState = newId;
+  render();
+}
+
+function parseDefault(val, type) {
+  if (type === "bool") return val === "true";
+  if (type === "number") return Number(val) || 0;
+  return val;
+}
+
+// ── Node Dragging ───────────────────────────────────────────
+
+function startDrag(e, sceneId) {
+  if (e.button !== 0) return;
+  const adv = data.adventures[state.selectedAdventure];
+  const scene = adv.scenes[sceneId];
+  state.dragging = { sceneId, startX: e.clientX, startY: e.clientY, origX: scene._x || 100, origY: scene._y || 100 };
+  state._dragged = false;
+  e.preventDefault();
+}
+
+document.addEventListener("mousemove", (e) => {
+  if (!state.dragging) return;
+  const dx = e.clientX - state.dragging.startX;
+  const dy = e.clientY - state.dragging.startY;
+  if (Math.abs(dx) > 3 || Math.abs(dy) > 3) state._dragged = true;
+
+  const adv = data.adventures[state.selectedAdventure];
+  const scene = adv.scenes[state.dragging.sceneId];
+  scene._x = Math.max(0, state.dragging.origX + dx);
+  scene._y = Math.max(0, state.dragging.origY + dy);
+
+  const node = document.querySelector(`[data-scene-id="${state.dragging.sceneId}"]`);
+  if (node) {
+    node.style.left = scene._x + "px";
+    node.style.top = scene._y + "px";
+  }
+  drawArrows();
+});
+
+document.addEventListener("mouseup", () => {
+  if (state.dragging) {
+    setTimeout(() => { state._dragged = false; }, 10);
+    state.dragging = null;
+  }
+});
+
+// ── Auto Layout ─────────────────────────────────────────────
+
+function autoLayoutScenes() {
+  const adv = data.adventures[state.selectedAdventure];
+  if (!adv) return;
+
+  const visited = new Set();
+  const levels = {};
+  function bfs(queue) {
+    while (queue.length) {
+      const [id, level] = queue.shift();
+      if (visited.has(id) || !adv.scenes[id]) continue;
+      visited.add(id);
+      if (!levels[level]) levels[level] = [];
+      levels[level].push(id);
+      const scene = adv.scenes[id];
+      if (scene.choices) {
+        scene.choices.forEach(c => { if (c.next && adv.scenes[c.next]) queue.push([c.next, level + 1]); });
+      }
+    }
+  }
+  bfs([[adv.entry, 0]]);
+  // Also catch disconnected scenes
+  for (const id of Object.keys(adv.scenes)) {
+    if (!visited.has(id)) {
+      const maxLevel = Math.max(0, ...Object.keys(levels).map(Number));
+      bfs([[id, maxLevel + 1]]);
+    }
+  }
+
+  const centerX = 400;
+  Object.entries(levels).forEach(([level, ids]) => {
+    const totalW = ids.length * 220;
+    const startX = centerX - totalW / 2 + 20;
+    ids.forEach((id, i) => {
+      adv.scenes[id]._x = startX + i * 220;
+      adv.scenes[id]._y = 40 + parseInt(level) * 180;
+    });
+  });
+
+  render();
+}
+
+// ── Modal ───────────────────────────────────────────────────
+
+function showModal(html) {
+  document.getElementById("modal-root").innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal">${html}</div></div>`;
+}
+
+function closeModal() {
+  document.getElementById("modal-root").innerHTML = "";
+}
+
+// ── YAML Import / Export ────────────────────────────────────
+
+function exportYAML() {
+  const out = buildExportData();
+  const yaml = jsyaml.dump(out, { lineWidth: 120, noRefs: true, quotingType: '"', forceQuotes: false });
+  const blob = new Blob([yaml], { type: "text/yaml" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "story.yaml";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function buildExportData() {
+  const out = {
+    title: data.title,
+    version: data.version,
+    game_states: {},
+    eras: [],
+    adventures: {}
+  };
+
+  // Game states
+  for (const [id, gs] of Object.entries(data.gameStates)) {
+    out.game_states[id] = { type: gs.type, default: gs.default, description: gs.description };
+  }
+
+  // Eras
+  for (const era of data.eras) {
+    const eraOut = { id: era.id, name: era.name, years: era.years, timeline: [] };
+    for (const yr of era.timeline) {
+      const yrOut = { year: yr.year };
+      for (const s of SEASONS) {
+        const slot = yr.seasons[s];
+        if (!slot) {
+          yrOut[s] = null;
+        } else if (slot.type === "adventure") {
+          yrOut[s] = { adventure: slot.adventure };
+        } else if (slot.type === "pool") {
+          yrOut[s] = { pool: slot.pool };
+        }
+      }
+      eraOut.timeline.push(yrOut);
+    }
+    out.eras.push(eraOut);
+  }
+
+  // Adventures
+  for (const [id, adv] of Object.entries(data.adventures)) {
+    const advOut = {
+      title: adv.title,
+      description: adv.description || "",
+      conditions: adv.conditions || [],
+      entry: adv.entry,
+      scenes: {}
+    };
+    for (const [sid, sc] of Object.entries(adv.scenes)) {
+      const scOut = { text: sc.text };
+      if (sc._x != null) scOut._x = Math.round(sc._x);
+      if (sc._y != null) scOut._y = Math.round(sc._y);
+      if (sc.end) {
+        scOut.end = true;
+        if (sc.effects && sc.effects.length) scOut.effects = sc.effects.map(e => e.expr);
+        if (sc.log) scOut.log = sc.log;
+      } else {
+        scOut.choices = (sc.choices || []).map(c => {
+          const cOut = { label: c.label, next: c.next || "" };
+          if (c.conditions && c.conditions.length) cOut.conditions = c.conditions;
+          return cOut;
+        });
+      }
+      advOut.scenes[sid] = scOut;
+    }
+    out.adventures[id] = advOut;
+  }
+
+  return out;
+}
+
+function exportJSON() {
+  const out = buildExportData();
+  const json = JSON.stringify(out, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "story.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportModular() {
+  // Export meta.json + individual adventure JSONs
+  // Downloads as individual files with a small delay between each
+  const out = buildExportData();
+
+  // meta.json = everything except adventures
+  const meta = {
+    title: out.title,
+    version: out.version,
+    game_states: out.game_states,
+    eras: out.eras
+  };
+  downloadFile("meta.json", JSON.stringify(meta, null, 2));
+
+  // Each adventure as separate file
+  let delay = 200;
+  for (const [id, adv] of Object.entries(out.adventures)) {
+    const advWithId = { id, ...adv };
+    setTimeout(() => downloadFile(`${id}.json`, JSON.stringify(advWithId, null, 2)), delay);
+    delay += 200;
+  }
+
+  const count = Object.keys(out.adventures).length;
+  setTimeout(() => alert(`Exported: meta.json + ${count} adventure files.\nMove meta.json to story/ and adventure files to story/adventures/`), delay);
+}
+
+function downloadFile(name, content) {
+  const blob = new Blob([content], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importModular() {
+  document.getElementById("folder-input").click();
+}
+
+function handleFolderImport(event) {
+  const files = Array.from(event.target.files).filter(f => f.name.endsWith(".json"));
+  if (!files.length) return;
+
+  const readers = files.map(f => new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve({ name: f.name, path: f.webkitRelativePath, content: e.target.result });
+    reader.readAsText(f);
+  }));
+
+  Promise.all(readers).then(results => {
+    let meta = null;
+    const adventures = {};
+
+    for (const r of results) {
+      try {
+        const parsed = JSON.parse(r.content);
+        if (r.name === "meta.json") {
+          meta = parsed;
+        } else if (parsed && typeof parsed === "object") {
+          const id = parsed.id || r.name.replace(".json", "");
+          adventures[id] = parsed;
+        }
+      } catch (err) {
+        console.warn("Skipped " + r.name + ": " + err.message);
+      }
+    }
+
+    if (!meta) {
+      alert("No meta.json found in selected folder");
+      return;
+    }
+
+    // Reconstruct single data structure
+    meta.adventures = adventures;
+    loadFromYAML(meta);
+    render();
+  });
+
+  event.target.value = "";
+}
+
+function importYAML() {
+  document.getElementById("file-input").click();
+}
+
+function handleFileImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      // Support both YAML and JSON
+      let parsed;
+      if (file.name.endsWith(".json")) {
+        parsed = JSON.parse(e.target.result);
+      } else {
+        parsed = jsyaml.load(e.target.result);
+      }
+      loadFromYAML(parsed);
+      render();
+    } catch (err) {
+      alert("YAML parse error: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = "";
+}
+
+function loadFromYAML(y) {
+  data.title = y.title || "Untitled";
+  data.version = y.version || 1;
+
+  // Game states
+  data.gameStates = {};
+  if (y.game_states) {
+    for (const [id, gs] of Object.entries(y.game_states)) {
+      data.gameStates[id] = { type: gs.type || "string", default: gs.default != null ? gs.default : "", description: gs.description || "" };
+    }
+  }
+
+  // Eras
+  data.eras = [];
+  if (y.eras) {
+    for (const era of y.eras) {
+      const eraData = { id: era.id, name: era.name, years: era.years || 12, timeline: [] };
+      if (era.timeline) {
+        for (const yr of era.timeline) {
+          const yrData = { year: yr.year, seasons: {} };
+          for (const s of SEASONS) {
+            if (!yr[s]) {
+              yrData.seasons[s] = null;
+            } else if (yr[s].adventure) {
+              yrData.seasons[s] = { type: "adventure", adventure: yr[s].adventure };
+            } else if (yr[s].pool) {
+              yrData.seasons[s] = { type: "pool", pool: yr[s].pool };
+            } else {
+              yrData.seasons[s] = null;
+            }
+          }
+          eraData.timeline.push(yrData);
+        }
+      }
+      // Fill missing years
+      while (eraData.timeline.length < eraData.years) {
+        eraData.timeline.push({ year: eraData.timeline.length + 1, seasons: { spring: null, summer: null, autumn: null, winter: null } });
+      }
+      data.eras.push(eraData);
+    }
+  }
+
+  // Adventures
+  data.adventures = {};
+  if (y.adventures) {
+    for (const [id, adv] of Object.entries(y.adventures)) {
+      const advData = {
+        title: adv.title || id,
+        description: adv.description || "",
+        conditions: adv.conditions || [],
+        entry: adv.entry || Object.keys(adv.scenes || {})[0] || "start",
+        scenes: {}
+      };
+      if (adv.scenes) {
+        for (const [sid, sc] of Object.entries(adv.scenes)) {
+          const scData = {
+            text: sc.text || "",
+            _x: sc._x != null ? sc._x : 100,
+            _y: sc._y != null ? sc._y : 100,
+            end: !!sc.end,
+            choices: [],
+            effects: [],
+            log: sc.log || ""
+          };
+          if (sc.end) {
+            scData.effects = (sc.effects || []).map(e => typeof e === "string" ? { expr: e } : e);
+          } else {
+            scData.choices = (sc.choices || []).map(c => ({
+              label: c.label || "",
+              next: c.next || "",
+              conditions: c.conditions || []
+            }));
+          }
+          advData.scenes[sid] = scData;
+        }
+      }
+      data.adventures[id] = advData;
+    }
+  }
+
+  state.view = "welcome";
+  state.selectedEra = null;
+  state.selectedAdventure = null;
+  state.selectedScene = null;
+  state.selectedState = null;
+}
+
+// ── Helpers ─────────────────────────────────────────────────
+
+function truncate(s, n) {
+  if (!s) return "";
+  s = s.replace(/\n/g, " ");
+  return s.length > n ? s.slice(0, n) + "…" : s;
+}
+
+function escHtml(s) {
+  if (!s) return "";
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function escAttr(s) {
+  if (!s) return "";
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+}
+
+// ── Init ────────────────────────────────────────────────────
+
+render();
+</script>
+</body>
+</html>

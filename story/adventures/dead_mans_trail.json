@@ -1,0 +1,225 @@
+{
+	"_info": "Dead Man's Trail — a body in the river leads to something worse. Mystery/dread adventure, no combat. Sets ritual_site flags for later eras. Obsidian blade is a cursed weapon — a sorcerer like Nal Ra can identify it in a later era.",
+	"id": "dead_mans_trail",
+	"title": "The Dead Man's Trail",
+	"description": "A corpse in the river. A trail into the deep forest. Something old and wrong at the end of it.",
+	"conditions": [],
+	"entry": "the_body",
+	"scenes": {
+		"the_body": {
+			"text": "The fisherman finds him at dawn. Face down in the shallows, caught on roots. Not one of yours.\n\nThey pull him onto the bank. A man, middle-aged. No wounds. No marks of violence. But his face — frozen in an expression that none of your people can name. Not pain. Not fear. Something older.\n\nHis hands are clasped around a small carved token. Wood, dark with age. The healer won't touch it.\n\nThe river flows from the north. Deep forest. No one goes there.\n\n{chieftain} stands over the body. The village watches.",
+			"choices": [
+				{
+					"label": "I'll follow the river north myself. Pick two men.",
+					"next": "go_yourself"
+				},
+				{
+					"label": "Send Aldric and his rangers. They know the deep woods.",
+					"next": "send_rangers"
+				},
+				{
+					"label": "Bury him. The deep forest is not our concern.",
+					"next": "bury_and_forget"
+				}
+			],
+			"_x": 400, "_y": 30
+		},
+
+		"go_yourself": {
+			"text": "Three days upriver. The trees grow closer. Older. The undergrowth thins and the canopy swallows the sky. Your two men speak less with every mile.\n\nOn the third evening, you smell it. Sweet. Wrong. Like fruit left to rot in a stone cellar.\n\nThe clearing opens without warning. A circle of stones, waist-high, arranged with deliberate precision. At the centre: a flat altar stone, dark with something that isn't moss. Carved symbols cover every surface — not runes you recognise. Not runes anyone would recognise.\n\nSilence. Not the absence of sound — the presence of it. A silence that pushes. No birds. No wind. No insects. Your teeth ache.\n\nOne of your men vomits. The other won't enter the circle. Neither will you, at first. But {chieftain} did not walk three days to stand at the edge.\n\nAs you step between the stones, something shifts at the edge of your vision. Gone when you look. A shape. A movement. Like a memory that isn't yours.",
+			"choices": [
+				{
+					"label": "Close your eyes. Open your mind. Let it show you.",
+					"next": "vision",
+					"conditions": ["wits >= 4"]
+				},
+				{
+					"label": "Search the altar. There must be more here.",
+					"next": "investigate_site"
+				},
+				{
+					"label": "Tear it down. Topple the stones. Break the altar.",
+					"next": "destroy_site"
+				},
+				{
+					"label": "Make camp at the edge. Watch. Wait. See if anyone comes.",
+					"next": "camp_and_wait"
+				}
+			],
+			"_x": 200, "_y": 210
+		},
+
+		"send_rangers": {
+			"text": "Aldric takes three rangers north. Good men. Steady.\n\nFive days pass. Six.\n\nOn the seventh morning, two of them come back. Not three. Aldric and one other. The third — young Maren — is not with them.\n\nAldric sits by the fire and doesn't speak for an hour. When he does, his voice is flat.\n\n'We found a place. Stones. An altar. Old. Wrong.' He stares at his hands. 'Maren walked into the circle. She said she saw people. Standing between the stones. We didn't see anything. She sat down on the altar stone and wouldn't move. Wouldn't speak. We carried her out. She walked back in.'\n\nHe stops. Drinks.\n\n'We left her there. She wouldn't come.'\n\nThe other ranger has not spoken since they returned. He sits in the corner of the longhouse and flinches at shadows.",
+			"choices": [
+				{
+					"label": "Gather warriors. We go back for Maren and we destroy that place.",
+					"next": "destroy_site_rangers"
+				},
+				{
+					"label": "No one goes near that place again. Forbid it. The forest is closed.",
+					"next": "forbid_site"
+				}
+			],
+			"_x": 600, "_y": 210
+		},
+
+		"destroy_site": {
+			"text": "It takes hours. The stones are heavier than they should be. Your men strain and curse and the forest watches.\n\nWhen the altar cracks, something shifts in the air. A pressure you hadn't noticed lifts. The forest exhales.\n\nYou find things beneath the altar stone. Bones. Small ones. You don't count them. You bury them where they lie. And something else — a dark blade, obsidian, resting on the bones. You bury that too. Your men don't argue.\n\nThe walk home is quiet. Your men don't talk about what they saw. Neither do you. But the dead man's face makes sense now. He saw this place. He understood what it was.\n\nThe healer burns the carved token when you return. The smoke smells sweet. Wrong.",
+			"end": true,
+			"effects": [
+				"alignment += 5",
+				"set ritual_site_found = true",
+				"set ritual_site_destroyed = true",
+				"set dead_man_investigated = true"
+			],
+			"log": "{chieftain} followed the dead man's trail into the deep forest and destroyed an ancient ritual site. What was found beneath the altar was buried and not spoken of.",
+			"_x": 200, "_y": 570
+		},
+
+		"vision": {
+			"text": "You close your eyes. You breathe out. You stop resisting.\n\nIt comes in flashes. Not images — impressions. Like staring at the sun and then closing your eyes.\n\nFigures. Hooded. Moving in a circle around the altar. Their mouths open but the sound is — wrong. Too low. Below hearing. You feel it in your chest.\n\nA child on the stone. Still. Willing. The figures place their hands on the altar and the stone drinks. You don't see what happens next. The vision won't show you. But the child is gone and something else is there. Something that was always there, underneath, and now it's closer to the surface.\n\nThe last flash: a man. Running. The dead man. Younger, alive, terrified. He has the token. He has seen this. He runs south. Toward the river.\n\nYou open your eyes. You're on your knees. Your nose is bleeding. Your men are shouting your name from the tree line.\n\nYou understand this place now. Not what built it. Not who. But what it's for.",
+			"choices": [
+				{
+					"label": "Search the altar. I know what's under there now.",
+					"next": "investigate_site"
+				},
+				{
+					"label": "Tear it down. All of it. Now.",
+					"next": "destroy_site"
+				}
+			],
+			"_x": 60, "_y": 300
+		},
+
+		"investigate_site": {
+			"text": "You step into the circle. The silence thickens. Your vision swims for a moment, then clears — clearer than before, as if the air itself has thinned.\n\nThe altar stone has a seam. You run your fingers along it. Your men shout something from the tree line. You don't hear them.\n\nThe slab shifts. Beneath it: a hollow, lined with black cloth that crumbles at your touch. Bones — small ones, arranged in a pattern. And resting on top of them, a blade.\n\nObsidian. But not knapped or chipped like any stone tool you've seen. It looks grown. The edge catches no light. Your reflection in the flat of the blade is wrong — slightly delayed, as if it's deciding whether to show you.\n\nOne of your men has come to the edge of the circle. 'We should destroy this place,' he says. His voice is steady but his hands are not.\n\nThe blade is warm. It fits your hand perfectly. It would fit anyone's hand perfectly.",
+			"choices": [
+				{
+					"label": "Take the blade. Wrap it. Bring it home.",
+					"next": "take_blade"
+				},
+				{
+					"label": "He's right. Put it back. Tear this place down.",
+					"next": "destroy_site_after_find"
+				},
+				{
+					"label": "Leave the blade. Take only the dead man's token. Mark this place.",
+					"next": "leave_site"
+				}
+			],
+			"_x": 60, "_y": 390
+		},
+
+		"take_blade": {
+			"text": "You wrap it in leather. It weighs nothing. That's wrong too.\n\nThe walk home is fast. Your men don't speak. They watch the bundle on your belt the way dogs watch a snake.\n\nAt the village, the healer takes one look and leaves the room. The elders gather. You unwrap it on the council table. The firelight won't touch it — shadows pool around the blade like water.\n\n'This is old,' the eldest says. 'Older than the stones. Older than the forest.' He won't say more.\n\nYou test the edge on a piece of cured leather. It parts like smoke. The cut is clean. Too clean. The leather doesn't know it's been cut — the edges don't curl or fray. They simply stop being connected.\n\nThe healer sends word from her hut: 'A wise man could tell you what it is. We have no wise men.'\n\nYou keep the blade. It sits on the table like a hole in the world. The firelight bends around it.",
+			"end": true,
+			"effects": [
+				"alignment -= 10",
+				"set ritual_site_found = true",
+				"set has_obsidian_blade = true",
+				"set has_ritual_token = true",
+				"set dead_man_investigated = true"
+			],
+			"log": "{chieftain} found an obsidian blade beneath a ritual altar in the deep forest. The healer says a sorcerer could identify it. {chieftain} keeps it.",
+			"_x": 60, "_y": 570
+		},
+
+		"destroy_site_after_find": {
+			"text": "You put the blade back. Your hand doesn't want to let go. You make it.\n\nThe stones come down. Your men work with desperate energy — they want to leave this place. The altar cracks. The pressure lifts. The blade is buried under a ton of broken rock.\n\nYou find the small bones again as the stones fall. You don't count them. You don't need to.\n\nThe walk home takes two days. No one talks about the blade. But you dream about it. The edge. The weight of nothing. The way it fit.\n\nThe healer burns the dead man's token. The smoke rises straight up despite the wind.",
+			"end": true,
+			"effects": [
+				"alignment += 5",
+				"set ritual_site_found = true",
+				"set ritual_site_destroyed = true",
+				"set dead_man_investigated = true"
+			],
+			"log": "{chieftain} found something beneath the altar — and chose to bury it again. The ritual site was destroyed. What was found will not be spoken of.",
+			"_x": 200, "_y": 570
+		},
+
+		"leave_site": {
+			"text": "You take the dead man's wooden token. Leave the blade. Leave the bones. Slide the altar slab back into place.\n\nYou mark a tree at the edge of the clearing. Three cuts, deep. Then you turn around.\n\nThe walk home takes two days. Your men walk faster going back. So do you.\n\nAt the village, the healer examines the token. She goes pale. 'My grandmother spoke of such places. They are not for us. They were not built by hands like ours.'\n\nThe token is buried with the dead man. Deep. The healer salts the grave.\n\nYou do not forbid the forest. But no one asks to go north. Not for a long time.\n\nSometimes you think about the blade. The weight of nothing. You tell yourself you made the right choice. You tell yourself often.",
+			"end": true,
+			"effects": [
+				"alignment += 0",
+				"set ritual_site_found = true",
+				"set dead_man_investigated = true"
+			],
+			"log": "{chieftain} found an ancient ritual site and something beneath the altar. Both were left undisturbed. The dead man was buried with his token.",
+			"_x": 340, "_y": 570
+		},
+
+		"camp_and_wait": {
+			"text": "You make camp fifty paces from the clearing. No fire. You watch.\n\nThe first night, nothing. The silence from the stones presses against your ears. Your men sleep in shifts. No one sleeps well.\n\nThe second day. Nothing. Birds don't come here. No insects. No wind in the leaves, though the branches move. Your men grow restless. One of them whispers that he sees shapes between the stones when he's not looking directly. The other tells him to shut up.\n\nThe second night. One of your men wakes you. 'I heard footsteps,' he whispers. You listen. Nothing. Just the silence. Thicker now.\n\nThe third morning. Nothing has come. Nothing will come. Whatever uses this place doesn't need to visit. It's already here. It's in the stones. It's in the stillness.\n\nYour men are done. You can see it in their faces. They won't say it, but another night here and they'll leave with or without you.",
+			"choices": [
+				{
+					"label": "Enough. Tear this place apart before we leave.",
+					"next": "destroy_site"
+				},
+				{
+					"label": "Search the altar before we go. I need to understand this.",
+					"next": "investigate_site"
+				},
+				{
+					"label": "We've seen enough. Mark it and go home.",
+					"next": "leave_site_after_camp"
+				}
+			],
+			"_x": 400, "_y": 390
+		},
+
+		"leave_site_after_camp": {
+			"text": "You mark the tree. Three cuts. Your men are already walking.\n\nThree days camped at the edge of something old and wrong, and all you have is the dead man's token and the memory of a silence that had weight.\n\nBack at the village, the healer listens. She nods. 'You were wise not to touch the stones,' she says. 'Wiser not to stay longer.'\n\nThe token is buried with the dead man. The healer salts the grave. Life goes on.\n\nBut sometimes at night, just before sleep takes you, you see it again — the clearing, the stones, the shapes at the edge of your vision. You open your eyes and they're gone. You close them and they're waiting.",
+			"end": true,
+			"effects": [
+				"alignment += 0",
+				"set ritual_site_found = true",
+				"set dead_man_investigated = true"
+			],
+			"log": "{chieftain} camped three days at the ritual site. Nothing came. The site was left undisturbed.",
+			"_x": 400, "_y": 570
+		},
+
+		"destroy_site_rangers": {
+			"text": "Six warriors. Aldric leads, though his hands shake. Four days north.\n\nThe clearing is as he described. The stones. The altar. The silence that presses.\n\nMaren sits on the altar stone. Alive. Thin. She looks up when you arrive and smiles. It is not a good smile.\n\n'You see them now,' she says. Her eyes track something behind you. There is nothing behind you. 'Everyone sees them, if they stay long enough.'\n\nYour warriors tear the stones down. Maren screams when the altar cracks — a sound that empties the birds from the trees for a mile. Then she goes quiet. Limp. Your men carry her home.\n\nShe lives. She eats. She sleeps. But she doesn't speak again. Not ever. She sits by the fire and watches the corners of the room. Her eyes follow things that aren't there.",
+			"end": true,
+			"effects": [
+				"alignment += 5",
+				"population -= 1",
+				"set ritual_site_found = true",
+				"set ritual_site_destroyed = true",
+				"set ranger_traumatized = true",
+				"set dead_man_investigated = true"
+			],
+			"log": "Warriors destroyed a ritual site in the deep forest. The ranger Maren was recovered but lost to a silence that never lifted. The site is rubble now. The forest remembers.",
+			"_x": 500, "_y": 390
+		},
+
+		"forbid_site": {
+			"text": "{chieftain} speaks at the evening fire. The forest north of the river is forbidden. No one goes. No exceptions.\n\nThe village nods. No one argues. Aldric's face is enough.\n\nThe other ranger — the quiet one — leaves the village a week later. Takes nothing. Walks north. Aldric watches him go and says nothing.\n\nYou never learn what happened to Maren. Or to the ranger who followed her. The forest keeps them both.\n\nThe healer buries the dead man's token at a crossroads. She says the old words. Whether they work, no one knows.\n\nSometimes, on still nights, the fishermen say they hear whispering from upriver. Not words. Not quite. They don't fish after dark anymore.",
+			"end": true,
+			"effects": [
+				"alignment -= 5",
+				"population -= 2",
+				"set ritual_site_found = true",
+				"set ritual_site_forbidden = true",
+				"set ranger_traumatized = true",
+				"set dead_man_investigated = true"
+			],
+			"log": "A ritual site was found in the deep forest. {chieftain} forbade the area. Two people were lost to whatever lives there. The whispering continues.",
+			"_x": 700, "_y": 390
+		},
+
+		"bury_and_forget": {
+			"text": "The dead man is buried outside the village wall. No name. No marker. The healer says the words. The carved token goes into the ground with him.\n\nLife continues. The fishermen fish. The hunters hunt. No one goes north.\n\nBut sometimes a child asks about the man in the river. Where did he come from? What was the thing in his hands? Why did he look like that?\n\nNo one answers. In time, the children stop asking.\n\nThe river still flows from the north. The deep forest is still there. Whatever killed that man is still there too. It doesn't need you to come looking. It knows where the river goes.",
+			"end": true,
+			"effects": [
+				"alignment -= 5",
+				"set dead_man_investigated = false"
+			],
+			"log": "A dead stranger was found in the river. He was buried without investigation. The deep forest was left alone.",
+			"_x": 700, "_y": 210
+		}
+	}
+}

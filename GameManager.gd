@@ -22,8 +22,19 @@ var game_state: Dictionary = {
 	"generation":     1,
 	"year":           1,
 	"season":         1,   # 1=Spring 2=Summer 3=Autumn 4=Winter
+	"season_phase":   "adventure",  # "adventure" → "village" → next season
 	"decision_count": 0,
 	"flags":          {},
+	# Combat stats — assigned at generation
+	"chieftain_might": 2,
+	"chieftain_wits":  2,
+	"chieftain_grit":  2,
+	"chieftain_endurance": 11,  # grit * 3 + 5
+	# Weapon
+	"weapon_base":    "",   # spear/club/shortsword/axe/bow
+	"weapon_name":    "",   # named once legend >= 1
+	"weapon_legend":  0,
+	"has_shield":     false,
 }
 
 var chronicle_log:    Array  = []
@@ -37,6 +48,23 @@ var _pending_follow: String     = ""
 
 ## Log file
 var _log_file: FileAccess = null
+
+## Story system (loaded from story.json)
+var _story_loaded:        bool       = false
+var _story:               Dictionary = {}     # Full story.json data
+var _story_adventures:    Dictionary = {}     # story.adventures
+var _story_timeline:      Array      = []     # Flattened: [{era_id, year, season, slot}]
+var _story_pos:           int        = 0      # Position in flattened timeline
+var _story_adventure_id:  String     = ""     # Currently playing adventure
+var _story_scene_id:      String     = ""     # Current scene in adventure
+
+## Combat system
+var _damage_tables:       Dictionary = {}     # Loaded from story/damage_tables.json
+var _combat_active:       bool       = false
+var _combat_data:         Dictionary = {}     # Current combat scene data
+var _combat_round:        int        = 0
+var _combat_enemy_hp:     int        = 0
+var _combat_group_status: String     = "strong"  # strong/holding/wavering/breaking
 
 # ---------------------------------------------------------------------------
 # Name-syllable system (Tolkien-/Germanic-inspired, inheritable)
@@ -210,6 +238,8 @@ var EVENTS: Dictionary = {}
 func _ready() -> void:
 	_setup_log()
 	_load_events()
+	_load_story()
+	_load_damage_tables()
 	call_deferred("_initialize")
 
 
@@ -263,6 +293,17 @@ func resume_current_event() -> void:
 		call_deferred("_trigger_marriage_event")
 	elif current_event_id == "chieftain_heir":
 		call_deferred("_trigger_heir_event")
+	elif current_event_id.begins_with("combat:") and _combat_active:
+		call_deferred("_trigger_combat_scene")
+	elif current_event_id.begins_with("story:") and _story_loaded:
+		# Resume story adventure — re-parse adventure/scene from event_id
+		var parts: PackedStringArray = current_event_id.split(":")
+		if parts.size() >= 3:
+			_story_adventure_id = parts[1]
+			_story_scene_id = parts[2]
+			call_deferred("_trigger_story_scene")
+		else:
+			call_deferred("_trigger_next_story_slot")
 	elif current_event_id != "" and EVENTS.has(current_event_id):
 		var event: Dictionary = EVENTS[current_event_id]
 		var display_text: String = "[b]── %s ──[/b]\n%s" % [
@@ -283,15 +324,19 @@ func new_game() -> void:
 		"generation":     1,
 		"year":           1,
 		"season":         1,
+		"season_phase":   "adventure",
 		"decision_count": 0,
 		"flags":          {},
 	}
 	chronicle_log    = []
 	undo_stack       = []
 	current_event_id = ""
-	_gen             = {}
-	_gen_choices     = []
-	_pending_follow  = ""
+	_gen                 = {}
+	_gen_choices         = []
+	_pending_follow      = ""
+	_story_pos           = 0
+	_story_adventure_id  = ""
+	_story_scene_id      = ""
 	_emit_gen_event("gen_new_game_choice")
 
 # ---------------------------------------------------------------------------
@@ -403,6 +448,26 @@ func _finalize_generation() -> void:
 	var chieftain: Dictionary = _gen_chieftain_from_kronrat(npcs, alignment)
 	game_state["chieftain"] = chieftain
 
+	# Chieftain combat stats — random allocation of 9 points across 3 stats
+	var stat_pool: int = 9
+	var might: int = 1 + randi() % 3    # 1-3
+	stat_pool -= might
+	var wits: int = 1 + randi() % min(3, stat_pool - 1)
+	stat_pool -= wits
+	var grit: int = max(1, stat_pool)
+	game_state["chieftain_might"] = might
+	game_state["chieftain_wits"]  = wits
+	game_state["chieftain_grit"]  = grit
+	game_state["chieftain_endurance"] = grit * 3 + 5
+
+	# Starting weapon — random
+	var weapons: Array = ["spear", "club", "shortsword", "axe"]
+	var starting_weapon: String = weapons[randi() % weapons.size()]
+	game_state["weapon_base"] = starting_weapon
+	game_state["weapon_name"] = ""
+	game_state["weapon_legend"] = 0
+	game_state["has_shield"] = randi() % 3 == 0   # 33% chance
+
 	game_state["settlement"] = {
 		"name":           "",
 		"location":       loc,
@@ -427,18 +492,25 @@ func _finalize_generation() -> void:
 	_log_entry("chieftain_new", {}, "Chieftain %s takes command (from year 1)." % chieftain.get("name", "?"))
 
 	state_changed.emit(game_state.duplicate(true))
-	call_deferred("trigger_event", "village_founding")
+	if _story_loaded:
+		call_deferred("_trigger_next_story_slot")
+	else:
+		call_deferred("trigger_event", "village_founding")
 
 # ---------------------------------------------------------------------------
 # Village naming (triggers after 5 decisions)
 # ---------------------------------------------------------------------------
 func _check_naming_trigger() -> void:
 	var already_named: bool = game_state.get("settlement", {}).get("name", "") != ""
-	if not already_named and game_state.get("decision_count", 0) >= 5:
+	var dc: int = game_state.get("decision_count", 0)
+	_log_debug("_check_naming_trigger: named=%s, decisions=%d" % [str(already_named), dc])
+	if not already_named and dc >= 5:
+		_log_debug("_check_naming_trigger: firing _trigger_naming_event (deferred)")
 		call_deferred("_trigger_naming_event")
 
 
 func _trigger_naming_event() -> void:
+	_log_debug("_trigger_naming_event: entering")
 	push_undo_snapshot()
 	current_event_id = "village_naming"
 	_emit_naming_choices()
@@ -665,6 +737,7 @@ func trigger_event(event_id: String) -> void:
 
 
 func apply_choice(event_id: String, choice_index: int) -> void:
+	_log_debug("apply_choice: event_id=%s, index=%d" % [event_id, choice_index])
 	if event_id.begins_with("gen_"):
 		_apply_gen_choice(choice_index)
 		return
@@ -676,6 +749,12 @@ func apply_choice(event_id: String, choice_index: int) -> void:
 		return
 	if event_id == "chieftain_heir":
 		_apply_heir_choice(choice_index)
+		return
+	if _combat_active or event_id.begins_with("combat:"):
+		_apply_combat_choice(choice_index)
+		return
+	if event_id.begins_with("story:") or _story_adventure_id != "":
+		_apply_story_choice(choice_index)
 		return
 
 	if not EVENTS.has(event_id):
@@ -706,7 +785,14 @@ func apply_choice(event_id: String, choice_index: int) -> void:
 			delta[stat]      = int(effect[stat])
 
 	game_state["decision_count"] = game_state.get("decision_count", 0) + 1
-	game_state["season"]        = (game_state.get("season", 1) % 4) + 1
+
+	# Season phase: adventure → village → next season starts
+	var phase: String = game_state.get("season_phase", "adventure")
+	if phase == "adventure":
+		game_state["season_phase"] = "village"
+	else:
+		game_state["season_phase"] = "adventure"
+		game_state["season"]      = (int(game_state.get("season", 1)) % 4) + 1
 
 	_log_entry(event_id, delta, choice.get("log_text", "Entscheidung getroffen."))
 	state_changed.emit(game_state.duplicate(true))
@@ -723,12 +809,16 @@ func apply_choice(event_id: String, choice_index: int) -> void:
 		and game_state.get("decision_count", 0) >= 5
 	)
 	if next != "":
+		_log_debug("apply_choice: branching to next_event=%s" % next)
 		call_deferred("trigger_event", next)
 	elif naming_pending:
+		_log_debug("apply_choice: branching to naming_pending (pass — handled by _check_naming_trigger)")
 		pass
 	elif _check_life_events_trigger():
+		_log_debug("apply_choice: branching to life_events")
 		pass
 	else:
+		_log_debug("apply_choice: branching to _pick_and_trigger_next_event")
 		call_deferred("_pick_and_trigger_next_event")
 
 # ---------------------------------------------------------------------------
@@ -891,16 +981,24 @@ func _apply_heir_choice(index: int) -> void:
 
 
 func _pick_and_trigger_next_event() -> void:
-	## Picks a random unplayed event that matches current game conditions.
+	## If story system is active, delegate to story timeline.
+	if _story_loaded:
+		if _story_adventure_id != "":
+			call_deferred("_trigger_story_scene")
+		else:
+			call_deferred("_trigger_next_story_slot")
+		return
+	## Picks a random unplayed event matching current conditions and season_phase.
 	var played: Array = []
 	for entry: Dictionary in chronicle_log:
 		var eid: String = str(entry.get("event_id", ""))
 		if not played.has(eid):
 			played.append(eid)
 
-	var alignment:  int    = game_state.get("alignment", 0)
-	var generation: int    = game_state.get("generation", 1)
-	var trade:      String = game_state.get("settlement", {}).get("primary_trade", "")
+	var alignment:    int    = game_state.get("alignment", 0)
+	var generation:   int    = game_state.get("generation", 1)
+	var trade:        String = game_state.get("settlement", {}).get("primary_trade", "")
+	var phase:        String = game_state.get("season_phase", "adventure")
 
 	var pool: Array = []
 	for eid: String in EVENTS.keys():
@@ -908,7 +1006,12 @@ func _pick_and_trigger_next_event() -> void:
 			continue
 		if played.has(eid):
 			continue
-		var cond: Dictionary = EVENTS[eid].get("conditions", {})
+		var ev: Dictionary = EVENTS[eid]
+		# Filter by event type — default "village" for backwards compat
+		var ev_type: String = str(ev.get("type", "village"))
+		if ev_type != phase:
+			continue
+		var cond: Dictionary = ev.get("conditions", {})
 		if alignment  < int(cond.get("alignment_min",  -100)): continue
 		if alignment  > int(cond.get("alignment_max",   100)): continue
 		if generation < int(cond.get("generation_min",    1)): continue
@@ -921,11 +1024,18 @@ func _pick_and_trigger_next_event() -> void:
 		if forbid_flag != "" and game_state.get("flags", {}).has(forbid_flag): continue
 		pool.append(eid)
 
-	_log_debug("_pick_next_event: pool=%d, played=%d, align=%d, gen=%d, trade=%s" % [
-		pool.size(), played.size(), alignment, generation, trade
+	_log_debug("_pick_next_event: phase=%s, pool=%d, played=%d, align=%d, gen=%d, trade=%s" % [
+		phase, pool.size(), played.size(), alignment, generation, trade
 	])
 
 	if pool.is_empty():
+		if phase == "adventure":
+			# No adventure events available — skip to village phase
+			_log_debug("No adventure events — skipping to village phase")
+			game_state["season_phase"] = "village"
+			call_deferred("_pick_and_trigger_next_event")
+			return
+		# Village phase exhausted too
 		_log_debug("Event pool exhausted — no eligible unplayed events")
 		event_triggered.emit("pool_empty",
 			"[i]The chronicles fall silent. There are no more tales to tell in this age.\n\nAdvance to the next generation to continue.[/i]",
@@ -934,8 +1044,680 @@ func _pick_and_trigger_next_event() -> void:
 		return
 
 	pool.shuffle()
-	_log_debug("Triggering event: %s" % pool[0])
+	_log_debug("Triggering event: %s (type=%s)" % [pool[0], phase])
 	trigger_event(pool[0])
+
+# ---------------------------------------------------------------------------
+# Story system — CYOA adventures from story.json
+# ---------------------------------------------------------------------------
+
+func _load_story() -> void:
+	## Loads story from modular files: story/meta.json + story/adventures/*.json
+	## Falls back to single story.json for backwards compatibility.
+	var meta_path := "res://story/meta.json"
+	var single_path := "res://story.json"
+
+	if FileAccess.file_exists(meta_path):
+		_load_story_modular(meta_path)
+	elif FileAccess.file_exists(single_path):
+		_load_story_single(single_path)
+	else:
+		_log_debug("No story files found — using legacy event system")
+
+
+func _load_story_single(path: String) -> void:
+	## Loads a single story.json (backwards compat)
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not parsed is Dictionary:
+		push_error("GameManager: %s parse failed" % path)
+		return
+
+	_story = parsed
+	_story_adventures = parsed.get("adventures", {})
+	_build_story_timeline()
+	_story_loaded = true
+	_log_debug("Story loaded (single file): %d adventures, %d timeline slots" % [
+		_story_adventures.size(), _story_timeline.size()])
+
+
+func _load_story_modular(meta_path: String) -> void:
+	## Loads story/meta.json + merges all story/adventures/*.json
+	var file := FileAccess.open(meta_path, FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not parsed is Dictionary:
+		push_error("GameManager: meta.json parse failed")
+		return
+
+	_story = parsed
+	_story_adventures = {}
+
+	# Load all adventure files from story/adventures/
+	var adv_dir := DirAccess.open("res://story/adventures/")
+	if adv_dir != null:
+		adv_dir.list_dir_begin()
+		var fname := adv_dir.get_next()
+		while fname != "":
+			if not adv_dir.current_is_dir() and fname.ends_with(".json"):
+				var adv_file := FileAccess.open("res://story/adventures/" + fname, FileAccess.READ)
+				if adv_file:
+					var adv_parsed = JSON.parse_string(adv_file.get_as_text())
+					adv_file.close()
+					if adv_parsed is Dictionary and adv_parsed.has("id"):
+						_story_adventures[str(adv_parsed["id"])] = adv_parsed
+					elif adv_parsed is Dictionary:
+						# Use filename without extension as ID
+						var adv_id: String = fname.get_basename()
+						_story_adventures[adv_id] = adv_parsed
+			fname = adv_dir.get_next()
+		adv_dir.list_dir_end()
+
+	_build_story_timeline()
+	_story_loaded = true
+	_log_debug("Story loaded (modular): %d adventures, %d timeline slots" % [
+		_story_adventures.size(), _story_timeline.size()])
+
+
+func _build_story_timeline() -> void:
+	_story_timeline = []
+	var season_map := {"spring": 1, "summer": 2, "autumn": 3, "winter": 4}
+	var year_offset := 0
+
+	for era: Dictionary in _story.get("eras", []):
+		var era_id: String = str(era.get("id", ""))
+		for yr: Dictionary in era.get("timeline", []):
+			var year_num: int = int(yr.get("year", 1))
+			for season_name: String in ["spring", "summer", "autumn", "winter"]:
+				var slot = yr.get(season_name)
+				if slot == null:
+					continue
+				if slot is Dictionary and slot.is_empty():
+					continue
+				_story_timeline.append({
+					"era_id":      era_id,
+					"year":        year_offset + year_num,
+					"season":      season_map.get(season_name, 1),
+					"season_name": season_name,
+					"slot":        slot,
+				})
+		year_offset += int(era.get("years", 12))
+
+
+func _trigger_next_story_slot() -> void:
+	if _story_pos >= _story_timeline.size():
+		if _pending_follow != "":
+			event_triggered.emit("story_complete",
+				"[i]%s[/i]\n\n[i]The chronicles are complete. The story of this village has been told.[/i]" % _pending_follow, [])
+			_pending_follow = ""
+		else:
+			event_triggered.emit("story_complete",
+				"[i]The chronicles are complete. The story of this village has been told.\n\nAdvance to the next generation to continue.[/i]", [])
+		return
+
+	var slot_data: Dictionary = _story_timeline[_story_pos]
+	var slot = slot_data.get("slot")
+
+	# Update game state to match timeline position
+	game_state["year"]   = slot_data.get("year", game_state.get("year", 1))
+	game_state["season"] = slot_data.get("season", 1)
+
+	# Heal endurance between seasons
+	var max_endurance: int = int(game_state.get("chieftain_grit", 2)) * 3 + 5
+	game_state["chieftain_endurance"] = max_endurance
+	game_state["flags"].erase("chieftain_wounded")
+
+	state_changed.emit(game_state.duplicate(true))
+
+	# Determine which adventure to play
+	var adv_id: String = ""
+	if slot is Dictionary:
+		if slot.has("adventure"):
+			adv_id = str(slot["adventure"])
+		elif slot.has("pool"):
+			var pool: Array = slot["pool"]
+			if not pool.is_empty():
+				pool.shuffle()
+				adv_id = str(pool[0])
+
+	if adv_id == "" or not _story_adventures.has(adv_id):
+		_log_debug("Story: skipping empty/invalid slot at pos %d" % _story_pos)
+		_story_pos += 1
+		call_deferred("_trigger_next_story_slot")
+		return
+
+	# Check adventure conditions
+	var adv: Dictionary = _story_adventures[adv_id]
+	for cond: String in adv.get("conditions", []):
+		if not _check_story_condition(str(cond)):
+			_log_debug("Story: adventure '%s' conditions not met, skipping" % adv_id)
+			_story_pos += 1
+			call_deferred("_trigger_next_story_slot")
+			return
+
+	_start_story_adventure(adv_id)
+
+
+func _start_story_adventure(adv_id: String) -> void:
+	var adv: Dictionary = _story_adventures[adv_id]
+	_story_adventure_id = adv_id
+	_story_scene_id = str(adv.get("entry", ""))
+
+	push_undo_snapshot()
+	current_event_id = "story:%s:%s" % [adv_id, _story_scene_id]
+
+	_log_debug("Story: starting adventure '%s', entry scene '%s'" % [adv_id, _story_scene_id])
+	_trigger_story_scene()
+
+
+func _trigger_story_scene() -> void:
+	var adv: Dictionary = _story_adventures.get(_story_adventure_id, {})
+	var scenes: Dictionary = adv.get("scenes", {})
+	var scene: Dictionary = scenes.get(_story_scene_id, {})
+
+	if scene.is_empty():
+		push_warning("Story: scene '%s' not found in adventure '%s'" % [
+			_story_scene_id, _story_adventure_id])
+		_end_story_adventure()
+		return
+
+	# Combat scene — delegate to combat system
+	if scene.has("combat"):
+		_trigger_combat_scene()
+		return
+
+	current_event_id = "story:%s:%s" % [_story_adventure_id, _story_scene_id]
+
+	var text:  String = _format_text(str(scene.get("text", "")))
+	var title: String = adv.get("title", _story_adventure_id)
+
+	var display_text: String
+	if _pending_follow != "":
+		display_text = "[i]%s[/i]\n\n[b]── %s ──[/b]\n%s" % [_pending_follow, title, text]
+		_pending_follow = ""
+	else:
+		display_text = "[b]── %s ──[/b]\n%s" % [title, text]
+
+	# End scene — apply effects, show as follow text, advance
+	if scene.get("end", false):
+		_apply_story_effects(scene.get("effects", []))
+		var log_text: String = str(scene.get("log", ""))
+		if log_text != "":
+			var delta: Dictionary = _build_story_delta(scene.get("effects", []))
+			_log_entry(_story_adventure_id, delta, log_text)
+		_pending_follow = text
+		_story_adventure_id = ""
+		_story_scene_id = ""
+		_story_pos += 1
+		state_changed.emit(game_state.duplicate(true))
+		_check_naming_trigger()
+		if not _check_life_events_trigger():
+			call_deferred("_trigger_next_story_slot")
+		return
+
+	# Build choices — filter by conditions
+	var choices: Array = []
+	var raw_choices: Array = scene.get("choices", [])
+	for c: Dictionary in raw_choices:
+		var conds: Array = c.get("conditions", [])
+		var pass_all := true
+		for cond in conds:
+			if not _check_story_condition(str(cond)):
+				pass_all = false
+				break
+		if pass_all:
+			choices.append({
+				"label": str(c.get("label", "...")),
+				"_story_next": str(c.get("next", "")),
+			})
+
+	if choices.is_empty():
+		_log_debug("Story: no valid choices in scene '%s', ending adventure" % _story_scene_id)
+		_end_story_adventure()
+		return
+
+	_gen_choices = choices
+	event_triggered.emit(current_event_id, display_text, choices)
+
+
+func _apply_story_choice(choice_index: int) -> void:
+	if choice_index >= _gen_choices.size():
+		return
+
+	var choice: Dictionary = _gen_choices[choice_index]
+	var next_scene: String = str(choice.get("_story_next", ""))
+
+	game_state["decision_count"] = game_state.get("decision_count", 0) + 1
+
+	if next_scene == "" or next_scene == "_end":
+		_story_adventure_id = ""
+		_story_scene_id = ""
+		_story_pos += 1
+	else:
+		_story_scene_id = next_scene
+		current_event_id = "story:%s:%s" % [_story_adventure_id, _story_scene_id]
+
+	state_changed.emit(game_state.duplicate(true))
+	_check_naming_trigger()
+	if _check_life_events_trigger():
+		return  # Life event will call _pick_and_trigger_next_event when done
+
+	if _story_adventure_id != "":
+		call_deferred("_trigger_story_scene")
+	else:
+		call_deferred("_trigger_next_story_slot")
+
+
+func _end_story_adventure() -> void:
+	_story_adventure_id = ""
+	_story_scene_id = ""
+	_story_pos += 1
+	state_changed.emit(game_state.duplicate(true))
+	_check_naming_trigger()
+	if not _check_life_events_trigger():
+		call_deferred("_trigger_next_story_slot")
+
+
+func _apply_story_effects(effects: Array) -> void:
+	for expr in effects:
+		var s: String = str(expr).strip_edges()
+
+		if s == "advance_generation":
+			advance_generation()
+			continue
+
+		var parts: PackedStringArray = s.split(" ")
+
+		if parts.size() >= 4 and parts[0] == "set":
+			# "set key = value"
+			var key: String = parts[1]
+			var val: String = parts[3]
+			if val == "true":
+				game_state["flags"][key] = true
+			elif val == "false":
+				game_state["flags"].erase(key)
+			else:
+				game_state["flags"][key] = val
+		elif parts.size() >= 3:
+			# "key += value" or "key -= value" or "key = value"
+			var key: String = parts[0]
+			var op:  String = parts[1]
+			var val: int    = int(parts[2])
+
+			if key == "population":
+				var current: int = game_state.get("settlement", {}).get("population", 0)
+				match op:
+					"+=": game_state["settlement"]["population"] = max(1, current + val)
+					"-=": game_state["settlement"]["population"] = max(1, current - val)
+					"=":  game_state["settlement"]["population"] = max(1, val)
+			elif key == "alignment":
+				match op:
+					"+=": game_state["alignment"] = clamp(game_state.get("alignment", 0) + val, -100, 100)
+					"-=": game_state["alignment"] = clamp(game_state.get("alignment", 0) - val, -100, 100)
+					"=":  game_state["alignment"] = clamp(val, -100, 100)
+			else:
+				match op:
+					"+=": game_state[key] = game_state.get(key, 0) + val
+					"-=": game_state[key] = game_state.get(key, 0) - val
+					"=":  game_state[key] = val
+
+
+func _check_story_condition(expr: String) -> bool:
+	var parts: PackedStringArray = expr.strip_edges().split(" ")
+	if parts.size() < 3:
+		return true
+
+	var key:      String = parts[0]
+	var op:       String = parts[1]
+	var expected: String = parts[2]
+
+	# Look up value — flags first, then special keys, then game_state
+	var actual = null
+	if game_state.get("flags", {}).has(key):
+		actual = game_state["flags"][key]
+	elif key == "population":
+		actual = game_state.get("settlement", {}).get("population", 0)
+	elif game_state.has(key):
+		actual = game_state[key]
+
+	# Default for missing bool flags
+	if actual == null:
+		if expected == "true" or expected == "false":
+			actual = false
+		else:
+			actual = 0
+
+	match op:
+		"==": return str(actual) == expected
+		"!=": return str(actual) != expected
+		">=": return float(actual) >= float(expected)
+		"<=": return float(actual) <= float(expected)
+		">":  return float(actual) >  float(expected)
+		"<":  return float(actual) <  float(expected)
+
+	return true
+
+
+func _build_story_delta(effects: Array) -> Dictionary:
+	## Extracts a delta dict from story effects for chronicle_log
+	var delta: Dictionary = {}
+	for expr in effects:
+		var s: String = str(expr).strip_edges()
+		var parts: PackedStringArray = s.split(" ")
+		if parts.size() >= 4 and parts[0] == "set":
+			delta["flag"] = parts[1]
+		elif parts.size() >= 3:
+			var key: String = parts[0]
+			var val: int    = int(parts[2])
+			if parts[1] == "-=":
+				val = -val
+			delta[key] = val
+	return delta
+
+
+# ---------------------------------------------------------------------------
+# Combat system — MERP-inspired with damage tables
+# ---------------------------------------------------------------------------
+
+func _load_damage_tables() -> void:
+	var path := "res://story/damage_tables.json"
+	if not FileAccess.file_exists(path):
+		_log_debug("No damage_tables.json found — combat scenes will fail")
+		return
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	file.close()
+	if parsed is Dictionary:
+		_damage_tables = parsed
+		_log_debug("Damage tables loaded: %d weapon types" % _damage_tables.size())
+
+
+func _trigger_combat_scene() -> void:
+	## Presents a combat round with stance choices to the player.
+	var adv: Dictionary = _story_adventures.get(_story_adventure_id, {})
+	var scene: Dictionary = adv.get("scenes", {}).get(_story_scene_id, {})
+	var combat: Dictionary = scene.get("combat", {})
+
+	if _combat_round == 0:
+		# First round — init combat
+		_combat_active = true
+		_combat_data = combat
+		_combat_enemy_hp = int(combat.get("enemy_hp", 15))
+		_combat_group_status = "strong"
+		_combat_round = 1
+
+	var enemy_name: String = str(combat.get("enemy", "the enemy"))
+	var round_text: String = str(combat.get("round_%d_text" % _combat_round, ""))
+	if round_text == "":
+		round_text = str(scene.get("text", ""))
+
+	# Group status flavor
+	var group_texts: Array = _damage_tables.get("group_status", {}).get(_combat_group_status, [])
+	var group_flavor: String = ""
+	if not group_texts.is_empty():
+		group_flavor = group_texts[randi() % group_texts.size()]
+
+	var display_text: String = "[b]── %s — Round %d ──[/b]\n%s" % [
+		adv.get("title", "Combat"), _combat_round, _format_text(round_text)]
+	if group_flavor != "":
+		display_text += "\n\n[i]%s[/i]" % group_flavor
+
+	# Endurance display
+	var endurance: int = int(game_state.get("chieftain_endurance", 11))
+	var max_endurance: int = int(game_state.get("chieftain_grit", 2)) * 3 + 5
+	display_text += "\n\n[b]Endurance:[/b] %d/%d    [b]Enemy:[/b] %s (%d HP)" % [
+		endurance, max_endurance, enemy_name, _combat_enemy_hp]
+
+	# Build stance choices — filter by conditions
+	var stances: Array = combat.get("stances", [])
+	var choices: Array = []
+	for stance: Dictionary in stances:
+		var visible := true
+		for cond in stance.get("conditions", []):
+			if not _check_story_condition(str(cond)):
+				visible = false
+				break
+		# Forward stance is riskier when group is breaking
+		var label: String = str(stance.get("label", "Attack"))
+		if _combat_group_status == "breaking" and str(stance.get("stance_type", "")) == "forward":
+			label += " [exposed flank!]"
+		if visible:
+			choices.append({
+				"label": label,
+				"_stance": stance,
+			})
+
+	# Rally option when group is wavering/breaking
+	if _combat_group_status == "wavering" or _combat_group_status == "breaking":
+		choices.append({
+			"label": "Rally your men! (+2 bonus, -5 alignment)",
+			"_rally": true,
+		})
+
+	_gen_choices = choices
+	current_event_id = "combat:%s:%s:%d" % [_story_adventure_id, _story_scene_id, _combat_round]
+	event_triggered.emit(current_event_id, display_text, choices)
+
+
+func _apply_combat_choice(choice_index: int) -> void:
+	if choice_index >= _gen_choices.size():
+		return
+	var choice: Dictionary = _gen_choices[choice_index]
+
+	# "Continue..." button — just trigger next round
+	if not choice.has("_stance") and not choice.has("_rally"):
+		call_deferred("_trigger_combat_scene")
+		return
+
+	var rally_bonus: int = 0
+	if choice.get("_rally", false):
+		# Morale burn — rally the men
+		rally_bonus = 2
+		game_state["alignment"] = clamp(game_state.get("alignment", 0) - 5, -100, 100)
+		_combat_group_status = "holding"
+		event_triggered.emit(current_event_id,
+			"[i]You grab a wavering man by the collar. 'HOLD!' Your voice carries over the noise. They turn back. They hold. For now.[/i]",
+			[])
+		# Re-trigger same round with bonus applied to next choice
+		# Store rally bonus for next stance pick
+		game_state["_rally_bonus"] = rally_bonus
+		call_deferred("_trigger_combat_scene")
+		return
+
+	var stance: Dictionary = choice.get("_stance", {})
+	rally_bonus = int(game_state.get("_rally_bonus", 0))
+	game_state.erase("_rally_bonus")
+
+	# Resolve player attack: 2d6 + stat + weapon_bonus + rally vs difficulty
+	var stat_name: String = str(stance.get("stat", "might"))
+	var stat_val: int = int(game_state.get("chieftain_" + stat_name, 2))
+	var weapon_legend: int = int(game_state.get("weapon_legend", 0))
+	var weapon_bonus: int = 0
+	if weapon_legend >= 1:
+		weapon_bonus = 1
+	if weapon_legend >= 3:
+		weapon_bonus = 2
+	var stance_bonus: int = int(stance.get("bonus", 0))
+	var difficulty: int = int(_combat_data.get("difficulty", 8))
+
+	var roll: int = (randi() % 6 + 1) + (randi() % 6 + 1)
+	var total: int = roll + stat_val + weapon_bonus + stance_bonus + rally_bonus
+	var margin: int = total - difficulty
+
+	# Determine hit tier
+	var tier: String = _get_hit_tier(margin)
+
+	# Exposed flank penalty when group is breaking and using forward stance
+	if _combat_group_status == "breaking" and str(stance.get("stance_type", "")) == "forward":
+		if tier == "solid" or tier == "glancing":
+			tier = "miss"  # Downgrade due to exposed flank
+
+	# Look up damage table entry
+	var weapon_type: String = str(game_state.get("weapon_base", "shortsword"))
+	var table: Dictionary = _damage_tables.get(weapon_type, {})
+	var tier_entries: Array = table.get(tier, [])
+	var entry: Dictionary = {}
+	if not tier_entries.is_empty():
+		entry = tier_entries[randi() % tier_entries.size()]
+
+	var player_dmg: int = int(entry.get("dmg", 0))
+	var player_self_dmg: int = int(entry.get("self_dmg", 0))
+	var player_text: String = str(entry.get("text", "You strike."))
+
+	# Apply damage to enemy
+	_combat_enemy_hp = max(0, _combat_enemy_hp - player_dmg)
+
+	# Apply self damage from fumble/miss
+	var endurance: int = int(game_state.get("chieftain_endurance", 11))
+	endurance = max(0, endurance - player_self_dmg)
+	game_state["chieftain_endurance"] = endurance
+
+	# Legend trigger on devastating
+	if tier == "devastating":
+		var legend: int = int(game_state.get("weapon_legend", 0))
+		game_state["weapon_legend"] = legend + 1
+		var weapon_name: String = str(game_state.get("weapon_name", "your weapon"))
+		_log_debug("LEGEND UP: %s is now legend %d" % [weapon_name, legend + 1])
+
+	# Build result text
+	var result: String = "[b]Your attack:[/b] %s (roll: %d + %d = %d vs %d)\n%s" % [
+		tier.to_upper(), roll, stat_val + weapon_bonus + stance_bonus + rally_bonus,
+		total, difficulty, player_text]
+
+	if tier == "devastating":
+		result += "\n[color=gold]★ A legendary strike! Your weapon's legend grows.[/color]"
+
+	# Enemy attacks back (if alive)
+	var enemy_text: String = ""
+	if _combat_enemy_hp > 0:
+		var enemy_type: String = str(_combat_data.get("enemy_table", "enemy_ashkin"))
+		var enemy_stat: int = int(_combat_data.get("enemy_attack", 3))
+		var shield_reduction: int = 2 if game_state.get("has_shield", false) else 0
+
+		var enemy_roll: int = (randi() % 6 + 1) + (randi() % 6 + 1)
+		var grit: int = int(game_state.get("chieftain_grit", 2))
+		var defense: int = grit + shield_reduction
+		var enemy_margin: int = (enemy_roll + enemy_stat) - (8 + defense)
+		var enemy_tier: String = _get_hit_tier(enemy_margin)
+
+		var enemy_table: Dictionary = _damage_tables.get(enemy_type, {})
+		var enemy_tier_entries: Array = enemy_table.get(enemy_tier, [])
+		var enemy_entry: Dictionary = {}
+		if not enemy_tier_entries.is_empty():
+			enemy_entry = enemy_tier_entries[randi() % enemy_tier_entries.size()]
+
+		var enemy_dmg: int = int(enemy_entry.get("dmg", 0))
+		enemy_dmg = max(0, enemy_dmg - shield_reduction)
+		endurance = max(0, int(game_state.get("chieftain_endurance", 11)) - enemy_dmg)
+		game_state["chieftain_endurance"] = endurance
+		enemy_text = str(enemy_entry.get("text", "The enemy strikes back."))
+
+		result += "\n\n[b]Enemy attack:[/b] %s\n%s" % [enemy_tier.to_upper(), enemy_text]
+	else:
+		result += "\n\n[color=green][b]The enemy falls![/b][/color]"
+
+	# Update group status
+	_update_group_status(tier)
+
+	# Group flavor for next round
+	var group_texts: Array = _damage_tables.get("group_status", {}).get(_combat_group_status, [])
+	if not group_texts.is_empty():
+		result += "\n\n[i]%s[/i]" % group_texts[randi() % group_texts.size()]
+
+	state_changed.emit(game_state.duplicate(true))
+
+	# Check end conditions
+	if endurance <= 0:
+		# Chieftain down
+		_combat_active = false
+		game_state["flags"]["chieftain_wounded"] = true
+		var lose_scene: String = str(_combat_data.get("lose_scene", ""))
+		result += "\n\n[color=red][b]Your vision darkens. You fall.[/b][/color]"
+		event_triggered.emit(current_event_id, result, [])
+		if lose_scene != "" and _story_adventures.get(_story_adventure_id, {}).get("scenes", {}).has(lose_scene):
+			_story_scene_id = lose_scene
+			_combat_round = 0
+			call_deferred("_trigger_story_scene")
+		else:
+			call_deferred("_end_story_adventure")
+		return
+
+	if _combat_enemy_hp <= 0:
+		# Enemy down
+		_combat_active = false
+		var win_scene: String = str(_combat_data.get("win_scene", ""))
+		event_triggered.emit(current_event_id, result, [])
+		if win_scene != "" and _story_adventures.get(_story_adventure_id, {}).get("scenes", {}).has(win_scene):
+			_story_scene_id = win_scene
+			_combat_round = 0
+			call_deferred("_trigger_story_scene")
+		else:
+			call_deferred("_end_story_adventure")
+		return
+
+	# Next round
+	_combat_round += 1
+	var max_rounds: int = int(_combat_data.get("max_rounds", 5))
+	if _combat_round > max_rounds:
+		# Stalemate — route to stalemate scene or end
+		_combat_active = false
+		var stalemate: String = str(_combat_data.get("stalemate_scene", ""))
+		result += "\n\n[i]Neither side can break the other. The fighting slows.[/i]"
+		event_triggered.emit(current_event_id, result, [])
+		if stalemate != "" and _story_adventures.get(_story_adventure_id, {}).get("scenes", {}).has(stalemate):
+			_story_scene_id = stalemate
+			_combat_round = 0
+			call_deferred("_trigger_story_scene")
+		else:
+			call_deferred("_end_story_adventure")
+		return
+
+	# Continue — show result, then next round
+	event_triggered.emit(current_event_id, result, [{"label": "Continue..."}])
+
+
+func _get_hit_tier(margin: int) -> String:
+	if margin <= -5: return "fumble"
+	if margin <= -1: return "miss"
+	if margin <= 2:  return "glancing"
+	if margin <= 5:  return "solid"
+	if margin <= 8:  return "critical"
+	return "devastating"
+
+
+func _update_group_status(player_tier: String) -> void:
+	## Group morale shifts based on how chieftain is doing.
+	match player_tier:
+		"devastating", "critical":
+			if _combat_group_status != "strong":
+				_combat_group_status = "strong"
+		"solid":
+			if _combat_group_status == "wavering":
+				_combat_group_status = "holding"
+			elif _combat_group_status == "breaking":
+				_combat_group_status = "wavering"
+		"glancing":
+			pass  # No change
+		"miss":
+			if _combat_group_status == "strong":
+				_combat_group_status = "holding"
+			elif _combat_group_status == "holding":
+				_combat_group_status = "wavering"
+		"fumble":
+			if _combat_group_status == "strong":
+				_combat_group_status = "wavering"
+			elif _combat_group_status == "holding":
+				_combat_group_status = "wavering"
+			elif _combat_group_status == "wavering":
+				_combat_group_status = "breaking"
+
 
 # ---------------------------------------------------------------------------
 # Generation advancement
@@ -999,8 +1781,15 @@ func advance_generation() -> void:
 # ---------------------------------------------------------------------------
 func push_undo_snapshot() -> void:
 	undo_stack.append({
-		"game_state": game_state.duplicate(true),
-		"event_id":   current_event_id,
+		"game_state":         game_state.duplicate(true),
+		"event_id":           current_event_id,
+		"story_pos":          _story_pos,
+		"story_adventure_id": _story_adventure_id,
+		"story_scene_id":     _story_scene_id,
+		"combat_active":      _combat_active,
+		"combat_round":       _combat_round,
+		"combat_enemy_hp":    _combat_enemy_hp,
+		"combat_group_status":_combat_group_status,
 	})
 	if undo_stack.size() > MAX_UNDO_STEPS:
 		undo_stack.pop_front()
@@ -1010,14 +1799,25 @@ func pop_undo_snapshot() -> bool:
 	if undo_stack.is_empty():
 		return false
 	var snapshot:    Dictionary = undo_stack.pop_back()
-	game_state       = snapshot.get("game_state", game_state)
-	current_event_id = snapshot.get("event_id", "")
+	game_state          = snapshot.get("game_state", game_state)
+	current_event_id    = snapshot.get("event_id", "")
+	_story_pos          = int(snapshot.get("story_pos", _story_pos))
+	_story_adventure_id = str(snapshot.get("story_adventure_id", ""))
+	_story_scene_id     = str(snapshot.get("story_scene_id", ""))
+	_combat_active      = bool(snapshot.get("combat_active", false))
+	_combat_round       = int(snapshot.get("combat_round", 0))
+	_combat_enemy_hp    = int(snapshot.get("combat_enemy_hp", 0))
+	_combat_group_status = str(snapshot.get("combat_group_status", "strong"))
 	state_changed.emit(game_state.duplicate(true))
 
-	if current_event_id.begins_with("gen_"):
+	if current_event_id.begins_with("combat:") and _combat_active:
+		call_deferred("_trigger_combat_scene")
+	elif current_event_id.begins_with("gen_"):
 		call_deferred("_emit_gen_event", current_event_id)
 	elif current_event_id == "village_naming":
 		call_deferred("_re_emit_naming_event")
+	elif current_event_id.begins_with("story:") and _story_loaded:
+		call_deferred("_trigger_story_scene")
 	elif current_event_id != "" and EVENTS.has(current_event_id):
 		var event:        Dictionary = EVENTS[current_event_id]
 		var display_text: String     = "[b]── %s ──[/b]\n%s" % [
@@ -1036,10 +1836,19 @@ func get_undo_stack_size() -> int:
 # ---------------------------------------------------------------------------
 func save_game() -> void:
 	var data: Dictionary = {
-		"game_state":       game_state,
-		"chronicle_log":    chronicle_log,
-		"undo_stack":       undo_stack,
-		"current_event_id": current_event_id,
+		"game_state":          game_state,
+		"chronicle_log":       chronicle_log,
+		"undo_stack":          undo_stack,
+		"current_event_id":    current_event_id,
+		"pending_follow":      _pending_follow,
+		"gen":                 _gen,
+		"story_pos":           _story_pos,
+		"story_adventure_id":  _story_adventure_id,
+		"story_scene_id":      _story_scene_id,
+		"combat_active":       _combat_active,
+		"combat_round":        _combat_round,
+		"combat_enemy_hp":     _combat_enemy_hp,
+		"combat_group_status": _combat_group_status,
 	}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
@@ -1072,10 +1881,20 @@ func load_game() -> bool:
 			game_state["flags"] = {}
 		if not game_state.has("season"):
 			game_state["season"] = 1
-	if parsed.has("chronicle_log") and parsed["chronicle_log"] is Array:      chronicle_log = parsed["chronicle_log"]
-	if parsed.has("undo_stack")    and parsed["undo_stack"] is Array:         undo_stack    = parsed["undo_stack"]
+	if parsed.has("chronicle_log") and parsed["chronicle_log"] is Array:      chronicle_log    = parsed["chronicle_log"]
+	if parsed.has("undo_stack")    and parsed["undo_stack"] is Array:         undo_stack       = parsed["undo_stack"]
 	if parsed.has("current_event_id"):                                         current_event_id = parsed["current_event_id"]
+	if parsed.has("pending_follow") and parsed["pending_follow"] is String:   _pending_follow  = parsed["pending_follow"]
+	if parsed.has("gen")            and parsed["gen"] is Dictionary:          _gen             = parsed["gen"]
+	if parsed.has("story_pos"):                                               _story_pos           = int(parsed["story_pos"])
+	if parsed.has("story_adventure_id"):                                      _story_adventure_id  = str(parsed["story_adventure_id"])
+	if parsed.has("story_scene_id"):                                          _story_scene_id      = str(parsed["story_scene_id"])
+	if parsed.has("combat_active"):                                           _combat_active       = bool(parsed["combat_active"])
+	if parsed.has("combat_round"):                                            _combat_round        = int(parsed["combat_round"])
+	if parsed.has("combat_enemy_hp"):                                         _combat_enemy_hp     = int(parsed["combat_enemy_hp"])
+	if parsed.has("combat_group_status"):                                     _combat_group_status = str(parsed["combat_group_status"])
 	_log_debug("load_game() OK — event: %s, decisions: %d" % [current_event_id, game_state.get("decision_count", 0)])
+	state_changed.emit(game_state.duplicate(true))
 	return true
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,63 @@
+{
+	"title": "Chronicle Sim",
+	"version": 1,
+	"game_states": {
+		"alignment":           { "type": "number",  "default": 0,     "description": "Moral alignment, -100 (Dark) to +100 (Pure)" },
+		"population":          { "type": "number",  "default": 50,    "description": "Current village population" },
+		"has_storehouse":      { "type": "bool",    "default": false, "description": "Communal storehouse was built" },
+		"has_palisade":        { "type": "bool",    "default": false, "description": "Village border secured with palisade" },
+		"winter_grudge":       { "type": "bool",    "default": false, "description": "Weak families remember the harsh rationing" },
+		"ashkin_encountered":  { "type": "bool",    "default": false, "description": "The village has encountered ashkin" },
+		"ashkin_defeated":     { "type": "bool",    "default": false, "description": "Ashkin raiding party was defeated in force" },
+		"ashkin_scattered":    { "type": "bool",    "default": false, "description": "Ashkin were driven off after a hard fight" },
+		"ashkin_know_village": { "type": "bool",    "default": false, "description": "Ashkin now know the village location" },
+		"captives_freed":      { "type": "bool",    "default": false, "description": "Captives were rescued from ashkin" },
+		"village_was_exposed": { "type": "bool",    "default": false, "description": "Village was left undefended during rescue mission" },
+		"refused_refugee_plea":{ "type": "bool",    "default": false, "description": "Refugees were turned away without help" },
+		"ritual_site_found":   { "type": "bool",    "default": false, "description": "A ritual site was discovered in the deep forest" },
+		"ritual_site_destroyed":{"type": "bool",    "default": false, "description": "The ritual site was destroyed" },
+		"ritual_site_forbidden":{"type": "bool",    "default": false, "description": "The ritual site area was forbidden to enter" },
+		"has_ritual_token":    { "type": "bool",    "default": false, "description": "A carved token from the ritual site was brought home" },
+		"has_obsidian_blade":  { "type": "bool",    "default": false, "description": "The obsidian blade from the ritual site was taken" },
+		"blade_identified":    { "type": "bool",    "default": false, "description": "A sorcerer has identified the obsidian blade's nature" },
+		"ranger_traumatized":  { "type": "bool",    "default": false, "description": "A ranger was deeply shaken by what he saw" },
+		"dead_man_investigated":{"type": "bool",    "default": false, "description": "The dead man in the river was investigated" }
+	},
+	"eras": [
+		{
+			"id": "founding",
+			"name": "Founding Era",
+			"years": 4,
+			"timeline": [
+				{
+					"year": 1,
+					"spring": { "adventure": "village_founding" },
+					"summer": { "pool": ["trade_caravan", "wandering_healer"] },
+					"autumn": { "adventure": "smoke_and_ashes" },
+					"winter": { "adventure": "first_winter" }
+				},
+				{
+					"year": 2,
+					"spring": { "adventure": "dead_mans_trail" },
+					"summer": { "pool": ["border_dispute"] },
+					"autumn": null,
+					"winter": null
+				},
+				{
+					"year": 3,
+					"spring": null,
+					"summer": null,
+					"autumn": null,
+					"winter": null
+				},
+				{
+					"year": 4,
+					"spring": null,
+					"summer": null,
+					"autumn": null,
+					"winter": null
+				}
+			]
+		}
+	]
+}

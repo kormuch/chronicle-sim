@@ -1,0 +1,136 @@
+{
+	"_info": "First adventure chain — Ashkin encounter. 3-event sequence: discovery → confrontation → aftermath. Type: adventure.",
+
+	"ashkin_tracks": {
+		"type": "adventure",
+		"title": "Ash and Silence",
+		"text": "The rangers return before nightfall — unusual. Their faces say enough.\n\nTracks in the eastern woods. Dozens, barefoot, circling the same ground. Cold fire pits with charred bone. No words carved, no shelters built. Whoever was here moved like animals.\n\n{chieftain} gathers the council. The elder speaks first: 'I have heard of these. The old people called them Ashkin — what is left when a village dies and the survivors forget how to speak.'",
+		"conditions": {
+			"generation_min": 1,
+			"forbids_flag": "flag_ashkin_resolved"
+		},
+		"choices": [
+			{
+				"label": "Track them — we need to know how many and how close",
+				"effect": { "set_flag": "flag_ashkin_tracked" },
+				"next_event": "ashkin_camp",
+				"log_text": "Ashkin tracks found in the eastern woods. Rangers sent to investigate.",
+				"follow_text": "Three rangers ride out at first light. Two days later, one returns alone. He is unhurt but pale. 'I found them,' he says. 'They found me first.'"
+			},
+			{
+				"label": "Fortify the eastern boundary — let them pass through, not in",
+				"effect": { "alignment": 5, "set_flag": "flag_ashkin_walled" },
+				"next_event": "",
+				"log_text": "The eastern boundary was fortified after Ashkin tracks were discovered.",
+				"follow_text": "A ditch. A palisade of sharpened stakes. It takes a week and every spare hand. At night, the watchers on the wall hear movement in the tree line — shuffling, low grunts, then silence. The Ashkin do not cross. Not yet."
+			}
+		]
+	},
+
+	"ashkin_camp": {
+		"type": "adventure",
+		"title": "The Grey Camp",
+		"text": "The ranger leads you to a ridge overlooking a shallow valley. Below: forty, maybe fifty Ashkin. Grey-skinned, gaunt, crouching around a fire they barely know how to keep alive.\n\nNo weapons worth the name — sharpened sticks, a few stolen tools. Children among them, silent as the rest. One figure sits apart, larger than the others, watching the tree line. Watching you.\n\nThe ranger whispers: 'They are not warriors. But there are enough of them to be a problem if they get hungry.'",
+		"conditions": {
+			"requires_flag": "flag_ashkin_tracked"
+		},
+		"choices": [
+			{
+				"label": "Leave food at the ridge and withdraw — they are wretched, not evil (+10 alignment)",
+				"effect": { "alignment": 10, "set_flag": "flag_ashkin_fed" },
+				"next_event": "ashkin_aftermath_mercy",
+				"log_text": "Food was left for the Ashkin at the ridge. The village chose mercy.",
+				"follow_text": "You leave a sack of grain and dried meat where they can find it. From the tree line, you watch. The large one approaches first, sniffs, then calls the others with a sound that is almost — almost — a word."
+			},
+			{
+				"label": "Drive them off — fire, noise, show of force. They cannot stay this close (-5 alignment)",
+				"effect": { "alignment": -5, "set_flag": "flag_ashkin_driven" },
+				"next_event": "ashkin_aftermath_force",
+				"log_text": "The Ashkin camp was broken up by force. They fled south.",
+				"follow_text": "Torches and shouting. The Ashkin scatter like startled deer — no fight, no resistance, just blind panic. The children stumble. One falls and does not get up. The large one is the last to leave. He looks back once. You will remember that look."
+			},
+			{
+				"label": "Send the healer to them — if anyone can reach them, she can",
+				"effect": { "alignment": 5, "set_flag": "flag_ashkin_healer_sent" },
+				"next_event": "ashkin_aftermath_healer",
+				"log_text": "The village healer was sent to make contact with the Ashkin.",
+				"follow_text": "She goes alone, unarmed, carrying herbs and water. The rangers watch from the ridge with white knuckles. An hour passes. Two. Then she reappears at the camp's edge, sitting beside the large one, showing him something in her hands. He does not touch it. But he does not move away."
+			}
+		]
+	},
+
+	"ashkin_aftermath_mercy": {
+		"type": "village",
+		"title": "What Mercy Costs",
+		"text": "A week after the food was left, the grain stores show the gap. It was not a small gift.\n\nThe elder says nothing. The merchant says too much: 'We feed our own first. Every sack we give away is a sack we do not have in winter.'\n\nBut the watchers on the eastern wall report: the Ashkin have not come closer. The food is gone. The tracks lead south. For now.",
+		"conditions": {
+			"requires_flag": "flag_ashkin_fed"
+		},
+		"choices": [
+			{
+				"label": "It was the right choice — we can afford to be generous (+5 alignment)",
+				"effect": { "alignment": 5, "set_flag": "flag_ashkin_resolved" },
+				"next_event": "",
+				"log_text": "The council affirmed the decision to feed the Ashkin. Generosity over fear.",
+				"follow_text": "The merchant grumbles. The elder nods. The healer says: 'They will remember this. Whether that is good or bad — we will see.' The eastern wall stays manned. But the mood in the village is lighter than it was."
+			},
+			{
+				"label": "Never again — we cannot be the ones who feed every lost soul (-5 alignment)",
+				"effect": { "alignment": -5, "set_flag": "flag_ashkin_resolved" },
+				"next_event": "",
+				"log_text": "The council decided: no more food for the Ashkin. Resources are for the village.",
+				"follow_text": "A rule is set. The merchant approves. The healer is quiet. Somewhere south, the Ashkin move on — to whatever comes next for creatures that have forgotten what a village is."
+			}
+		]
+	},
+
+	"ashkin_aftermath_force": {
+		"type": "village",
+		"title": "The Silence After",
+		"text": "The Ashkin are gone. The camp is empty — trampled earth, a dead fire, a child's crude doll made of twisted grass.\n\nThe village is safe. The rangers say the tracks lead south and do not return.\n\nBut the watchers report something else: three days after the Ashkin fled, smoke was seen on the southern horizon. A lot of smoke. Someone else found them — or they found someone else.",
+		"conditions": {
+			"requires_flag": "flag_ashkin_driven"
+		},
+		"choices": [
+			{
+				"label": "Not our problem — we protected our own",
+				"effect": { "alignment": -5, "set_flag": "flag_ashkin_resolved" },
+				"next_event": "",
+				"log_text": "The Ashkin were driven south. What happened after was not the village's concern.",
+				"follow_text": "The grass doll sits on the elder's shelf for years. No one moves it. No one mentions it. The eastern woods grow quiet, and in time, quieter than they should be."
+			},
+			{
+				"label": "Send scouts south — we should know what that smoke means",
+				"effect": { "alignment": 5, "set_flag": "flag_ashkin_resolved", "population": -5 },
+				"next_event": "",
+				"log_text": "Scouts were sent south to investigate the smoke. Two did not return.",
+				"follow_text": "The scouts find a burned-out farmstead. Not Ashkin work — too deliberate, too thorough. Someone else is moving through these lands. The Ashkin were running from something. And now that something knows the south is empty."
+			}
+		]
+	},
+
+	"ashkin_aftermath_healer": {
+		"type": "village",
+		"title": "The Healer's Report",
+		"text": "She returns after three days, exhausted but unharmed.\n\n'They are not animals,' she says. 'They had a village once. The large one — I think he was a chieftain. He showed me a scar on his arm. Deliberate. A mark of something.'\n\nShe pauses. 'They will not survive another winter like this. They have no healer, no stores, no tools worth the name. They are dying slowly. The question is whether we watch or not.'",
+		"conditions": {
+			"requires_flag": "flag_ashkin_healer_sent"
+		},
+		"choices": [
+			{
+				"label": "Take them in — they join the village, on our terms (+15 alignment, +20 population)",
+				"effect": { "alignment": 15, "population": 20, "set_flag": "flag_ashkin_resolved" },
+				"next_event": "",
+				"log_text": "The Ashkin were taken into the village. Fifty souls added to the settlement.",
+				"follow_text": "It is not easy. The smell. The fear on both sides. Children who do not speak hiding behind mothers who cannot explain. But the healer works with them daily, and within a season the large one — his name, she learns, is something like 'Gorr' — begins to shape wood with the carpenter. Badly. But he begins."
+			},
+			{
+				"label": "Help them build their own camp — nearby, not inside (+5 alignment, +5 population)",
+				"effect": { "alignment": 5, "population": 5, "set_flag": "flag_ashkin_resolved" },
+				"next_event": "",
+				"log_text": "The Ashkin were helped to build a camp near the village. Separate, but not abandoned.",
+				"follow_text": "A clearing half an hour south. Simple shelters, a fire pit that works, a path to the village. The healer visits weekly. Trade begins — crude at first, then less crude. The elder calls them 'the neighbours.' The merchant calls them 'a liability.' Both are right."
+			}
+		]
+	}
+}

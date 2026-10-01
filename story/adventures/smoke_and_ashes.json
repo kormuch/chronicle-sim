@@ -1,0 +1,263 @@
+{
+	"_info": "Ashkin raid — refugees arrive, beg for captive rescue. Player decides force size, then fights. 'Three hands' = 15, but refugees can't count well. Actually ~12 ashkin.",
+	"id": "smoke_and_ashes",
+	"title": "Smoke and Ashes",
+	"description": "Refugees from a destroyed settlement beg for help rescuing captives from an ashkin raiding party.",
+	"conditions": [],
+	"entry": "arrival",
+	"scenes": {
+		"arrival": {
+			"text": "The rangers bring them in at dusk. Eight souls. Burned clothes, crusted blood, bare feet. Two children cling to a woman who stares at nothing.\n\nThe eldest — a man with one ear missing, fresh — drops to his knees before {chieftain}.\n\n'They came at dawn. Grey skin, no words, just teeth. They took our people. Dragged them north. Please.'\n\n{chieftain} asks: how many?\n\nThe man holds up both hands, then one more. Three hands. His people have no word for fifteen.\n\n'Please. They have our children.'",
+			"choices": [
+				{
+					"label": "March in strength — twelve warriors. We end this.",
+					"next": "march_many"
+				},
+				{
+					"label": "A war-band of seven. Enough to fight, not enough to leave us open.",
+					"next": "march_medium"
+				},
+				{
+					"label": "Three scouts. Fast, quiet. Find them before they dig in.",
+					"next": "march_few"
+				},
+				{
+					"label": "We cannot risk our people for strangers.",
+					"next": "refuse_end"
+				}
+			],
+			"_x": 400, "_y": 30
+		},
+
+		"march_many": {
+			"text": "Twelve warriors. Nearly every fighting body in the village. {chieftain} leads them north through the tree line.\n\nThe village gate stands open behind you. Elders, children, the healer. If anything comes from the east while you are gone...\n\nTwo days of hard march. Then smoke. A crude camp between boulders. You count them: ten. Maybe twelve. Not fifteen. The man with one ear was wrong. Or afraid.\n\nYour twelve against their twelve. But you have iron. They have bone and rage.",
+			"choices": [
+				{
+					"label": "Charge at dawn. Overwhelm them.",
+					"next": "combat_many"
+				}
+			],
+			"_x": 150, "_y": 210
+		},
+
+		"combat_many": {
+			"text": "Dawn. Your warriors pour over the rocks. The ashkin scramble for their weapons. Too late. Too slow.",
+			"combat": {
+				"enemy": "Ashkin Camp",
+				"enemy_hp": 10,
+				"enemy_table": "enemy_ashkin",
+				"enemy_attack": 2,
+				"difficulty": 6,
+				"max_rounds": 3,
+				"win_scene": "rescue_total",
+				"lose_scene": "pyrrhic_many",
+				"stalemate_scene": "rescue_total",
+				"stances": [
+					{
+						"label": "Forward — lead the charge yourself",
+						"stat": "might",
+						"stance_type": "forward",
+						"bonus": 2
+					},
+					{
+						"label": "Open — fight in the line with your men",
+						"stat": "might",
+						"stance_type": "open",
+						"bonus": 0
+					},
+					{
+						"label": "Rearward — direct the assault from behind",
+						"stat": "wits",
+						"stance_type": "rearward",
+						"bonus": 1,
+						"conditions": ["weapon_base == bow"]
+					}
+				]
+			},
+			"_x": 150, "_y": 390
+		},
+
+		"rescue_total": {
+			"text": "It is over in minutes. The ashkin scatter into the rocks. Your warriors find the captives in a pit behind the camp — nine souls, bound with sinew, alive. A woman clutches a boy to her chest and won't let go.\n\nThe march home takes three days. The freed captives walk among your warriors. Some of them look back at your village and weep. Not from sadness.\n\nBut for three days, the village stood open. The elder who stayed behind aged a year in each one.",
+			"end": true,
+			"effects": [
+				"alignment += 10",
+				"population += 4",
+				"set ashkin_encountered = true",
+				"set ashkin_defeated = true",
+				"set captives_freed = true",
+				"set village_was_exposed = true"
+			],
+			"log": "Twelve warriors marched north and crushed an ashkin camp. Nine captives freed. The village stood undefended for three days.",
+			"_x": 60, "_y": 570
+		},
+
+		"pyrrhic_many": {
+			"text": "They fought harder than anyone expected. Grey bodies hurling themselves at shield walls, biting through leather. Two of your warriors don't get up.\n\nYou find the captives. Alive. But the walk home is quiet. The freed weep with relief. Your men carry their dead.",
+			"end": true,
+			"effects": [
+				"alignment += 5",
+				"population += 2",
+				"set ashkin_encountered = true",
+				"set captives_freed = true",
+				"set village_was_exposed = true"
+			],
+			"log": "The ashkin were defeated but two warriors fell. Captives were freed. The village was left exposed.",
+			"_x": 240, "_y": 570
+		},
+
+		"march_medium": {
+			"text": "Seven warriors. {chieftain} picks them carefully — the strongest, the steadiest. Enough to guard the village, enough to fight.\n\nTwo days north. The ashkin camp sits between boulders in a ravine. You count them from the ridge: twelve. Maybe more in the caves behind. Three hands was close.\n\nSeven against twelve. Your iron against their fury. This will cost.",
+			"choices": [
+				{
+					"label": "Attack head-on at first light",
+					"next": "combat_medium"
+				},
+				{
+					"label": "Wait for nightfall — hit them while they sleep",
+					"next": "combat_medium_night"
+				}
+			],
+			"_x": 400, "_y": 210
+		},
+
+		"combat_medium": {
+			"text": "First light. You spread your seven across the ravine mouth. No retreat for either side. The ashkin see you and bare their teeth. No war cry. Just silence and the scrape of bone on stone.",
+			"combat": {
+				"enemy": "Ashkin Raiding Party",
+				"enemy_hp": 14,
+				"enemy_table": "enemy_ashkin",
+				"enemy_attack": 3,
+				"difficulty": 8,
+				"max_rounds": 4,
+				"win_scene": "rescue_medium_win",
+				"lose_scene": "rescue_medium_lose",
+				"stalemate_scene": "rescue_medium_stalemate",
+				"stances": [
+					{
+						"label": "Forward — break their line before they set",
+						"stat": "might",
+						"stance_type": "forward",
+						"bonus": 1
+					},
+					{
+						"label": "Open — hold formation, grind them down",
+						"stat": "might",
+						"stance_type": "open",
+						"bonus": 0
+					},
+					{
+						"label": "Defensive — shield wall in the ravine mouth",
+						"stat": "grit",
+						"stance_type": "defensive",
+						"bonus": 0,
+						"conditions": ["has_shield == true"]
+					}
+				]
+			},
+			"_x": 350, "_y": 390
+		},
+
+		"combat_medium_night": {
+			"text": "You wait. The stars come out. The ashkin sleep in shifts — two sentries by a low fire. Your men move like shadows between the boulders.\n\nThen a stone slips under someone's foot. A sentry turns. His eyes catch the moonlight.\n\nNow.",
+			"combat": {
+				"enemy": "Ashkin (Night Raid)",
+				"enemy_hp": 12,
+				"enemy_table": "enemy_ashkin",
+				"enemy_attack": 3,
+				"difficulty": 7,
+				"max_rounds": 3,
+				"win_scene": "rescue_medium_win",
+				"lose_scene": "rescue_medium_lose",
+				"stalemate_scene": "rescue_medium_stalemate",
+				"round_1_text": "Chaos in the dark. Shapes collide. Someone screams — yours or theirs, you can't tell.",
+				"stances": [
+					{
+						"label": "Forward — strike fast in the confusion",
+						"stat": "wits",
+						"stance_type": "forward",
+						"bonus": 2
+					},
+					{
+						"label": "Open — find a target, fight steady",
+						"stat": "might",
+						"stance_type": "open",
+						"bonus": 0
+					},
+					{
+						"label": "Rearward — use the darkness, pick them off",
+						"stat": "wits",
+						"stance_type": "rearward",
+						"bonus": 1,
+						"conditions": ["weapon_base == bow"]
+					}
+				]
+			},
+			"_x": 500, "_y": 390
+		},
+
+		"rescue_medium_win": {
+			"text": "The last ashkin drops. Your warriors stand panting, blades red. One of your men sits against a boulder, holding his side. He'll live. Probably.\n\nBehind the camp, in a pit covered with branches: seven captives. Thin. Bruised. Alive.\n\nThe walk home is long. The freed ones don't talk much. Neither do your warriors.",
+			"end": true,
+			"effects": [
+				"alignment += 5",
+				"population += 2",
+				"set ashkin_encountered = true",
+				"set ashkin_scattered = true",
+				"set captives_freed = true"
+			],
+			"log": "Seven warriors fought the ashkin and won. Captives freed. All warriors returned, though not all unharmed.",
+			"_x": 350, "_y": 570
+		},
+
+		"rescue_medium_lose": {
+			"text": "{chieftain} falls back. Blood in your eyes, a ringing in your skull. Your warriors drag you out.\n\nThree made it back. Three out of seven. The captives are still in the pit. You can hear them calling as you retreat into the trees.\n\nThe village receives you in silence. The healer works through the night.",
+			"end": true,
+			"effects": [
+				"alignment -= 5",
+				"population -= 4",
+				"set ashkin_encountered = true",
+				"set ashkin_know_village = true"
+			],
+			"log": "The rescue attempt failed. Three warriors lost. The ashkin tracked the survivors home.",
+			"_x": 500, "_y": 570
+		},
+
+		"rescue_medium_stalemate": {
+			"text": "Neither side breaks. The fighting grinds to a halt as the sun climbs. Your warriors bleed. The ashkin bleed. Between the boulders, both sides watch each other.\n\nThen the ashkin begin to withdraw. Not running — walking backward, dragging their wounded. They take the captives with them. Deeper into the hills.\n\nYou could follow. But your men are spent.",
+			"end": true,
+			"effects": [
+				"alignment += 0",
+				"population -= 1",
+				"set ashkin_encountered = true",
+				"set ashkin_know_village = true"
+			],
+			"log": "The battle was inconclusive. The ashkin withdrew with their captives. One warrior lost.",
+			"_x": 650, "_y": 570
+		},
+
+		"march_few": {
+			"text": "Three scouts. The fastest, the quietest. No armour, just blades and shadows.\n\n{chieftain} watches them leave at dusk. One of them — barely old enough to shave — looks back once.\n\nFour days pass. Then five.\n\nOn the sixth morning, two figures stumble from the tree line. Just two. The young one is not with them.\n\nThe older scout speaks in flat tones. 'We found them. More than three hands. We freed three captives in the night, maybe four. Then they heard us. Erek...' He stops. 'Erek didn't make it out.'\n\nBehind the two scouts, four strangers emerge from the trees. Freed captives. Eyes wide. Grateful. Broken.",
+			"end": true,
+			"effects": [
+				"alignment += 0",
+				"population += 1",
+				"set ashkin_encountered = true",
+				"set ashkin_know_village = true"
+			],
+			"log": "Scouts attempted a night rescue. Four captives freed. One scout — Erek — was killed. The ashkin know where to find us.",
+			"_x": 650, "_y": 210
+		},
+
+		"refuse_end": {
+			"text": "The one-eared man stares at {chieftain}. He does not beg again. He stands, slowly, and gathers his people.\n\nThe woman with the children looks at you. She doesn't speak. She doesn't need to.\n\nThey leave before dawn. Heading west. One of the children waves at the gate guard. The guard doesn't wave back.\n\nAt the morning council, no one mentions them. But the healer sets an extra bowl of broth on the step, just in case. It sits there all day, growing cold.",
+			"end": true,
+			"effects": [
+				"alignment -= 10",
+				"set refused_refugee_plea = true"
+			],
+			"log": "Refugees begged for help rescuing captives from the ashkin. They were turned away.",
+			"_x": 850, "_y": 210
+		}
+	}
+}

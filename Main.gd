@@ -113,7 +113,6 @@ func _build_ui() -> void:
 	toolbar.add_child(_btn("Save",            _on_save_pressed))
 	toolbar.add_child(_btn("Load",            _on_load_pressed))
 	toolbar.add_child(_btn("New Game",        _on_new_game_pressed))
-	toolbar.add_child(_btn("Next Generation", _on_next_gen_pressed))
 
 	# ── Right column ──────────────────────────────────────────────────────────
 	var right_col := VBoxContainer.new()
@@ -237,7 +236,24 @@ func _on_state_changed(new_state: Dictionary) -> void:
 		heir_line = "☑ Heir: %s · age %d" % [heir.get("name", "?"), age]
 	else:
 		heir_line = "☐ No heir"
-	_chieftain_label.text  = "Chieftain: %s\n%s\n%s" % [c.get("name", "—"), spouse_line, heir_line]
+	var weapon_base: String = str(new_state.get("weapon_base", ""))
+	var weapon_line: String = ""
+	if weapon_base != "":
+		var legend: int = int(new_state.get("weapon_legend", 0))
+		var wname: String = str(new_state.get("weapon_name", ""))
+		if wname != "":
+			weapon_line = "⚔ %s (%s · legend %d)" % [wname, weapon_base, legend]
+		else:
+			weapon_line = "⚔ %s" % weapon_base.capitalize()
+		if new_state.get("has_shield", false):
+			weapon_line += " + shield"
+	var might: int = int(new_state.get("chieftain_might", 2))
+	var wits:  int = int(new_state.get("chieftain_wits", 2))
+	var grit:  int = int(new_state.get("chieftain_grit", 2))
+	var endurance: int = int(new_state.get("chieftain_endurance", 11))
+	var max_endurance: int = grit * 3 + 5
+	var stats_line: String = "M%d W%d G%d · HP %d/%d" % [might, wits, grit, endurance, max_endurance]
+	_chieftain_label.text  = "Chieftain: %s\n%s\n%s\n%s\n%s" % [c.get("name", "—"), spouse_line, heir_line, stats_line, weapon_line]
 	_gen_year_label.text   = "Generation %d · Year %d · %s · %d souls" % [
 		new_state.get("generation", 1),
 		new_state.get("year", 1),
@@ -253,6 +269,7 @@ func _on_state_changed(new_state: Dictionary) -> void:
 
 
 func _on_event_triggered(_event_id: String, text: String, choices: Array) -> void:
+	GameManager._log_debug("Main._on_event_triggered: id=%s, choices=%d" % [_event_id, choices.size()])
 	_refresh_chronicle()
 
 	if choices.is_empty():
@@ -274,6 +291,7 @@ func _on_event_triggered(_event_id: String, text: String, choices: Array) -> voi
 		btn.text = choices[i].get("label", "…")
 		btn.pressed.connect(_on_choice_pressed.bind(i))
 		_decision_container.add_child(btn)
+	GameManager._log_debug("Main._on_event_triggered: %d buttons created, container visible=%s" % [_decision_container.get_child_count(), str(_decision_container.visible)])
 
 
 func _on_generation_advanced(summary: String) -> void:
@@ -286,6 +304,7 @@ func _on_generation_advanced(summary: String) -> void:
 # Button handlers
 # ---------------------------------------------------------------------------
 func _on_choice_pressed(index: int) -> void:
+	GameManager._log_debug("Main._on_choice_pressed: index=%d, current_event_id=%s" % [index, GameManager.current_event_id])
 	var label_text: String = ""
 	if index < _decision_container.get_child_count():
 		var b = _decision_container.get_child(index)
@@ -328,10 +347,6 @@ func _on_new_game_pressed() -> void:
 	_clear_decisions()
 	GameManager.new_game()
 
-
-func _on_next_gen_pressed() -> void:
-	_clear_decisions()
-	GameManager.advance_generation()
 
 # ---------------------------------------------------------------------------
 # Current panel helpers

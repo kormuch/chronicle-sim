@@ -1,0 +1,215 @@
+{
+	"_info": "MERP-inspired damage tables. Each weapon type has entries per hit tier. Engine picks one at random.",
+
+	"spear": {
+		"fumble": [
+			{ "text": "The spear slips on wet ground. You stumble forward, exposed.", "dmg": 0, "self_dmg": 3 },
+			{ "text": "Overcommitted — the shaft cracks against his shield. You're open.", "dmg": 0, "self_dmg": 2 },
+			{ "text": "He catches the haft and shoves. You hit the dirt.", "dmg": 0, "self_dmg": 2 }
+		],
+		"miss": [
+			{ "text": "He sidesteps. The point cuts only air.", "dmg": 0, "self_dmg": 1 },
+			{ "text": "Too slow. He reads the thrust and twists away.", "dmg": 0, "self_dmg": 1 },
+			{ "text": "The spear goes wide. He doesn't even flinch.", "dmg": 0, "self_dmg": 2 }
+		],
+		"glancing": [
+			{ "text": "The point grazes his arm. First blood — yours.", "dmg": 2, "self_dmg": 0 },
+			{ "text": "A shallow cut across the thigh. He limps but fights on.", "dmg": 2, "self_dmg": 0 },
+			{ "text": "The tip catches leather. He grunts. Not enough.", "dmg": 1, "self_dmg": 0 }
+		],
+		"solid": [
+			{ "text": "The spear catches him below the ribs. He staggers back.", "dmg": 4, "self_dmg": 0 },
+			{ "text": "Clean thrust to the shoulder. His weapon arm drops.", "dmg": 4, "self_dmg": 0 },
+			{ "text": "You drive the point through his guard. Blood on the shaft.", "dmg": 3, "self_dmg": 0 }
+		],
+		"critical": [
+			{ "text": "Through the shield. He screams and falls.", "dmg": 6, "self_dmg": 0 },
+			{ "text": "Pinned to the earth. The others freeze.", "dmg": 6, "self_dmg": 0 },
+			{ "text": "The spear takes him in the neck. Silence.", "dmg": 7, "self_dmg": 0 }
+		],
+		"devastating": [
+			{ "text": "Straight through the chest. He doesn't make a sound. Even your own men step back.", "dmg": 8, "self_dmg": 0 },
+			{ "text": "The spear sings through the air and finds its mark. A perfect thrust. The enemy line breaks.", "dmg": 8, "self_dmg": 0 }
+		]
+	},
+
+	"club": {
+		"fumble": [
+			{ "text": "The swing goes wild. The weight pulls you off balance.", "dmg": 0, "self_dmg": 3 },
+			{ "text": "You miss and the club hits the ground. The shock runs up your arm.", "dmg": 0, "self_dmg": 2 },
+			{ "text": "He ducks. You spin with the momentum, back exposed.", "dmg": 0, "self_dmg": 2 }
+		],
+		"miss": [
+			{ "text": "Too slow. He steps inside your reach.", "dmg": 0, "self_dmg": 1 },
+			{ "text": "The club whistles past his head. Close, but air.", "dmg": 0, "self_dmg": 1 },
+			{ "text": "He blocks with his forearm. Holds. Grins.", "dmg": 0, "self_dmg": 2 }
+		],
+		"glancing": [
+			{ "text": "A glancing blow to the shoulder. He winces but keeps coming.", "dmg": 2, "self_dmg": 0 },
+			{ "text": "The club clips his hip. He stumbles. Not down.", "dmg": 2, "self_dmg": 0 },
+			{ "text": "A crack against his forearm. Something might be broken. He switches hands.", "dmg": 2, "self_dmg": 0 }
+		],
+		"solid": [
+			{ "text": "Full swing to the ribs. You hear something crack. He doubles over.", "dmg": 4, "self_dmg": 0 },
+			{ "text": "The club connects with his jaw. Teeth and blood. He drops.", "dmg": 4, "self_dmg": 0 },
+			{ "text": "A heavy blow to the thigh. His leg buckles. He's on one knee.", "dmg": 3, "self_dmg": 0 }
+		],
+		"critical": [
+			{ "text": "The club hits his temple. His eyes go empty before he falls.", "dmg": 6, "self_dmg": 0 },
+			{ "text": "You bring it down on his collarbone. The snap echoes. He crumples.", "dmg": 6, "self_dmg": 0 },
+			{ "text": "Across the face. He spins, hits the ground, doesn't move.", "dmg": 7, "self_dmg": 0 }
+		],
+		"devastating": [
+			{ "text": "One swing. His skull caves. The sound is wrong. Everyone stops. Even the enemy.", "dmg": 8, "self_dmg": 0 },
+			{ "text": "The blow lifts him off his feet. He lands broken. Your warriors roar.", "dmg": 8, "self_dmg": 0 }
+		]
+	},
+
+	"shortsword": {
+		"fumble": [
+			{ "text": "The blade catches on his armour. He wrenches it sideways. Your wrist screams.", "dmg": 0, "self_dmg": 2 },
+			{ "text": "You slash at air. He's already behind you.", "dmg": 0, "self_dmg": 3 },
+			{ "text": "The grip slips. Wet hands. He sees it.", "dmg": 0, "self_dmg": 2 }
+		],
+		"miss": [
+			{ "text": "He parries. Sparks. Your arm rings from the impact.", "dmg": 0, "self_dmg": 1 },
+			{ "text": "Quick cut, but he's quicker. Blade meets nothing.", "dmg": 0, "self_dmg": 1 },
+			{ "text": "He leans back just enough. The edge passes a finger's width from his throat.", "dmg": 0, "self_dmg": 1 }
+		],
+		"glancing": [
+			{ "text": "A cut across his forearm. Not deep, but it bleeds freely.", "dmg": 2, "self_dmg": 0 },
+			{ "text": "The blade nicks his cheek. He blinks. Keeps fighting.", "dmg": 2, "self_dmg": 0 },
+			{ "text": "You open his side — shallow. He presses a hand against it.", "dmg": 2, "self_dmg": 0 }
+		],
+		"solid": [
+			{ "text": "The blade bites deep into his sword arm. His grip loosens.", "dmg": 4, "self_dmg": 0 },
+			{ "text": "A clean slash across his belly. He folds. Still breathing.", "dmg": 4, "self_dmg": 0 },
+			{ "text": "Under his guard, into the ribs. He gasps and steps back.", "dmg": 3, "self_dmg": 0 }
+		],
+		"critical": [
+			{ "text": "Across the throat. Fast. He reaches for what's already gone.", "dmg": 6, "self_dmg": 0 },
+			{ "text": "The blade finds the gap between neck and shoulder. Deep. He drops instantly.", "dmg": 7, "self_dmg": 0 },
+			{ "text": "You reverse the cut and drive it in. He looks surprised. Then nothing.", "dmg": 6, "self_dmg": 0 }
+		],
+		"devastating": [
+			{ "text": "Two cuts. One across, one down. He was dead after the first. The second was for his friends to see.", "dmg": 8, "self_dmg": 0 },
+			{ "text": "The blade moves like it knows where to go. Through leather, through skin, through bone. His knees fold. The name of this sword will be remembered.", "dmg": 8, "self_dmg": 0 }
+		]
+	},
+
+	"axe": {
+		"fumble": [
+			{ "text": "The axe buries itself in a root. You wrench it free too late.", "dmg": 0, "self_dmg": 3 },
+			{ "text": "The head glances off his shield and the haft cracks. Still usable. Barely.", "dmg": 0, "self_dmg": 2 },
+			{ "text": "Too wide. He steps inside. You can smell him.", "dmg": 0, "self_dmg": 3 }
+		],
+		"miss": [
+			{ "text": "He ducks. The axe takes a branch off the tree behind him.", "dmg": 0, "self_dmg": 1 },
+			{ "text": "The swing is heavy and slow. He sees it coming.", "dmg": 0, "self_dmg": 2 },
+			{ "text": "His shield catches the blow. The impact jars your arms.", "dmg": 0, "self_dmg": 1 }
+		],
+		"glancing": [
+			{ "text": "The axe catches his arm. A gash. He switches his grip.", "dmg": 2, "self_dmg": 0 },
+			{ "text": "A chip of his shield splinters off. He felt that.", "dmg": 2, "self_dmg": 0 },
+			{ "text": "The edge scrapes across his ribs. Leather saved him. Mostly.", "dmg": 2, "self_dmg": 0 }
+		],
+		"solid": [
+			{ "text": "The axe bites into his shoulder. He screams. His arm hangs.", "dmg": 5, "self_dmg": 0 },
+			{ "text": "Through the shield. Through the arm behind it. He falls.", "dmg": 5, "self_dmg": 0 },
+			{ "text": "A heavy chop into his thigh. Bone. He's done.", "dmg": 4, "self_dmg": 0 }
+		],
+		"critical": [
+			{ "text": "The axe cleaves his shield in two. The second swing finds flesh.", "dmg": 7, "self_dmg": 0 },
+			{ "text": "One overhead swing. He raises his arms. It doesn't help.", "dmg": 7, "self_dmg": 0 },
+			{ "text": "Into the neck. The axe sticks. You have to brace a foot to pull it free.", "dmg": 7, "self_dmg": 0 }
+		],
+		"devastating": [
+			{ "text": "The axe splits him from shoulder to sternum. No one speaks. The sound carries across the field.", "dmg": 9, "self_dmg": 0 },
+			{ "text": "One blow. He comes apart. The axe is warm in your hands and the enemy breaks.", "dmg": 9, "self_dmg": 0 }
+		]
+	},
+
+	"bow": {
+		"fumble": [
+			{ "text": "The string snaps back. Your fingers bleed. No shot.", "dmg": 0, "self_dmg": 2 },
+			{ "text": "The arrow veers wild. It hits a tree. Or worse — someone on your side.", "dmg": 0, "self_dmg": 2 },
+			{ "text": "You fumble the nock. The arrow drops. He's already charging.", "dmg": 0, "self_dmg": 3 }
+		],
+		"miss": [
+			{ "text": "The arrow passes a hand's width from his face. He doesn't notice.", "dmg": 0, "self_dmg": 0 },
+			{ "text": "It thuds into the dirt at his feet. He looks up at you.", "dmg": 0, "self_dmg": 0 },
+			{ "text": "Wind takes it. Gone.", "dmg": 0, "self_dmg": 0 }
+		],
+		"glancing": [
+			{ "text": "The arrow catches his arm. He snaps the shaft off and keeps coming.", "dmg": 2, "self_dmg": 0 },
+			{ "text": "Through the ear. A finger lower and he'd be dead.", "dmg": 2, "self_dmg": 0 },
+			{ "text": "It skims his ribs. Blood, but he's still standing.", "dmg": 2, "self_dmg": 0 }
+		],
+		"solid": [
+			{ "text": "The arrow hits his chest. He sits down slowly, confused.", "dmg": 4, "self_dmg": 0 },
+			{ "text": "Into the thigh. He falls. Tries to crawl. Can't.", "dmg": 4, "self_dmg": 0 },
+			{ "text": "Through the hand and into his belly. He won't pull it out.", "dmg": 3, "self_dmg": 0 }
+		],
+		"critical": [
+			{ "text": "Through the eye. He drops mid-stride. The men behind him trip over the body.", "dmg": 7, "self_dmg": 0 },
+			{ "text": "The arrow takes him in the throat. He grabs it. He shouldn't have.", "dmg": 6, "self_dmg": 0 },
+			{ "text": "Center of the chest. He looks down at the fletching. Falls backward.", "dmg": 6, "self_dmg": 0 }
+		],
+		"devastating": [
+			{ "text": "One hundred paces. Through leather, through rib, through heart. He was dead before the sound of the bow reached him. Silence on the field.", "dmg": 8, "self_dmg": 0 },
+			{ "text": "The arrow pins him to the tree behind. His feet leave the ground. His friends run.", "dmg": 8, "self_dmg": 0 }
+		]
+	},
+
+	"enemy_ashkin": {
+		"fumble": [
+			{ "text": "The ashkin swings wild, loses balance. Your warriors jeer.", "dmg": 0 },
+			{ "text": "His crude spear snaps on your shield. He stares at the stump.", "dmg": 0 }
+		],
+		"miss": [
+			{ "text": "He lunges. You step aside. Too slow, too predictable.", "dmg": 0 },
+			{ "text": "The blow glances off your armour. You barely felt it.", "dmg": 0 }
+		],
+		"glancing": [
+			{ "text": "His club catches your forearm. A bruise. You've had worse.", "dmg": 2 },
+			{ "text": "A crude blade opens a cut on your thigh. Stings.", "dmg": 2 }
+		],
+		"solid": [
+			{ "text": "The ashkin drives a sharpened bone into your side. Pain blooms.", "dmg": 4 },
+			{ "text": "His club hits your ribs. Something cracks. You taste iron.", "dmg": 4 },
+			{ "text": "A stone-tipped spear catches your shoulder. Deep. Your arm goes numb.", "dmg": 3 }
+		],
+		"critical": [
+			{ "text": "He's faster than he looks. The blade opens your face. Blood in your eyes.", "dmg": 6 },
+			{ "text": "The blow hits your helmet. The world rings. You're on one knee.", "dmg": 6 },
+			{ "text": "He tackles you. You hit the ground. His teeth are near your throat.", "dmg": 5 }
+		],
+		"devastating": [
+			{ "text": "The ashkin chief buries his war-pick in your shield arm. Bone snaps. You hear your own scream from far away.", "dmg": 8 },
+			{ "text": "Three of them hit you at once. You go down under grey skin and stone blades. Your warriors scream your name.", "dmg": 8 }
+		]
+	},
+
+	"group_status": {
+		"strong": [
+			"Your warriors press forward. Shield against shield. They smell victory.",
+			"The line holds firm. War-cries echo through the trees.",
+			"Your men fight as one. The enemy has nowhere to go."
+		],
+		"holding": [
+			"The line holds. Grunts, iron on wood. No one gives ground.",
+			"Steady. Your men do their work. Sweat and blood and patience.",
+			"The formation bends but doesn't break. Good men."
+		],
+		"wavering": [
+			"A man on your left stumbles. The line bends. Eyes flick to you.",
+			"Someone screams behind you. The rhythm breaks. Fear is contagious.",
+			"Your warriors bunch together. Too tight. Discipline is slipping."
+		],
+		"breaking": [
+			"Thorvald is down. Two men step back. The line is gone.",
+			"They're running. Not all of them — but enough. The shield wall is memory.",
+			"A boy drops his spear and runs. No one blames him. Others follow."
+		]
+	}
+}
