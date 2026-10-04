@@ -1,25 +1,22 @@
 {
-	"_info": "Ashkin raid — refugees arrive, beg for captive rescue. Player decides force size, then fights. 'Three hands' = 15, but refugees can't count well. Actually ~12 ashkin.",
+	"_info": "Ashkin raid — refugees arrive, beg for captive rescue. Expanded: scouting, tracking, planning, then combat. Lone Wolf-style buildup. 'Three hands' = 15, but refugees can't count well. Actually ~12 ashkin. The one-eared man's intel is partial — scouting fills in the gaps. v2: travel scenes added — camp, watches, random events. 'Rush blind' option always available as clearly-wrong choice.",
 	"id": "smoke_and_ashes",
 	"title": "Smoke and Ashes",
 	"description": "Refugees from a destroyed settlement beg for help rescuing captives from an ashkin raiding party.",
 	"conditions": [],
 	"entry": "arrival",
 	"scenes": {
+
 		"arrival": {
-			"text": "The rangers bring them in at dusk. Eight souls. Burned clothes, crusted blood, bare feet. Two children cling to a woman who stares at nothing.\n\nThe eldest — a man with one ear missing, fresh — drops to his knees before {chieftain}.\n\n'They came at dawn. Grey skin, no words, just teeth. They took our people. Dragged them north. Please.'\n\n{chieftain} asks: how many?\n\nThe man holds up both hands, then one more. Three hands. His people have no word for fifteen.\n\n'Please. They have our children.'",
+			"text": "The rangers bring them in at dusk. Eight souls, stumbling through the gate in a loose knot, holding each other up. Burned clothes stiff with dried blood. Bare feet cut to ribbons by two days of running on stony ground. Two children cling to a woman who stares at the fire without blinking. She hasn't spoken since they found her.\n\nThe eldest of the survivors is a man named Havel. He is perhaps forty, with the hard hands of a farmer and a wound on the left side of his head where his ear used to be. The blood has dried in a dark crust down his neck. He drops to his knees before {chieftain} and presses his forehead to the mud.\n\n'They came at dawn. Grey skin, no words, just teeth and hands. They killed the ones who fought and dragged the rest north. Our people. Our children.'\n\n{chieftain} asks: how many of the grey ones?\n\nHavel holds up both hands, then one more. Three hands. Fifteen. His people do not have a word for numbers that large. His eyes are wet. His hands are shaking.\n\n'Please. They have our children.'",
 			"choices": [
 				{
-					"label": "March in strength — twelve warriors. We end this.",
-					"next": "march_many"
+					"label": "We ride at once. Every warrior we have.",
+					"next": "slow_down"
 				},
 				{
-					"label": "A war-band of seven. Enough to fight, not enough to leave us open.",
-					"next": "march_medium"
-				},
-				{
-					"label": "Three scouts. Fast, quiet. Find them before they dig in.",
-					"next": "march_few"
+					"label": "Before we move — I need to know more. What did you see?",
+					"next": "question_havel"
 				},
 				{
 					"label": "We cannot risk our people for strangers.",
@@ -29,44 +26,386 @@
 			"_x": 400, "_y": 30
 		},
 
-		"march_many": {
-			"text": "Twelve warriors. Nearly every fighting body in the village. {chieftain} leads them north through the tree line.\n\nThe village gate stands open behind you. Elders, children, the healer. If anything comes from the east while you are gone...\n\nTwo days of hard march. Then smoke. A crude camp between boulders. You count them: ten. Maybe twelve. Not fifteen. The man with one ear was wrong. Or afraid.\n\nYour twelve against their twelve. But you have iron. They have bone and rage.",
+		"slow_down": {
+			"text": "The council elder — old Wulfric, who has buried two wives and still sleeps with a spear beside his bed — puts his hand on {chieftain}'s arm.\n\n'North is three days of forest and broken ground. We don't know where they are. We don't know how many. We don't know what the country looks like. If we march blind, we die blind.'\n\nHe is right. The impulse to ride out in rage is strong. But rage is not a plan.\n\nWulfric suggests questioning the survivors first. Havel saw things. The woman — if she can be reached — saw more. And the children may remember details that the adults were too terrified to notice.\n\nThe fire crackles. The refugees huddle at the edge of the light. Every hour that passes, the ashkin move further north with their captives.",
 			"choices": [
 				{
-					"label": "Charge at dawn. Overwhelm them.",
-					"next": "combat_many"
+					"label": "Question the survivors. Every detail matters.",
+					"next": "question_havel"
+				},
+				{
+					"label": "Send two scouts ahead now — we follow at first light.",
+					"next": "scouts_ahead"
+				},
+				{
+					"label": "No. Every hour costs lives. We march now — blind or not.",
+					"next": "rush_blind"
 				}
 			],
-			"_x": 150, "_y": 210
+			"_x": 200, "_y": 130
 		},
 
-		"combat_many": {
-			"text": "Dawn. Your warriors pour over the rocks. The ashkin scramble for their weapons. Too late. Too slow.",
+		"question_havel": {
+			"text": "{chieftain} sits across the fire from Havel and speaks quietly. No crowd. No council. Just two people and a low fire.\n\nHavel talks. Slowly at first, then faster, as though the words have been pressed down inside him for two days and now the weight is lifting.\n\nTheir settlement was smaller than yours. Thirty souls. A palisade of sharpened sticks, barely worth the name. The grey ones came from the east just before dawn, moving in a loose pack. No formation. No leader that Havel could see. They carried clubs of bone and stone. No metal. One of them had a jaw full of sharpened teeth — filed to points.\n\nThey didn't burn the village. They ignored the buildings entirely. They went for the people. The ones who ran were chased down. The ones who fought were beaten until they stopped. Havel lost his ear to a stone axe that missed his skull by a thumb's width.\n\nThe grey ones bound the captives with sinew — wrists and ankles — and dragged them north in a line. Havel counted the captives as they were led away: eleven. Maybe twelve. Some were children.\n\nThe grey ones moved fast. Faster than Havel expected. They don't tire the way people do.\n\nHe remembers one more thing. The grey ones avoided the river. They crossed at the shallowest point and moved along the ridgeline after that, staying high. They don't like water. Or at least, they avoid it.\n\n{chieftain} looks at the fire. Eleven captives. Three hands of grey ones — but Havel was running, bleeding, terrified. The count could be wrong. Ten. Fifteen. Twenty. There is no way to know from here.",
+			"choices": [
+				{
+					"label": "Talk to the woman. She saw something Havel didn't.",
+					"next": "question_woman"
+				},
+				{
+					"label": "We know enough. Send scouts north at first light.",
+					"next": "scouts_ahead"
+				},
+				{
+					"label": "Ask the children. They notice things adults miss.",
+					"next": "question_children",
+					"conditions": ["wits >= 3"]
+				}
+			],
+			"_x": 400, "_y": 230
+		},
+
+		"question_woman": {
+			"text": "The woman's name is Dalla. The healer has given her a blanket and broth. She holds the bowl without drinking. The two children pressed against her sides are not hers — they are her sister's. Her sister is among the captives.\n\nDalla does not look at {chieftain} when she speaks. She looks at the fire.\n\n'They had a place. In the rocks, to the north-east. A ravine. I saw them go in and out of it in the days before the raid. Two at a time. Always two. They watched us from the ridge above the barley field. I told the elder. He said they were animals.'\n\nShe stops. Drinks. Her hands are steady.\n\n'They are not animals. They posted a guard at the south end of the ravine. The big one, with the scars on his chest. He stood there every morning while the others hunted. He was watching the approach. They know people come from the south.'\n\nThis changes things. The ashkin aren't running blind with their captives. They have a camp. A defensible position. A sentry routine. And they've been watching the southern approaches — which is the direction any rescue party would come from.\n\n{chieftain} thanks Dalla. She nods once. She does not say 'bring my sister back.' She doesn't need to.",
+			"choices": [
+				{
+					"label": "We need eyes on that ravine before we commit. Send scouts.",
+					"next": "scouts_ahead"
+				},
+				{
+					"label": "Dalla described a back entrance. Ask her more about the terrain.",
+					"next": "dalla_terrain"
+				}
+			],
+			"_x": 550, "_y": 330
+		},
+
+		"question_children": {
+			"text": "The two children are a boy and a girl. The boy is perhaps eight, the girl six. They sit against the longhouse wall with their knees pulled to their chests. The boy watches everything with wide, unblinking eyes. The girl has her face buried in his shoulder.\n\n{chieftain} crouches in front of them. Does not touch them. Speaks softly.\n\n'You're safe now. I need your help. Can you tell me about the grey ones?'\n\nThe boy looks at {chieftain} for a long time. Then he speaks. His voice is flat. He has seen something that children should not see.\n\n'They eat at night. Raw. They tear it with their hands. They smell bad — like the pit behind the tanner's hut. When the big one makes a sound' — he imitates a clicking, guttural noise — 'the others stop. They listen to him. He's the boss.'\n\nThe girl lifts her face. 'They don't like fire,' she whispers. 'When grandfather threw a torch, they all stepped back. Even the boss one. They went around the fire. They didn't go through it.'\n\nFire. They fear fire.\n\nThe boy adds one more thing. 'I counted them. Twelve. Not fifteen. Havel can't count past his fingers.'\n\nTwelve. Not fifteen. And they fear fire. That is worth more than a hundred warriors.",
+			"choices": [
+				{
+					"label": "Talk to the woman too — she mentioned a ravine.",
+					"next": "question_woman"
+				},
+				{
+					"label": "Twelve that fear fire. I've heard enough. Assemble the war-band.",
+					"next": "assemble_warband"
+				}
+			],
+			"_x": 600, "_y": 230
+		},
+
+		"dalla_terrain": {
+			"text": "Dalla closes her eyes. She knows the country north of her settlement — she gathered herbs there in the summers. The ravine Havel's people called Breakneck, because a goat fell in once and didn't survive the drop.\n\n'The ravine runs east-west. The south end is the mouth — wide, open, easy to see. That's where the sentry stands. But the north end...' She pauses. 'There's a goat track that comes down from the ridge above. Steep. Loose stone. A man could do it in daylight. At night, you'd need to know it was there.'\n\nShe draws in the dirt with a stick. The ravine. The goat track. The ridge. The river to the west that the ashkin avoid.\n\nIf Dalla is right, the ashkin are watching the south mouth. A frontal approach means fighting uphill into a prepared position. But the goat track from the north puts you above them — behind their sentry, looking down into the camp.\n\nThe question is whether to trust the memory of a woman who hasn't walked that country in two years. The track might be washed out. The ridge might be watched. Or Dalla might be exactly right.",
+			"choices": [
+				{
+					"label": "Send scouts to verify the goat track before we commit.",
+					"next": "scouts_ahead_north"
+				},
+				{
+					"label": "We'll use the goat track. Assemble the war-band — we go north.",
+					"next": "assemble_warband_north"
+				}
+			],
+			"_x": 700, "_y": 430
+		},
+
+		"scouts_ahead": {
+			"text": "Two scouts. Frey and Aldric — the best you have. They leave before the moon sets, carrying no armour, no packs. Just blades, water, and orders: find the ashkin camp, count heads, study the ground, and come back. No heroics.\n\n{chieftain} watches them disappear into the treeline. The refugees sleep by the fire, or try to.\n\nTwo days pass. The village goes about its work, but there is a tightness in every conversation. The gate guard watches the north. The blacksmith works late, sharpening blades that haven't been sharpened since the founding year.\n\nOn the third morning, Frey comes back alone. She is winded, scratched by branches, and hasn't slept. She drinks a cup of water without pausing and then speaks.\n\n'Found them. Ravine between two ridges, half a day north of the burned settlement. Twelve ashkin — I counted twice. One big one with chest scars gives orders. They keep the captives in a pit behind the camp, covered with branches. I counted nine heads in the pit. Maybe ten. Alive.'\n\nShe draws in the dirt. The ravine mouth faces south — wide, open. One sentry. The camp is inside, against the eastern wall, sheltered by an overhang. Cooking fires at the centre.\n\n'The south mouth is the obvious approach. The sentry watches it all day. But there's a goat track on the north ridge. Comes down behind the overhang. Steep, loose stone, but passable. I went halfway down to check. They don't watch it.'\n\nShe looks up. 'Aldric is watching from the ridge. He'll stay until we come or until they move. If they move, he'll mark the trail.'\n\nNow {chieftain} has what Havel couldn't give: numbers, terrain, a map in the dirt.",
+			"choices": [
+				{
+					"label": "Assemble the war-band. We go in force.",
+					"next": "assemble_warband"
+				},
+				{
+					"label": "The goat track — we come down behind them. Smaller group, bigger surprise.",
+					"next": "assemble_warband_north"
+				}
+			],
+			"_x": 300, "_y": 430
+		},
+
+		"scouts_ahead_north": {
+			"text": "You send Frey alone — fast, quiet, with orders to verify the goat track and come back. Nothing more.\n\nShe returns in a day and a half. Faster than expected. The track is there. Narrow, steep, loose shale in the last fifty paces. But passable for careful men in daylight. At night, one slip would send rocks clattering into the ravine and announce your presence to everything below.\n\n'The track puts you on a ledge above the overhang,' Frey says. 'I could see the camp from there. Twelve ashkin. The captive pit is behind the overhang, against the east wall. The sentry watches south. He never looked up. Not once.'\n\nShe hesitates. 'There's something else. The captives — they're tied, but they're not gagged. One of them was crying. The ashkin didn't react. They don't care about the noise. They're not afraid of being found. They don't think anyone is coming.'\n\nThat is their weakness. They are not afraid.",
+			"choices": [
+				{
+					"label": "The goat track. We come down behind them. Pick seven steady men.",
+					"next": "assemble_warband_north"
+				},
+				{
+					"label": "Forget the track — too risky. Frontal assault in strength.",
+					"next": "assemble_warband"
+				}
+			],
+			"_x": 700, "_y": 530
+		},
+
+		"rush_blind": {
+			"text": "Wulfric grabs {chieftain}'s arm. {chieftain} shakes it off. The rage is too hot, too clean, too certain.\n\nWarriors snatch weapons from racks. Some grab shields. Some don't. Havel stumbles after the column, pointing north with a shaking hand — and twelve half-armed men plunge into the treeline at a half-run.\n\nTwo days of forest. No trail, no scouts, no plan. Havel's memory is the only map, and his memory is a terrified man's recollection of a route he ran barefoot and bleeding. Twice the column doubles back. Once they lose an hour in a gully that leads nowhere. Nobody sets a proper camp. The men sleep in shifts against tree trunks, blades across their knees, jolting awake at every crack and rustle.\n\nBy the second morning they are hollowed out — exhausted, snappish, stumbling over their own feet.\n\nThe ravine appears without warning. One moment: dense forest. The next: a gap in the rocks, firelight below, and the clicking sound of grey shapes moving in the half-dark. The sentry at the mouth sees the column before {chieftain} sees him. He clicks — rapid, sharp — and the ravine erupts.\n\nNo surprise. No formation. No plan. Just rage meeting rage.",
+			"choices": [
+				{
+					"label": "Fight.",
+					"next": "combat_reckless"
+				}
+			],
+			"_x": 100, "_y": 330
+		},
+
+		"combat_reckless": {
+			"text": "The ashkin pour from the ravine mouth like water from a cracked dam. They are ready. They are angry. And they outnumber what's left of your formation — because it isn't a formation. It's a mob of exhausted men with good iron and no coordination.\n\nThe big one — chest scars, filed teeth — stands behind his pack and clicks. Directing. Flanking. He has done this before.",
 			"combat": {
-				"enemy": "Ashkin Camp",
-				"enemy_hp": 10,
+				"enemy": "Ashkin War-band (prepared)",
+				"enemy_hp": 16,
 				"enemy_table": "enemy_ashkin",
-				"enemy_attack": 2,
-				"difficulty": 6,
-				"max_rounds": 3,
-				"win_scene": "rescue_total",
-				"lose_scene": "pyrrhic_many",
-				"stalemate_scene": "rescue_total",
+				"enemy_attack": 4,
+				"difficulty": 10,
+				"max_rounds": 4,
+				"win_scene": "rescue_full",
+				"lose_scene": "defeat_full",
+				"stalemate_scene": "stalemate_full",
 				"stances": [
 					{
-						"label": "Forward — lead the charge yourself",
-						"stat": "might",
+						"label": "Charge — raw fury, no formation",
+						"stat": "strength",
 						"stance_type": "forward",
-						"bonus": 2
+						"bonus": 0
 					},
 					{
-						"label": "Open — fight in the line with your men",
-						"stat": "might",
+						"label": "Hold — try to form a line in the chaos",
+						"stat": "grit",
+						"stance_type": "defensive",
+						"bonus": 0
+					}
+				]
+			},
+			"_x": 100, "_y": 530
+		},
+
+		"assemble_warband": {
+			"text": "The horn sounds at dawn. {chieftain} stands at the gate and calls names. Twelve warriors form a line in the grey morning light — every fighting body the village can spare. Iron blades, leather shields, grim faces. Some of them have never drawn blood. Today that changes.\n\nWulfric pulls {chieftain} aside. 'Twelve warriors means the village has nothing. If anything comes from the east while you're gone — bandits, another raiding party, a fire — the old and the young stand alone. I can hold the gate with a pitchfork and a bad temper. That's what you're leaving behind.'\n\nHe is not wrong. But the captives in the pit cannot wait. {chieftain} clasps the old man's shoulder and turns north. The column moves out through the gate in single file. Behind them, the village shrinks to a smudge of smoke against the morning sky.",
+			"choices": [
+				{
+					"label": "Steady march. Camp at dusk, set proper watches.",
+					"next": "march_south_camp"
+				},
+				{
+					"label": "Force march. Push through the night. Every hour matters.",
+					"next": "march_south_forced"
+				}
+			],
+			"_x": 400, "_y": 630
+		},
+
+		"march_south_camp": {
+			"text": "Hard ground. Dense forest. No trail worth the name. The column moves in single file, blades sheathed, shields on backs. Nobody speaks except to pass warnings about roots and drop-offs.\n\nBy late afternoon, the burned ruins of Havel's settlement appear through the trees. Blackened posts standing like broken teeth. A collapsed longhouse with the roof timbers still faintly smoking after days. A child's carved horse lies in the ash by the gate, scorched but whole. Nobody picks it up. Havel walks past with his one ear and his jaw clenched and does not look.\n\nBeyond the ruins, {chieftain} calls a halt in a hollow sheltered by a rock outcrop. The men drop packs and stretch in silence. Gerd — the oldest warrior, two fingers lost to frostbite in the founding winter — builds a firepit between two boulders that mask the light from the north.\n\nThe evening is cold. The forest is full of small sounds — branches settling, a fox barking somewhere in the distance, wind moving through dead leaves. Every sound could be nothing. Every sound could be grey shapes in the dark.\n\nGerd looks at {chieftain}. 'Watch rotation?'",
+			"choices": [
+				{
+					"label": "Double watch. Four awake at all times. Nobody sleeps deep tonight.",
+					"next": "march_south_night_alert"
+				},
+				{
+					"label": "Standard rotation. We need everyone sharp for tomorrow.",
+					"next": "march_south_night_rested"
+				},
+				{
+					"label": "Cold camp. Kill the fire. We don't know who's watching these hills.",
+					"next": "march_south_night_cold"
+				}
+			],
+			"_x": 350, "_y": 730
+		},
+
+		"march_south_forced": {
+			"text": "No rest. Minimal stops. {chieftain} pushes the column through the first night by moonlight, stumbling over roots in the half-dark. The men don't complain — they saw the children clinging to Dalla, and that is enough.\n\nThe burned settlement passes in the grey hours before dawn. Just shapes in the dark. The smell of old ash. Havel walks past without slowing.\n\nBy noon of the second day, the column is strung out and staggering. A young warrior named Torvald sits down on a rock and says he needs a moment. He falls asleep before he finishes the sentence. Two men haul him up and he walks on, eyes half-closed.\n\n{chieftain} calls a halt at a stream crossing. Two hours. Not rest — survival. The men collapse where they stand. Cold water. Cold food.\n\nGerd, who hasn't sat down, kneels by the stream and studies the far bank. 'Tracks,' he says quietly. 'Grey ones. Barefoot. Three, maybe four. Heading north. Recent — the edges haven't dried.'\n\nHe looks up. 'We're close.'\n\nTwo hours becomes one. The column moves again, following the tracks now, faster despite the exhaustion. Purpose is its own fuel.",
+			"choices": [
+				{
+					"label": "Follow the tracks. They lead straight to the camp.",
+					"next": "arrival_south_ridge"
+				}
+			],
+			"_x": 500, "_y": 730
+		},
+
+		"march_south_night_alert": {
+			"text": "The night passes in tense quiet. Four men sit awake in pairs at the edges of the hollow, watching the treeline, listening to the dark. The rest sleep badly — hands on hilts, jolting awake at every owl cry.\n\nBefore dawn, one of the watchers — a quiet man named Sigvald — touches {chieftain}'s shoulder. Points. On the ridge above the hollow, silhouetted against the stars for just a moment: a shape. Low, hunched, moving fast. Then gone.\n\nAnother watcher saw it too. They compare angles. One shape, moving north along the ridgeline. Not toward the camp — away from it. A scout. An ashkin scout.\n\nThey know this country is watched. They know someone patrols the route between the burned village and the ravine. And now {chieftain} knows it too. The approach from the south is observed. Whatever plan the column has needs to account for that.\n\nThe men eat cold bread in the grey dawn and march north with their eyes on the ridgeline.",
+			"choices": [
+				{
+					"label": "We know they're watching. Stay below the ridgeline and keep moving.",
+					"next": "arrival_south_ridge"
+				}
+			],
+			"_x": 300, "_y": 830
+		},
+
+		"march_south_night_rested": {
+			"text": "Standard rotation. Three shifts. The fire burns low. The men sleep properly for the first time in days — the deep, heavy sleep of people who know tomorrow will be hard.\n\n{chieftain} takes the middle watch. The forest is still. An owl passes overhead on silent wings. In the distance, a fox screams once and falls silent. Nothing moves on the ridgeline. Nothing comes from the north.\n\nAt dawn, the column rises, eats, and moves out with steady steps and clear eyes. The march north is uneventful — dense forest, steep ground, the occasional stream crossing. By early afternoon, the ground rises and the trees thin.\n\nGerd finds tracks near a stream. Barefoot, inhuman gait, heading north. Fresh. The ashkin have been moving through this country recently. The column is close.",
+			"choices": [
+				{
+					"label": "Follow the tracks carefully. We're close.",
+					"next": "arrival_south_ridge"
+				}
+			],
+			"_x": 400, "_y": 830
+		},
+
+		"march_south_night_cold": {
+			"text": "The fire dies. The dark closes in. Twelve men lie in a hollow in the forest with no light and no warmth, listening to the night with wide-open eyes.\n\nIt is a long night. The cold seeps through cloaks and blankets. Joints stiffen. One man's teeth chatter until Gerd puts a hand on his shoulder and the chattering stops — willpower or shame, either works.\n\nSometime after midnight, a sound from the north. Footsteps. Not human — too light, too fast, no heel-strike. A clicking, barely audible, like stones tapped together. Two shapes pass along the ridgeline above the hollow, moving south. They don't slow. They don't look down. The cold camp — no fire, no light — is invisible in the dark.\n\nThe men lie rigid until the clicking fades. Then Gerd exhales and whispers: 'Patrol. Two of them. They're checking the route south.'\n\nHe pauses. 'If we'd had a fire, they'd have seen us.'\n\nNobody argues about the cold camp after that. At dawn, the column moves out stiff-legged and silent, knowing now that the ground between here and the ravine is watched.",
+			"choices": [
+				{
+					"label": "Move carefully. They patrol this ground.",
+					"next": "arrival_south_ridge"
+				}
+			],
+			"_x": 250, "_y": 830
+		},
+
+		"arrival_south_ridge": {
+			"text": "On the second evening, the column reaches the ridge above the ravine. Below, through the trees, firelight. The smell of meat cooking — though not any meat you'd recognise. A low, clicking sound carries up from the camp. Communication, not language.\n\nAldric appears from behind a boulder. He hasn't slept in two days. His report is short: twelve ashkin, same positions, captives alive. The south mouth is open and lightly watched. One sentry, sometimes two.\n\n'There's a goat track on the north ridge,' Aldric adds. 'Comes down behind the overhang. They don't watch it. Frey found it before she went back.'\n\nTwelve against twelve. Your iron against their bone and fury. But now you know the ground.",
+			"choices": [
+				{
+					"label": "Charge the south mouth at dawn. Twelve on twelve — we have iron.",
+					"next": "combat_frontal_many"
+				},
+				{
+					"label": "Split the force. Eight through the south, four down the goat track from behind.",
+					"next": "combat_pincer"
+				},
+				{
+					"label": "Send men to cut brush. We make torches — if they fear fire, we use it.",
+					"next": "combat_fire"
+				}
+			],
+			"_x": 400, "_y": 930
+		},
+
+		"assemble_warband_north": {
+			"text": "Seven warriors. {chieftain} picks them one by one. Not the strongest — the steadiest. Men who can climb loose stone without slipping. Men who can hold their nerve in the dark. Men who won't cough, won't stumble, won't drop a blade on rock.\n\nFive remain at the village. Enough to hold the gate. Barely.\n\nThe eastern route means circling wide — avoiding ridgelines, crossing the river upstream, then climbing from the back side. Three days minimum. No fires on the march. Cold food. Whispered orders.\n\n{chieftain} looks at the seven. They look back. Nobody speaks. They know what they signed up for.",
+			"choices": [
+				{
+					"label": "Move out. Quiet march, camp at the river crossing.",
+					"next": "march_north_camp"
+				},
+				{
+					"label": "Push through. Minimal rest. We circle fast and strike fast.",
+					"next": "march_north_forced"
+				}
+			],
+			"_x": 700, "_y": 630
+		},
+
+		"march_north_camp": {
+			"text": "The march is punishing. The eastern route circles wide, crossing streams at shallow points, staying below the treeline. {chieftain} keeps the column tight — seven men moving like one shadow through the forest.\n\nThe first evening camp is in a birch grove beside a river bend. The water is fast and cold. The men fill waterskins and wash the dust from their faces. It's the first time anyone has relaxed since the gate.\n\nOne of the seven — a young man named Kael — sits on a rock and sharpens his blade. His hands are steady but his jaw is tight. This is his first march beyond the village boundary. He looks at {chieftain} and doesn't ask the question, but his eyes ask it: will we come back?\n\nGerd sets a firepit under a rock overhang where the smoke disperses into the canopy. He looks at {chieftain} for the nod before striking the flint.",
+			"choices": [
+				{
+					"label": "Small fire. Hot food tonight. Double watch.",
+					"next": "march_north_river"
+				},
+				{
+					"label": "No fire. Cold rations. We stay invisible.",
+					"next": "march_north_river_cold"
+				}
+			],
+			"_x": 650, "_y": 730
+		},
+
+		"march_north_forced": {
+			"text": "No stops. The seven move through the night in single file, navigating by starlight and Gerd's memory of the country east of the river. It is brutal, silent work. Branches catch cloaks. Roots catch boots. Kael stumbles twice and catches himself both times without a sound.\n\nThe river crossing comes at dawn — waist-deep, fast current, stones slick with weed. They cross linked at the elbows, weapons held overhead. The water is so cold it stops thought.\n\nOn the far bank, Gerd kneels and studies the mud. His face changes. 'Tracks. Barefoot, wide. Two sets. Heading north along the riverbank.' He touches the edge of a print. 'Hours old, not days.'\n\nThe ashkin use this river too.\n\nThe seven press on without rest. By the second evening, the ground climbs steeply into pine country. Thin air, loose stone, the smell of resin. They are exhausted — hollow-eyed, moving on willpower alone.\n\nBut they are close. Through the trees ahead, the ridgeline. And below it, barely visible: a dark gash in the earth.",
+			"choices": [
+				{
+					"label": "Approach the ridge on your belly. Get eyes on the camp.",
+					"next": "arrival_north_ridge"
+				}
+			],
+			"_x": 800, "_y": 730
+		},
+
+		"march_north_river": {
+			"text": "The fire crackles low. The men eat hot porridge in silence, passing the pot hand to hand. Warmth and food — small things that matter enormously when tomorrow you might die.\n\nGerd takes first watch. {chieftain} sleeps with a hand on the blade and dreams of clicking sounds in the dark.\n\nDawn. The river crossing is the hardest part — waist-deep, fast current, slippery stones. They cross in pairs, linked at the elbows, weapons held overhead. Kael slips once and Gerd catches him without a word.\n\nBeyond the river, the ground climbs. Birch gives way to pine. The air thins and sharpens. By mid-afternoon, {chieftain} notices something on the far bank of a tributary stream: a dead hare, half-eaten. Not torn by a fox — pulled apart by hands. No teeth marks. No claw marks. Just fingers.\n\nGerd crouches beside it. 'Fresh. This morning.' He scans the ridge above. Nothing moves. But something was here.\n\nThe seven continue in silence, weapons unsheathed now. By evening, the ridgeline appears ahead. Below it, barely visible through the pines: a dark gash in the earth.\n\nThe ravine.",
+			"choices": [
+				{
+					"label": "Approach the ridge. Low and quiet.",
+					"next": "arrival_north_ridge"
+				}
+			],
+			"_x": 600, "_y": 830
+		},
+
+		"march_north_river_cold": {
+			"text": "No fire. Cold mutton and hard bread, chewed in silence. The men wrap their cloaks tight and lie on the rocky ground. The river murmurs beside them. Kael shivers and doesn't sleep.\n\n{chieftain} takes the long watch. The forest across the river is dark and still. Halfway through the night, something moves on the far bank — a shape, low and quick, crossing the moonlight for a heartbeat. {chieftain} watches the spot for an hour. Nothing else moves. But sleep does not come back.\n\nDawn is a relief. The river crossing is brutal — waist-deep, fast current, stones like ice. They cross in pairs, linked at the elbows. Halfway across, {chieftain} looks downstream and sees it: a footprint on the far bank. Barefoot. Wider than a man's foot. The mud around it is fresh.\n\nThe ashkin use this crossing too. The seven are walking in their footsteps.\n\nBeyond the river, the ground climbs. Pine forest, thin air, loose stone. By afternoon, the ridgeline appears ahead. Below it, barely visible through the trees: a dark gash in the earth.\n\nThe ravine.",
+			"choices": [
+				{
+					"label": "Approach the ridge. Quiet. Low.",
+					"next": "arrival_north_ridge"
+				}
+			],
+			"_x": 700, "_y": 830
+		},
+
+		"arrival_north_ridge": {
+			"text": "The column reaches the top of the ridge on its belly. {chieftain} lies flat on the ledge and looks down.\n\nBelow, the ravine opens like a wound in the earth. The overhang juts out from the eastern wall, and beneath it the ashkin camp glows with low firelight. Twelve grey shapes moving between the fires. The big one — chest scars, heavy brow — sits apart from the others, gnawing something. The sentry at the south mouth is a hunched figure with a bone club across his knees, watching the wrong direction.\n\nBehind the overhang, the pit. Branches laid across the top. No sound from inside. Either the captives are sleeping or they've stopped hoping.\n\nThe goat track descends to the left. Steep. Loose shale. In daylight, manageable. In darkness — one mistake and the stones will rattle into the ravine like a drum roll.\n\nSeven warriors, looking down at twelve enemies who don't know they're there.",
+			"choices": [
+				{
+					"label": "Descend at first light. They'll see us but we'll have the high ground.",
+					"next": "combat_north_dawn"
+				},
+				{
+					"label": "Go now. In the dark. If we make it down unseen, we end this in one strike.",
+					"next": "combat_north_night"
+				},
+				{
+					"label": "Wait and watch. Learn their routines. Strike when the sentry changes.",
+					"next": "watch_and_learn",
+					"conditions": ["wits >= 4"]
+				}
+			],
+			"_x": 700, "_y": 930
+		},
+
+		"watch_and_learn": {
+			"text": "{chieftain} signals the men to settle in. Wait. Watch. Learn.\n\nThree hours on the ledge, pressed flat against cold stone. The ashkin below move in patterns that aren't random. The sentry changes at what feels like midnight — the big one clicks twice, and a smaller ashkin relieves the watcher at the mouth. During the changeover, both sentries face each other. For thirty heartbeats, nobody watches the ravine.\n\nThe cooking fire burns low around the same time. The ashkin sleep in a huddle near the overhang — all except the sentry and the big one, who sleeps apart, lighter, like a dog with one ear cocked.\n\nThe goat track enters the ravine behind the overhang. If you descend during the sentry change, you'll have thirty heartbeats of unwatched movement, and the sleeping group will be between you and the only ashkin still alert.\n\nIt's a narrow window. But it's a window.\n\n{chieftain} gathers the seven close and whispers the plan. Nods in the dark. No one argues. They've been watching long enough to understand what they're about to do.",
+			"choices": [
+				{
+					"label": "Move during the sentry change. Thirty heartbeats. Go.",
+					"next": "combat_north_timed"
+				}
+			],
+			"_x": 850, "_y": 1030
+		},
+
+		"combat_frontal_many": {
+			"text": "Dawn breaks grey and cold. Mist sits in the ravine mouth like smoke. {chieftain} raises a hand. Twelve warriors rise from the scrub and move forward in a line, shields up, blades drawn.\n\nThe sentry sees them at forty paces. He doesn't shout — he makes that clicking sound, rapid and sharp, and the camp erupts. Grey bodies scramble for weapons. The big one is on his feet first, bone club in both hands, teeth bared.\n\nThey form a loose half-circle across the ravine mouth. No formation. No discipline. Just fury and numbers.\n\nTwelve against twelve. Your iron. Their rage.",
+			"combat": {
+				"enemy": "Ashkin War-band",
+				"enemy_hp": 14,
+				"enemy_table": "enemy_ashkin",
+				"enemy_attack": 3,
+				"difficulty": 8,
+				"max_rounds": 4,
+				"win_scene": "rescue_full",
+				"lose_scene": "defeat_full",
+				"stalemate_scene": "stalemate_full",
+				"stances": [
+					{
+						"label": "Forward — lead the charge into the ravine mouth",
+						"stat": "strength",
+						"stance_type": "forward",
+						"bonus": 1
+					},
+					{
+						"label": "Open — fight in the line, shield to shield",
+						"stat": "strength",
 						"stance_type": "open",
 						"bonus": 0
 					},
 					{
-						"label": "Rearward — direct the assault from behind",
+						"label": "Defensive — hold the mouth, let them come to you",
+						"stat": "grit",
+						"stance_type": "defensive",
+						"bonus": 0,
+						"conditions": ["has_shield == true"]
+					},
+					{
+						"label": "Rearward — direct the line from behind, pick targets",
 						"stat": "wits",
 						"stance_type": "rearward",
 						"bonus": 1,
@@ -74,11 +413,176 @@
 					}
 				]
 			},
-			"_x": 150, "_y": 390
+			"_x": 300, "_y": 1130
 		},
 
-		"rescue_total": {
-			"text": "It is over in minutes. The ashkin scatter into the rocks. Your warriors find the captives in a pit behind the camp — nine souls, bound with sinew, alive. A woman clutches a boy to her chest and won't let go.\n\nThe march home takes three days. The freed captives walk among your warriors. Some of them look back at your village and weep. Not from sadness.\n\nBut for three days, the village stood open. The elder who stayed behind aged a year in each one.",
+		"combat_pincer": {
+			"text": "{chieftain} splits the force. Eight warriors to the south mouth under Wulfric's son, a steady man with a jaw like an anvil. Four up the goat track with {chieftain}.\n\nThe plan is simple: the south group advances at dawn, draws the ashkin to the mouth. While they're engaged, the north group comes down behind them. A hammer and anvil.\n\nThe four begin the descent in the grey pre-dawn light. Loose stone shifts under boots. A pebble clatters down and everyone freezes. Below, the sentry cocks his head. Listens. Goes back to watching south.\n\nAt the bottom, the four press against the ravine wall behind the overhang. They can hear the ashkin breathing. The big one is three paces away, sleeping.\n\nThen the horn sounds at the south mouth. Wulfric's son and his eight come roaring in. The ashkin scramble. The big one lurches to his feet, clicks rapidly, and the pack surges south toward the noise.\n\nTheir backs are turned. Four warriors stand behind them in the half-light. {chieftain} raises a blade.",
+			"combat": {
+				"enemy": "Ashkin (from behind)",
+				"enemy_hp": 10,
+				"enemy_table": "enemy_ashkin",
+				"enemy_attack": 2,
+				"difficulty": 6,
+				"max_rounds": 3,
+				"win_scene": "rescue_full",
+				"lose_scene": "defeat_pincer",
+				"stalemate_scene": "rescue_partial",
+				"stances": [
+					{
+						"label": "Forward — hit them in the back before they turn",
+						"stat": "strength",
+						"stance_type": "forward",
+						"bonus": 3
+					},
+					{
+						"label": "Open — engage and let the south group close the trap",
+						"stat": "strength",
+						"stance_type": "open",
+						"bonus": 1
+					}
+				]
+			},
+			"_x": 500, "_y": 1130
+		},
+
+		"combat_fire": {
+			"text": "The men look at {chieftain} like the idea is madness. Then the oldest warrior — a man named Gerd who lost two fingers to frostbite in the founding winter — begins to smile.\n\nThey spend the evening cutting green branches, binding them with strips of cloth soaked in rendered fat. Thirty torches. Not elegant. They stink. They smoke. But they burn.\n\nAt dawn, twelve warriors advance on the ravine mouth in a line. Eight carry torches in their off-hands. The flames gutter in the morning air, trailing oily black smoke.\n\nThe sentry sees them and clicks. The ashkin pour from the camp toward the mouth — and stop. The line of fire is thirty paces away and closing. Twelve torches, twelve blades, and behind them the rising sun.\n\nThe big one snarls. He does not advance. For the first time, {chieftain} sees uncertainty in those grey, animal eyes.\n\nThe ashkin hold their ground. They do not retreat. But they do not charge.",
+			"combat": {
+				"enemy": "Ashkin (fire-panicked)",
+				"enemy_hp": 12,
+				"enemy_table": "enemy_ashkin",
+				"enemy_attack": 2,
+				"difficulty": 5,
+				"max_rounds": 3,
+				"win_scene": "rescue_full",
+				"lose_scene": "defeat_full",
+				"stalemate_scene": "rescue_full",
+				"stances": [
+					{
+						"label": "Forward — push in with torches, drive them back",
+						"stat": "strength",
+						"stance_type": "forward",
+						"bonus": 3
+					},
+					{
+						"label": "Open — advance steadily, keep the fire line intact",
+						"stat": "grit",
+						"stance_type": "open",
+						"bonus": 1
+					},
+					{
+						"label": "Rearward — throw torches into the camp, sow chaos",
+						"stat": "wits",
+						"stance_type": "rearward",
+						"bonus": 2
+					}
+				]
+			},
+			"_x": 300, "_y": 1230
+		},
+
+		"combat_north_dawn": {
+			"text": "First light. The seven begin the descent single file. The shale crunches and slides under boots. Below, the camp stirs. The sentry at the south mouth stretches and yawns.\n\nHalfway down, a stone breaks free and clatters into the ravine. The sound echoes off the walls. The big ashkin jerks his head up. His eyes find the track. His mouth opens.\n\nThe clicking starts. Fast. Urgent. The pack turns.\n\n{chieftain} draws steel. 'Down! Now! Don't stop!'\n\nThe seven slide and scramble down the last thirty paces in a shower of loose rock. The high ground is gone. But seven warriors are inside the ravine, and the ashkin are between them and the captive pit.\n\nSeven against twelve. No surprise. But the ravine walls are close — the ashkin can't surround you. It will be face to face, in the narrows.",
+			"combat": {
+				"enemy": "Ashkin War-band",
+				"enemy_hp": 14,
+				"enemy_table": "enemy_ashkin",
+				"enemy_attack": 3,
+				"difficulty": 8,
+				"max_rounds": 4,
+				"win_scene": "rescue_north",
+				"lose_scene": "defeat_north",
+				"stalemate_scene": "stalemate_north",
+				"stances": [
+					{
+						"label": "Forward — drive down the slope, use the momentum",
+						"stat": "strength",
+						"stance_type": "forward",
+						"bonus": 1
+					},
+					{
+						"label": "Open — form up at the bottom, hold the narrows",
+						"stat": "strength",
+						"stance_type": "open",
+						"bonus": 0
+					},
+					{
+						"label": "Defensive — shield wall in the narrow ravine",
+						"stat": "grit",
+						"stance_type": "defensive",
+						"bonus": 1,
+						"conditions": ["has_shield == true"]
+					}
+				]
+			},
+			"_x": 650, "_y": 1130
+		},
+
+		"combat_north_night": {
+			"text": "No moon. The stars give just enough light to see the edge of the track and nothing more. {chieftain} leads. One step at a time. Feel the ground. Weight on the back foot until the front foot is sure. The men behind follow in {chieftain}'s footsteps exactly — each boot placed where the last one was.\n\nThirty paces of shale. It takes twenty minutes. Sweat runs down {chieftain}'s back despite the cold. A warrior behind breathes too loud. Someone touches his arm: quiet.\n\nAt the bottom, the overhang is three paces to the left. Beyond it, the glow of dying embers. Grey shapes huddled on the ground. The clicking snore of twelve sleeping ashkin.\n\nThe sentry is at the south mouth, forty paces away, his back to the camp.\n\nSeven warriors stand in the dark with drawn blades. The ashkin have no idea they are there.\n\n{chieftain} raises a hand. Points at the big one. Points at the nearest cluster. Holds up three fingers. Three. Two. One.",
+			"combat": {
+				"enemy": "Ashkin (sleeping)",
+				"enemy_hp": 8,
+				"enemy_table": "enemy_ashkin",
+				"enemy_attack": 2,
+				"difficulty": 5,
+				"max_rounds": 3,
+				"win_scene": "rescue_north",
+				"lose_scene": "defeat_north",
+				"stalemate_scene": "rescue_partial",
+				"round_1_text": "The first three die before they wake. The rest scramble to their feet in the dark, snarling, swinging blind. Your men are already among them.",
+				"stances": [
+					{
+						"label": "Forward — cut through them before they organise",
+						"stat": "strength",
+						"stance_type": "forward",
+						"bonus": 3
+					},
+					{
+						"label": "Open — fight in pairs, cover each other",
+						"stat": "wits",
+						"stance_type": "open",
+						"bonus": 1
+					}
+				]
+			},
+			"_x": 800, "_y": 1130
+		},
+
+		"combat_north_timed": {
+			"text": "The sentry clicks twice. The relief sentry walks toward the south mouth. For thirty heartbeats, both face each other. The camp is unwatched.\n\n{chieftain} signals. Seven men pour down the last stretch of the goat track like water through a crack. Boots on loose stone — noise, but the clicking of the sentries covers it.\n\nAt the bottom, the seven fan out behind the overhang. The sleeping ashkin are five paces ahead. The big one is apart, facing the other direction, watching his sentries change.\n\nFifteen heartbeats left in the window. {chieftain} steps forward and drives a blade into the nearest grey shape.",
+			"combat": {
+				"enemy": "Ashkin (ambushed)",
+				"enemy_hp": 7,
+				"enemy_table": "enemy_ashkin",
+				"enemy_attack": 2,
+				"difficulty": 4,
+				"max_rounds": 3,
+				"win_scene": "rescue_north",
+				"lose_scene": "defeat_north",
+				"stalemate_scene": "rescue_partial",
+				"round_1_text": "The first blow falls in silence. Then the second. By the third, the camp is awake and screaming — but three are already down and the rest are caught between your blades and the ravine wall.",
+				"stances": [
+					{
+						"label": "Forward — fast and brutal, end it before they form up",
+						"stat": "strength",
+						"stance_type": "forward",
+						"bonus": 3
+					},
+					{
+						"label": "Open — systematic, pair by pair, leave no one standing",
+						"stat": "wits",
+						"stance_type": "open",
+						"bonus": 2
+					}
+				]
+			},
+			"_x": 950, "_y": 1130
+		},
+
+		"rescue_full": {
+			"text": "The last ashkin falls. The ravine is quiet except for the breathing of exhausted men and the low moan of the wind through the rocks above.\n\nBehind the overhang, beneath a lattice of branches: the pit. {chieftain} pulls the branches aside. Faces look up. Hollow, filthy, blinking in the light. Nine souls. Bound hand and foot with sinew, sitting in their own waste. A woman clutches a boy to her chest and will not let go. A man with a broken nose tries to stand and his legs buckle.\n\nYour warriors cut the bindings in silence. One of the freed captives — a girl of maybe fourteen — touches the blade that cuts her loose and then touches the hand that holds it. She doesn't say anything. She doesn't need to.\n\nThe march home takes three days. The freed walk among your warriors. Some stumble. Your men carry them without being asked. On the second night, one of the freed women begins to sing — quietly, barely audible, a song in a dialect none of your people recognise. By the third verse, two of your warriors are humming along.\n\nThe village gate opens to silence. Then to shouting. Then to the kind of noise that a community makes when it remembers what it's for.\n\nBut for three days, the village stood open. The elder who stayed behind aged a year in each one. He says nothing about it. He doesn't need to.",
 			"end": true,
 			"effects": [
 				"alignment += 10",
@@ -88,176 +592,102 @@
 				"set captives_freed = true",
 				"set village_was_exposed = true"
 			],
-			"log": "Twelve warriors marched north and crushed an ashkin camp. Nine captives freed. The village stood undefended for three days.",
-			"_x": 60, "_y": 570
+			"log": "Warriors marched north and crushed an ashkin camp. Nine captives freed. The village stood undefended for three days.",
+			"_x": 400, "_y": 1330
 		},
 
-		"pyrrhic_many": {
-			"text": "They fought harder than anyone expected. Grey bodies hurling themselves at shield walls, biting through leather. Two of your warriors don't get up.\n\nYou find the captives. Alive. But the walk home is quiet. The freed weep with relief. Your men carry their dead.",
+		"rescue_north": {
+			"text": "The ravine is still. Smoke drifts from the overturned cooking fire. Grey bodies lie where they fell. The big one — the one with the chest scars, the one who clicked orders — is face down in the dirt with a blade between his shoulders. He tried to run. He didn't make it.\n\nThe captive pit is behind the overhang. Nine souls. Alive. Thin, bruised, bound with sinew so tight it has cut into the skin. A woman sees {chieftain} and begins to cry — not from grief, but from the sudden, overwhelming shock of someone coming.\n\nYour warriors cut the bindings. The freed sit in the dirt and rub their wrists and stare at the dead ashkin as though they cannot believe what they're seeing.\n\nThe march home is long. Your men are tired. The freed are weak. But no one suggests stopping. Every step south is a step away from the ravine and whatever brought the ashkin to this land.\n\nThe village receives you at dusk. Torches at the gate. Faces in the firelight. The elder who stayed behind counts heads — warriors, then captives — and exhales a breath he's been holding for days.",
 			"end": true,
 			"effects": [
-				"alignment += 5",
-				"population += 2",
+				"alignment += 10",
+				"population += 3",
 				"set ashkin_encountered = true",
-				"set captives_freed = true",
-				"set village_was_exposed = true"
+				"set ashkin_defeated = true",
+				"set captives_freed = true"
 			],
-			"log": "The ashkin were defeated but two warriors fell. Captives were freed. The village was left exposed.",
-			"_x": 240, "_y": 570
+			"log": "Seven warriors descended the goat track and destroyed the ashkin camp. Nine captives freed. All warriors returned.",
+			"_x": 800, "_y": 1330
 		},
 
-		"march_medium": {
-			"text": "Seven warriors. {chieftain} picks them carefully — the strongest, the steadiest. Enough to guard the village, enough to fight.\n\nTwo days north. The ashkin camp sits between boulders in a ravine. You count them from the ridge: twelve. Maybe more in the caves behind. Three hands was close.\n\nSeven against twelve. Your iron against their fury. This will cost.",
-			"choices": [
-				{
-					"label": "Attack head-on at first light",
-					"next": "combat_medium"
-				},
-				{
-					"label": "Wait for nightfall — hit them while they sleep",
-					"next": "combat_medium_night"
-				}
-			],
-			"_x": 400, "_y": 210
-		},
-
-		"combat_medium": {
-			"text": "First light. You spread your seven across the ravine mouth. No retreat for either side. The ashkin see you and bare their teeth. No war cry. Just silence and the scrape of bone on stone.",
-			"combat": {
-				"enemy": "Ashkin Raiding Party",
-				"enemy_hp": 14,
-				"enemy_table": "enemy_ashkin",
-				"enemy_attack": 3,
-				"difficulty": 8,
-				"max_rounds": 4,
-				"win_scene": "rescue_medium_win",
-				"lose_scene": "rescue_medium_lose",
-				"stalemate_scene": "rescue_medium_stalemate",
-				"stances": [
-					{
-						"label": "Forward — break their line before they set",
-						"stat": "might",
-						"stance_type": "forward",
-						"bonus": 1
-					},
-					{
-						"label": "Open — hold formation, grind them down",
-						"stat": "might",
-						"stance_type": "open",
-						"bonus": 0
-					},
-					{
-						"label": "Defensive — shield wall in the ravine mouth",
-						"stat": "grit",
-						"stance_type": "defensive",
-						"bonus": 0,
-						"conditions": ["has_shield == true"]
-					}
-				]
-			},
-			"_x": 350, "_y": 390
-		},
-
-		"combat_medium_night": {
-			"text": "You wait. The stars come out. The ashkin sleep in shifts — two sentries by a low fire. Your men move like shadows between the boulders.\n\nThen a stone slips under someone's foot. A sentry turns. His eyes catch the moonlight.\n\nNow.",
-			"combat": {
-				"enemy": "Ashkin (Night Raid)",
-				"enemy_hp": 12,
-				"enemy_table": "enemy_ashkin",
-				"enemy_attack": 3,
-				"difficulty": 7,
-				"max_rounds": 3,
-				"win_scene": "rescue_medium_win",
-				"lose_scene": "rescue_medium_lose",
-				"stalemate_scene": "rescue_medium_stalemate",
-				"round_1_text": "Chaos in the dark. Shapes collide. Someone screams — yours or theirs, you can't tell.",
-				"stances": [
-					{
-						"label": "Forward — strike fast in the confusion",
-						"stat": "wits",
-						"stance_type": "forward",
-						"bonus": 2
-					},
-					{
-						"label": "Open — find a target, fight steady",
-						"stat": "might",
-						"stance_type": "open",
-						"bonus": 0
-					},
-					{
-						"label": "Rearward — use the darkness, pick them off",
-						"stat": "wits",
-						"stance_type": "rearward",
-						"bonus": 1,
-						"conditions": ["weapon_base == bow"]
-					}
-				]
-			},
-			"_x": 500, "_y": 390
-		},
-
-		"rescue_medium_win": {
-			"text": "The last ashkin drops. Your warriors stand panting, blades red. One of your men sits against a boulder, holding his side. He'll live. Probably.\n\nBehind the camp, in a pit covered with branches: seven captives. Thin. Bruised. Alive.\n\nThe walk home is long. The freed ones don't talk much. Neither do your warriors.",
+		"rescue_partial": {
+			"text": "The fighting grinds to a halt. The surviving ashkin drag their wounded toward the south mouth, clicking urgently. They're pulling back — but they're dragging three of the captives with them. Sinew leashes around the wrists, hauled like animals.\n\nYour warriors are spent. Two are wounded. One sits against the ravine wall staring at a gash on his forearm that won't stop bleeding.\n\nYou have six captives. Six out of nine. The other three disappear into the rocks with the retreating ashkin, their cries growing fainter until the ravine swallows the sound.\n\nThe march home is quiet. The freed are grateful. Your men are not. They know what they left behind. The village gate opens. The healer takes over. The six freed captives are fed, clothed, given beds.\n\nThree are still out there. Everyone knows it. Nobody says it.",
 			"end": true,
 			"effects": [
 				"alignment += 5",
 				"population += 2",
 				"set ashkin_encountered = true",
 				"set ashkin_scattered = true",
-				"set captives_freed = true"
+				"set captives_partially_freed = true"
 			],
-			"log": "Seven warriors fought the ashkin and won. Captives freed. All warriors returned, though not all unharmed.",
-			"_x": 350, "_y": 570
+			"log": "Warriors fought the ashkin to a draw. Six captives freed. Three were taken deeper into the hills.",
+			"_x": 600, "_y": 1430
 		},
 
-		"rescue_medium_lose": {
-			"text": "{chieftain} falls back. Blood in your eyes, a ringing in your skull. Your warriors drag you out.\n\nThree made it back. Three out of seven. The captives are still in the pit. You can hear them calling as you retreat into the trees.\n\nThe village receives you in silence. The healer works through the night.",
+		"stalemate_full": {
+			"text": "Neither side breaks. The fighting slows, then stops. Your warriors stand panting in a line across the ravine mouth. The ashkin crouch behind their dead, watching, waiting. The big one clicks — short, sharp — and the pack begins to move backward. Not running. Walking. Dragging their wounded. And the captives.\n\nThey take them all. Eleven bound figures pulled into the depths of the ravine, then up and over the ridge to the north. Your men could follow. But they can barely stand.\n\nOne warrior is dead. A boy from the founding families, twenty years old. He lies on the ravine floor with a stone axe buried in his chest. His name was Erek. He was going to marry the baker's daughter next spring.\n\nThe march home carries one body and no captives. The village receives you in silence. The baker's daughter is at the gate. She sees the shape wrapped in a cloak and she knows before anyone speaks.",
 			"end": true,
 			"effects": [
 				"alignment -= 5",
-				"population -= 4",
-				"set ashkin_encountered = true",
-				"set ashkin_know_village = true"
-			],
-			"log": "The rescue attempt failed. Three warriors lost. The ashkin tracked the survivors home.",
-			"_x": 500, "_y": 570
-		},
-
-		"rescue_medium_stalemate": {
-			"text": "Neither side breaks. The fighting grinds to a halt as the sun climbs. Your warriors bleed. The ashkin bleed. Between the boulders, both sides watch each other.\n\nThen the ashkin begin to withdraw. Not running — walking backward, dragging their wounded. They take the captives with them. Deeper into the hills.\n\nYou could follow. But your men are spent.",
-			"end": true,
-			"effects": [
-				"alignment += 0",
 				"population -= 1",
 				"set ashkin_encountered = true",
 				"set ashkin_know_village = true"
 			],
-			"log": "The battle was inconclusive. The ashkin withdrew with their captives. One warrior lost.",
-			"_x": 650, "_y": 570
+			"log": "The battle was inconclusive. The ashkin withdrew with all captives. One warrior — Erek — was killed.",
+			"_x": 400, "_y": 1430
 		},
 
-		"march_few": {
-			"text": "Three scouts. The fastest, the quietest. No armour, just blades and shadows.\n\n{chieftain} watches them leave at dusk. One of them — barely old enough to shave — looks back once.\n\nFour days pass. Then five.\n\nOn the sixth morning, two figures stumble from the tree line. Just two. The young one is not with them.\n\nThe older scout speaks in flat tones. 'We found them. More than three hands. We freed three captives in the night, maybe four. Then they heard us. Erek...' He stops. 'Erek didn't make it out.'\n\nBehind the two scouts, four strangers emerge from the trees. Freed captives. Eyes wide. Grateful. Broken.",
+		"defeat_full": {
+			"text": "{chieftain} goes down. A bone club catches the side of your head and the world tilts sideways. Someone grabs your arm — one of your own — and pulls you backward through the ravine mouth. Hands drag you over stones. Voices, far away, shouting retreat.\n\nWhen your vision clears, you are in the forest. Five warriors around you. Five out of twelve. The others are still in the ravine, and the sounds coming from inside have stopped.\n\nThe walk home takes two days. Nobody speaks. The village gate opens. The healer looks at {chieftain}'s head wound and says nothing about the seven empty seats at the evening fire.\n\nThe captives are still in the pit. The ashkin have learned something: people from the south will come for their own. Next time, they'll be ready.",
 			"end": true,
 			"effects": [
-				"alignment += 0",
-				"population += 1",
+				"alignment -= 5",
+				"population -= 7",
 				"set ashkin_encountered = true",
-				"set ashkin_know_village = true"
+				"set ashkin_know_village = true",
+				"set rescue_failed = true"
 			],
-			"log": "Scouts attempted a night rescue. Four captives freed. One scout — Erek — was killed. The ashkin know where to find us.",
-			"_x": 650, "_y": 210
+			"log": "The rescue attempt failed. Seven warriors lost. The ashkin kept their captives and now know where to find us.",
+			"_x": 300, "_y": 1430
+		},
+
+		"defeat_north": {
+			"text": "The ravine turns into a killing ground. In the narrows, the ashkin's fury outweighs your iron. They don't flinch. They don't retreat. They climb over their own dead to reach you.\n\n{chieftain} takes a blow to the shoulder that numbs the sword arm. A warrior falls. Then another. The retreat up the goat track is worse than the descent — loose stone under stumbling feet, wounded men hauling each other upward while grey shapes scramble behind them.\n\nFour make it to the ridge. Four out of seven. Below, in the ravine, the ashkin drag the fallen warriors' bodies into the camp. The clicking sounds carry up through the still air.\n\nThe march home is three days of silence. At the village gate, the healer counts heads and her face tells the story before anyone speaks.",
+			"end": true,
+			"effects": [
+				"alignment -= 5",
+				"population -= 3",
+				"set ashkin_encountered = true",
+				"set ashkin_know_village = true",
+				"set rescue_failed = true"
+			],
+			"log": "The rescue attempt from the goat track failed. Three warriors lost. The ashkin kept their captives.",
+			"_x": 900, "_y": 1430
+		},
+
+		"defeat_pincer": {
+			"text": "The pincer doesn't close fast enough. The south group draws the ashkin out, but the north group — {chieftain}'s four — come down the track too slowly. The loose stone betrays them. The ashkin hear the clatter, turn, and the four find themselves caught between the pack and the ravine wall.\n\n{chieftain} fights with back against stone. One warrior goes down beside you. Another. The south group pushes in, but the ravine is chaos — bodies in the half-light, blades striking rock, the clicking rising to a frenzy.\n\nWhen it's over, three of {chieftain}'s four are dead. The south group is battered. The ashkin have scattered into the rocks, dragging their captives north.\n\nThe idea was good. The ground was not.",
+			"end": true,
+			"effects": [
+				"alignment -= 5",
+				"population -= 3",
+				"set ashkin_encountered = true",
+				"set ashkin_know_village = true",
+				"set rescue_failed = true"
+			],
+			"log": "The pincer attack failed on the goat track. Three warriors killed. The ashkin escaped with their captives.",
+			"_x": 500, "_y": 1430
 		},
 
 		"refuse_end": {
-			"text": "The one-eared man stares at {chieftain}. He does not beg again. He stands, slowly, and gathers his people.\n\nThe woman with the children looks at you. She doesn't speak. She doesn't need to.\n\nThey leave before dawn. Heading west. One of the children waves at the gate guard. The guard doesn't wave back.\n\nAt the morning council, no one mentions them. But the healer sets an extra bowl of broth on the step, just in case. It sits there all day, growing cold.",
+			"text": "The one-eared man stares at {chieftain}. He does not beg again. He stands, slowly, and gathers his people. The woman with the children pulls them close and turns toward the gate without looking back.\n\nThey leave before dawn. Heading west, following the river, carrying nothing but the clothes on their backs and the memory of what was asked and refused. One of the children — the boy, the one who counted twelve — waves at the gate guard as he passes. The guard does not wave back.\n\nAt the morning council, no one mentions the refugees. The day proceeds as though they were never here. The blacksmith goes back to mending a ploughshare. The gate guard takes his usual post. The healer sweeps her doorstep.\n\nBut the healer sets an extra bowl of broth on the step, just in case. It sits there all day, growing cold. By evening, a stray dog has licked it clean. The healer takes the empty bowl inside and washes it without a word.\n\nSomewhere to the north, in a pit covered with branches, eleven people wait for help that is not coming.",
 			"end": true,
 			"effects": [
 				"alignment -= 10",
 				"set refused_refugee_plea = true"
 			],
 			"log": "Refugees begged for help rescuing captives from the ashkin. They were turned away.",
-			"_x": 850, "_y": 210
+			"_x": 850, "_y": 130
 		}
 	}
 }

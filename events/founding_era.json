@@ -1,135 +1,135 @@
 {
-	"_info": "Founding Era — early decisions that shape the village's identity. Each event needs exactly 2 choices with label, effect, log_text, and follow_text.",
+	"_info": "Founding Era — early decisions that shape the village's identity. 2-3 moral choices per event. Prose style: dense, sensory, Lone Wolf-inspired. Follow texts should feel like consequences, not summaries.",
 
 	"village_founding": {
 		"title": "The Village Awakens",
-		"text": "{settlement_type} at the {location_name} — {population} {size_desc}.\n{founding_text}\n\nTrades: {trades}\n\nThe council gathers for the first time. What is the first concern?",
+		"text": "{settlement_type} at the {location_name} — {population} {size_desc}.\n{founding_text}\n\nTrades: {trades}\n\nThe first morning. Mist clings to the low ground and the river sounds different here — wider, slower than the streams you knew in the old country. The air smells of wet clay and woodsmoke. Children sit on bundles of belongings that haven't been unpacked yet, watching the adults argue about where to dig the first latrine.\n\nThe council gathers under a canvas stretched between two carts. Faces you have known for years and faces you barely recognise — people thrown together by circumstance, not choice. {chieftain} stands at the head. No throne. No hall. Just mud and the weight of being the one they look to.\n\nThere is not enough of anything. Not enough timber, not enough rope, not enough daylight. Two things need doing and there are hands for one.\n\nWhat is the first concern?",
 		"choices": [
 			{
 				"label": "Build a communal storehouse — for everyone",
 				"effect": { "set_flag": "has_storehouse" },
 				"next_event": "",
 				"log_text": "A communal storehouse was built as the first structure.",
-				"follow_text": "The beams rise quickly — every hand helps. In the evenings, people gather around the half-built frame and share stories of the old lands. Something is being made here."
+				"follow_text": "The frame goes up in four days. Green timber, badly squared, but it holds. Every family contributes labour and every family will draw from the same stores when winter comes. That is the agreement. {chieftain} carves it into the lintel beam so no one can later claim otherwise.\n\nIn the evenings, people gather around the half-built walls and share what they brought from the old lands — a pouch of dried herbs, a set of iron nails worth more than silver out here, a fiddle with one string missing. The storehouse becomes the first place that feels like it belongs to everyone.\n\nThe borders remain open. The forest presses close. But inside the storehouse, stacked in careful rows, is the beginning of something that might last."
 			},
 			{
 				"label": "Secure the village borders first — we protect our own",
 				"effect": { "set_flag": "has_palisade" },
 				"next_event": "",
 				"log_text": "The village borders were secured first — a palisade and watch posts.",
-				"follow_text": "Fences and watch posts appear at the village edge. The work takes two weeks. When it is done, the village feels smaller inside — but safer."
+				"follow_text": "The axes ring from dawn until the light fails. Trees fall, are stripped, sharpened, driven into the earth. Blisters burst and callous over. A ditch follows the line of stakes — knee-deep, then waist-deep, filled with sharpened branches.\n\nTwo weeks. When the last post goes in, {chieftain} walks the perimeter in silence. The village looks smaller from outside the fence. The forest looks larger. Two watch posts stand at the eastern and western approaches — crude platforms with a horn and a stack of dry kindling for signal fires.\n\nThat night, for the first time, the children sleep without crying. The adults still listen to every sound the forest makes. But there is a wall between them and the dark now, and that changes something."
 			}
 		]
 	},
 
 	"first_winter": {
 		"title": "The First Winter",
-		"text": "Winter arrives earlier than expected. Provisions are running low.\nThe council gathers — what does Chieftain {chieftain} decide?",
+		"text": "The frost comes three weeks earlier than the oldest among you predicted. By the time the river freezes, the last of the root vegetables have been pulled from ground that is already too hard to dig.\n\nThe stores are thin. Everyone knows it. The women count and recount the sacks of grain. The hunters return with less each day — the deer have moved south and the snares come up empty. Ice forms on the inside of the longhouse walls.\n\nThe children cough at night. A persistent, wet sound that echoes through the settlement. The healer — if you have one — mixes what she can from bark and dried berries. It helps a little. Not enough.\n\nThe council gathers around a fire that burns lower than it should. Outside, the wind drives snow against the walls in gusts that sound like breathing. {chieftain} looks at the faces around the fire — drawn, grey, waiting — and knows that what is decided tonight will be remembered long after the snow melts.\n\nWhat does Chieftain {chieftain} decide?",
 		"choices": [
 			{
 				"label": "Share equally — no one is left behind (+5 alignment)",
 				"effect": { "alignment": 5 },
 				"next_event": "",
 				"log_text": "All shared equally — the community survived the winter.",
-				"follow_text": "Winter passes, and everyone has survived. Leaner than hoped — but no empty place by the fire."
+				"follow_text": "The portions are small. Painfully small. A ladleful of broth, a heel of bread, a handful of dried meat that could fit in a child's palm. The same for the chieftain as for the weakest elder. No exceptions.\n\nThe hunters share their kills down to the last sinew. The women trade remedies and watch each other's children. One night, when the temperature drops so low that the water buckets crack, three families crowd into a single house and sleep in a pile like animals. No one comments on the indignity.\n\nSpring comes late, but it comes. The village is leaner, hollowed out, but whole. No empty seats at the fire. The children still cough, but they are alive, and when the first green shoots push through the mud, an old woman laughs for the first time in months."
 			},
 			{
 				"label": "The strong eat first — the weak must wait (-10 alignment)",
 				"effect": { "alignment": -10 },
 				"next_event": "",
 				"log_text": "The strong were favoured. Some of the weak did not survive the winter.",
-				"follow_text": "The children of the weak watch with wide eyes at the tables of the strong. Some will never forget this winter."
+				"follow_text": "It is announced without ceremony. The hunters, the builders, the fighters — they eat first, and they eat enough to work. What remains goes to the rest. It is logical. It is necessary. {chieftain} says this aloud and no one argues, because the ones who might argue are not the ones holding the food.\n\nThe old weaver dies in the fourth week. Then the widow with the crooked back. Then a child — a quiet boy who never complained, which is perhaps why no one noticed how thin he had become until the morning he did not wake up.\n\nBy the time the thaw comes, three graves mark the hillside. The strong survived. The village survived. But the children of the dead watch the tables of the living with eyes that have learned something about the world that cannot be unlearned."
 			}
 		]
 	},
 
 	"trade_caravan": {
 		"title": "Travelling Merchants",
-		"text": "Merchants from the south are resting at the village edge.\nThey offer bronze tools in exchange for food stores.\nWhat does {chieftain} decide?",
+		"text": "You hear the bells before you see them. A thin, bright sound carried on the south wind, growing louder through the morning until the caravan appears on the ridge — four wagons, heavy-laden, drawn by oxen with polished horns and coloured ribbons braided into their harnesses.\n\nThe merchant leader is a broad woman named Thessan with sun-darkened skin and a gold ring through her left nostril. She has been walking the trade roads for twenty years and she sizes up your settlement in a single long look: the state of your fences, the quality of your timber, the number of armed men visible at the gate.\n\nHer wagons carry bronze tools — axe-heads, chisels, a set of saw blades that make your carpenter weep with longing. Nails by the hundred. A bolt of dyed cloth the colour of autumn leaves. Medicine in clay jars sealed with wax.\n\nShe wants food. Smoked meat, grain, anything that travels. Her prices are fair — by southern standards. By your standards, what she asks would put a dent in the stores that have to last until harvest.\n\nThessan drinks your beer and waits. She is in no hurry. The oxen graze at the village edge. Your people gather to stare at goods they haven't seen since the old country.\n\nWhat does {chieftain} decide?",
 		"choices": [
 			{
 				"label": "Negotiate fairly — a just exchange (+5 alignment)",
 				"effect": { "alignment": 5 },
 				"next_event": "",
 				"log_text": "A fair exchange was agreed. The merchants will return.",
-				"follow_text": "The merchants laugh as they depart and promise to return. Your name travels well along the trade roads."
+				"follow_text": "The haggling takes most of the afternoon. Thessan is sharp but honest — she names her price, you name yours, and by dusk you meet somewhere in the middle. The village gives up more grain than is comfortable but gains tools that will save weeks of labour.\n\nAs the caravan rolls out the next morning, Thessan clasps {chieftain}'s arm at the elbow — the trader's grip, binding as any oath. 'Fair dealing,' she says. 'I'll mark this place on my map. We come this way again in autumn.'\n\nThe carpenter is already fitting the new saw blade. The sound of clean-cut timber carries through the village. Your name travels south with the wagons — and in the language of the trade roads, a reputation for honesty is worth more than bronze."
 			},
 			{
 				"label": "Take advantage — the strangers don't know the true value (-10 alignment)",
 				"effect": { "alignment": -10 },
 				"next_event": "",
 				"log_text": "The ignorance of the strangers was exploited. Word got around.",
-				"follow_text": "The merchants leave without smiling. Weeks later a rumour drifts back — they call your village 'the Greedy Ones'."
+				"follow_text": "You know what the grain is worth out here. Thessan does not — not yet. She is thinking in southern prices, where food is cheap and metal is dear. Out here, the equation is different.\n\nYou trade a quarter of what she asks and walk away with everything you wanted. The carpenter gets his tools. The healer gets her medicine. The stores barely notice the loss.\n\nThessan realises the imbalance two villages later when a farmer laughs at what she paid. The caravan does not return in autumn. The following spring, a different trader passes through and quotes prices that make your council wince. Word has travelled the trade roads ahead of you — they call your village 'the Greedy Ones,' and the name sticks like tar."
 			}
 		]
 	},
 
 	"border_dispute": {
 		"title": "The Boundary Stones",
-		"text": "A neighbouring clan has moved their boundary stones overnight, claiming a stretch of your best farmland.\nThe council looks to {chieftain} for a response.",
+		"text": "The marker stones have stood since before your people arrived — granite pillars, each one the height of a man's chest, sunk deep into the earth at intervals along the ridge that separates your farmland from the neighbouring clan's territory. Old stones. Mossy. Agreed upon.\n\nUntil this morning. The farmer Aldric — who works the eastern fields and rises before anyone else in the village — comes running to the council at first light, still breathless. The stones have moved. Not all of them. Three, maybe four, shifted overnight by thirty paces south. Into your best ploughland. The furrows Aldric dug last week now lie on the wrong side of the boundary.\n\nNo one saw anything. No one heard anything. But the earth around the base of the moved stones is freshly disturbed, the grass torn, the marks of a timber lever visible in the mud.\n\nThe neighbouring clan — the Thurlings — have claimed this stretch before. Their elder, a hard-faced man named Rotgar, has made speeches about 'ancestral rights' at every gathering for the past two years. Now he has acted.\n\nThe council is angry. Some call for axes. Others urge patience. {chieftain} must respond — but how you respond will shape the relationship between these two communities for a generation.\n\nThe council looks to {chieftain}.",
 		"choices": [
 			{
 				"label": "Seek mediation — send envoys and negotiate (+5 alignment)",
 				"effect": { "alignment": 5 },
 				"next_event": "",
 				"log_text": "A peaceful mediation was sought with the neighbouring clan.",
-				"follow_text": "After tense talks, a new line is drawn that both sides accept — barely. The farmland is split, but blood was not spilled."
+				"follow_text": "You send two of your steadiest people to Rotgar's hall with an offer: neutral ground, both councils present, the disputed stretch divided according to what each side can actually work. No threats. No demands. An open hand.\n\nThe talks take three days. Rotgar blusters. His people posture. But behind the noise, his farmers know the truth — they don't have enough hands to work the land they already hold. The stones are moved to a compromise line. Both sides lose a strip. Both sides save face.\n\nThe farmland is diminished but the peace holds. When the harvest comes in, your people and the Thurlings thresh grain within shouting distance of each other. No one shouts. That alone is worth the land you gave up."
 			},
 			{
 				"label": "Move the stones back by night and double the watch (-5 alignment)",
 				"effect": { "alignment": -5 },
 				"next_event": "",
 				"log_text": "The boundary stones were moved back under cover of darkness.",
-				"follow_text": "The land is yours again, for now. But the neighbours haven't forgotten — and neither have your sentries, who scan the dark every night."
+				"follow_text": "What they did by night, you undo by night. Six men, a timber lever, and the grim satisfaction of grinding granite back into its rightful socket. The stones are heavy. The work takes hours. When the sky begins to lighten, every marker is exactly where it was before.\n\nYou leave two men on watch with horns and orders to sound them at the first sign of movement. The sentries pace the boundary line for the rest of the week, then the next, then the one after that.\n\nThe Thurlings do not move the stones again. But Rotgar's face at the next gathering is the face of a man keeping score. The boundary is yours. The grudge is his. It is the kind of debt that collects interest."
 			}
 		]
 	},
 
 	"wandering_healer": {
 		"title": "The Wandering Healer",
-		"text": "A lone healer arrives at the village gate, offering their knowledge of herbs and remedies in exchange for shelter and a place among your people.\nThe council debates.",
+		"text": "She arrives on foot in the grey hour before dawn, walking the north road with a staff of ash wood and a leather satchel stained dark with years of use. No horse. No companion. Her cloak is patched in three places and her boots are held together with sinew.\n\nThe gate guard challenges her. She gives her name — Ysa — and waits. She does not push. She does not plead. She stands in the mud outside the gate with the patience of someone who has stood outside many gates.\n\nWhen {chieftain} comes to see her, she states her offer plainly. She knows the names of plants that stop bleeding. She can set a bone so it heals straight. She has a salve for the lung-sickness that killed two of your children last winter. In exchange, she wants a roof that doesn't leak, a place by the fire, and enough food to live.\n\nThe council is divided. Your stores are lean. Another mouth is another mouth, and winter is never as far away as it seems. But the eldest councillor — the one whose grandson died of the fever — says nothing. He just looks at {chieftain} and waits.\n\nYsa stands outside the gate. The rain begins to fall.\n\nThe council debates.",
 		"choices": [
 			{
-				"label": "Welcome them openly — knowledge is worth more than bread (+10 alignment)",
+				"label": "Welcome her openly — knowledge is worth more than bread (+10 alignment)",
 				"effect": { "alignment": 10 },
 				"next_event": "",
 				"log_text": "The wandering healer was welcomed into the community.",
-				"follow_text": "The healer settles in quietly and is soon known to all. Children follow them into the forest to learn the names of plants. The village feels a little less alone."
+				"follow_text": "Ysa settles into the smallest house at the village edge without complaint. Within a week, she has reorganised the herb stores, identified three plants growing wild at the riverbank that no one knew were useful, and lanced an abscess on the blacksmith's arm that had been getting worse for a month.\n\nThe children follow her into the forest and come back with their pockets full of bark and berries, reciting names they can barely pronounce. The old women, suspicious at first, begin to bring her their ailments — and then their gossip. By the first snowfall, Ysa knows more about the village than most people who built it.\n\nShe earns her keep three times over before the year is out. But more than the medicine, more than the cures — there is a steadiness to her presence. The knowledge that someone in the village understands what is happening when a child burns with fever. The village feels less alone. Less fragile."
 			},
 			{
-				"label": "Turn them away — we cannot feed another mouth (-5 alignment)",
+				"label": "Turn her away — we cannot feed another mouth (-5 alignment)",
 				"effect": { "alignment": -5 },
 				"next_event": "",
 				"log_text": "The wandering healer was turned away from the village.",
-				"follow_text": "The healer nods without a word and walks on down the road. That winter, three people fall ill with a fever no one knows how to treat."
+				"follow_text": "Ysa nods once. She does not argue. She does not curse. She hitches her satchel higher on her shoulder, turns, and walks back up the north road until the mist swallows her.\n\nTwo months later, a sickness moves through the village — a rattling cough that starts in the chest and settles deep. Three people take to their beds. The oldest, a woman named Britta who has survived five winters in the new settlement, does not recover. She dies on a Tuesday, asking for a remedy that no one in the village knows how to make.\n\nAt the burial, the eldest councillor stands at the edge of the grave and says nothing. He does not need to. Everyone remembers the woman at the gate with the leather satchel. Some of them will remember for a very long time."
 			}
 		]
 	},
 
 	"smoke_on_the_horizon": {
 		"title": "Smoke on the Horizon",
-		"text": "Scouts return at dusk with troubled faces. Tracks in the eastern forest — unfamiliar boots, a cold fire pit, the smell of old smoke. Someone has been watching your settlement for days.\n\nThe council gathers. No one sleeps well. {chieftain} must decide before dawn.",
+		"text": "The scouts come in at dusk, moving fast. You see them from the longhouse door — two figures crossing the eastern meadow at a pace that is not quite running but is far too fast for a routine patrol. They don't stop to water their horses at the trough. They come straight to {chieftain}.\n\nTracks in the eastern forest. Boot prints — but wrong. Too deep at the toe, too light at the heel. Whoever made them moves differently from your people. Not shoes you recognise. Not the Thurlings. Not traders.\n\nA fire pit. Cold, but not old — the ashes still held shape when the scouts found them. Bones of a rabbit, cracked for marrow. A circle of flattened grass where someone sat and watched. The scouts followed the sight line through the trees and found what the watcher had been looking at: your village. The longhouse. The storehouse. The eastern gate.\n\nSomeone has been studying your settlement. For days, maybe longer. Sitting in the treeline in the grey hours before dawn, counting your people, watching your routines. And then, each morning, slipping back into the forest before the light was strong enough to see.\n\nThe council gathers. The fire pops and sends sparks upward into the dark. No one raises their voice. No one needs to. The question hangs in the smoke: who is out there, and what do they want?\n\n{chieftain} must decide before dawn.",
 		"choices": [
 			{
 				"label": "Send rangers — track them, show this land has teeth (-5 alignment)",
 				"effect": { "alignment": -5 },
 				"next_event": "",
 				"log_text": "Rangers were sent into the forest to track the strangers.",
-				"follow_text": "The rangers return two days later, hollow-eyed. They found the camp — abandoned in haste, bones of a deer still warm. Whoever watched your village has moved on. For now. The rangers say nothing of what else they found in that camp. Some things are better left in the dark."
+				"follow_text": "Four rangers. Your best. They leave before the moon sets, moving in single file along the deer trails that thread through the eastern wood. Their orders are simple: find who is watching, and make sure they understand that this settlement is not unwatched in return.\n\nTwo days pass. On the third morning, the rangers return hollow-eyed and quiet. They found the camp — a day's march east, abandoned in haste. Cold embers, half-eaten food, a leather cord with three teeth strung on it. Not human teeth. The camp could have held eight people, maybe ten. Boot prints led north and east, spreading into the undergrowth, vanishing where the ground turned to stone.\n\nThe lead ranger, a woman named Frey, reports to {chieftain} in low tones. She doesn't describe everything they found at the camp. The arrangement of bones around the fire pit. The marks on the trees. Some things, she says, are better left in the dark. {chieftain} doesn't press her. The look on her face is answer enough."
 			},
 			{
 				"label": "Set the men to building — palisade, watchtower, a ditch",
 				"effect": {},
 				"next_event": "",
 				"log_text": "The settlement turned inward — palisade and watchtower raised.",
-				"follow_text": "Week after week the posts go in, the ditches deepen, the watchtower grows. The strangers never come. Maybe they saw the walls rising and decided to look elsewhere. Maybe they are still out there, patient. Either way, your people sleep better — and that counts for something."
+				"follow_text": "The axes begin at first light. Every hand that can hold a tool is put to work — felling, stripping, sharpening, hammering. The western fence is reinforced with a second row of stakes. A ditch is dug along the eastern approach, hip-deep, angled to slow anything coming out of the treeline.\n\nThe watchtower goes up in five days. Green timber, rough-hewn, but tall enough to see the river crossing and the first line of trees. A horn hangs from the railing. A stack of kindling sits in a clay pot, ready for a signal fire.\n\nWeek after week the defences grow. The strangers never come. Maybe they saw the walls rising and decided to look elsewhere. Maybe they watched the work from a distance and are patient enough to wait. Either way, your people sleep better behind the new palisade — and the children stop asking why the gate guard stays up all night. They already know."
 			},
 			{
 				"label": "Send an envoy with bread and salt — meet them as neighbours (+10 alignment)",
 				"effect": { "alignment": 10 },
 				"next_event": "",
 				"log_text": "An envoy was sent into the forest with food and an offer of peace.",
-				"follow_text": "The envoy returns the next evening with a story: a band of thirty, driven from their valley by a chieftain who took everything. They carry little but hunger and children. {chieftain} opens the gate. Some in the council grumble. The strangers become neighbours — quietly, one shared fire at a time."
+				"follow_text": "One man, unarmed, carrying a sack of bread and a clay pot of salt. The oldest gesture of peace your people know. He walks into the treeline at dawn and does not look back.\n\nThe village waits. The hours stretch. Children are kept indoors. The gate guard watches the eastern tree line until his eyes burn.\n\nThe envoy returns at dusk the following day. He is unhurt. He is not alone.\n\nBehind him, at the edge of the forest, thirty figures stand in the fading light. Men, women, children. Thin. Watchful. They carry bundles on their backs — everything they own, which is almost nothing. A band of displaced people, driven from their valley by a chieftain who took everything and burned what he couldn't carry.\n\nThey didn't approach because they were afraid. They watched because they were trying to decide if your village was the kind of place that would kill strangers on sight.\n\n{chieftain} opens the gate. Some in the council grumble. The strangers file in slowly, blinking at the firelight. A child reaches out and touches the gate post as she passes, running her fingers along the grain of the wood. The strangers become neighbours — quietly, carefully, one shared fire at a time."
 			}
 		]
 	},
@@ -137,24 +137,24 @@
 	"storehouse_test": {
 		"_info": "Only appears if has_storehouse flag is set. The storehouse built earlier becomes relevant.",
 		"title": "The Empty Storehouse",
-		"text": "A bad harvest. The storehouse that the village built in its first season stands half-empty by midwinter.\n\nBecause it exists, the rationing is organised. Because it exists, {chieftain} can see exactly how bad things are — and act before people go hungry.\n\nWhat is the priority now?",
+		"text": "The harvest came in light. Everyone knew it would — the rains were wrong this year, too heavy in spring, absent in summer. The barley yellowed early. The root crops came up small and soft. The apple trees dropped their fruit before it ripened, as though the land itself was exhausted.\n\nNow it is midwinter, and the storehouse that {chieftain} ordered built in the village's first season stands as both salvation and accusation. Salvation because without it, the rationing would be chaos — families hoarding, neighbours stealing, the weak going without. The storehouse means order. Means counting. Means {chieftain} can see exactly what remains.\n\nAnd what remains is not enough. The sacks are half-full where they should be brimming. The smoked meat is gone already. The grain will last until the end of the cold months if — and only if — no one eats more than a fist-sized portion per day. The seed grain sits in a separate corner, covered with a cloth. That grain is not food. That grain is next year's survival.\n\nThe council stands in the cold storehouse and counts in silence. Their breath makes clouds in the thin light. Outside, the village goes about its business, not yet aware of how bad things are.\n\nWhat is the priority now?",
 		"conditions": {
 			"requires_flag": "has_storehouse"
 		},
 		"choices": [
 			{
-				"label": "Open the stores fully — no one goes hungry this winter (+10 alignment, -10 population long-term risk)",
+				"label": "Open the stores fully — no one goes hungry this winter (+10 alignment, -5 pop risk)",
 				"effect": { "alignment": 10, "population": -5 },
 				"next_event": "",
 				"log_text": "The storehouse was opened fully during the hard winter.",
-				"follow_text": "The stores run out before spring. It was the right thing to do — and now there is nothing left. Next autumn, the village will need to be more careful."
+				"follow_text": "The stores are opened without restriction. Every family draws what they need. The portions are generous — generous enough to keep children fed, generous enough to keep the old warm, generous enough to feel like the village is still a place that looks after its own.\n\nBut generosity has a cost, and the cost comes due in the last weeks before the thaw. The sacks are empty. The smoked meat is a memory. The seed grain sits under its cloth, and {chieftain} must post a guard on it at night to prevent the desperate from taking what would mean survival today and starvation in autumn.\n\nSpring arrives. The village is alive. But the fields must be planted with half the seed they need, and the summer will be a long, anxious count of every shoot that breaks the soil."
 			},
 			{
-				"label": "Ration strictly — protect the seed grain above all",
+				"label": "Ration strictly — protect the seed grain above all (-5 alignment)",
 				"effect": { "alignment": -5 },
 				"next_event": "",
 				"log_text": "Strict rationing was enforced to protect the seed grain.",
-				"follow_text": "Some go to bed hungry. The seed grain survives intact. In spring, the fields are full — and people remember both things."
+				"follow_text": "The rules are posted on the storehouse door. Daily portions, measured and weighed, distributed at dawn. No exceptions. No trades. No second helpings. The seed grain is declared untouchable — {chieftain} announces this at the evening fire and the silence that follows is the silence of people swallowing something bitter.\n\nSome go to bed hungry. An old man with bad teeth complains that the dried meat is too tough for him to chew — he is given broth instead, thinner than water. A young mother is caught trying to take an extra handful of barley for her daughter and is turned away at the storehouse door. She doesn't argue. She just stands there for a moment, holding the empty sack, before walking back to her house.\n\nWhen spring comes, the seed grain is intact. The fields are planted in full. The harvest that autumn is strong — better than anyone expected. The village remembers the hunger. The village also remembers who went without, and why, and that the chieftain ate the same meagre portion as everyone else. Both things are true, and neither cancels the other."
 			}
 		]
 	},
@@ -162,45 +162,45 @@
 	"palisade_test": {
 		"_info": "Only appears if has_palisade flag is set. A threat arrives and the palisade matters.",
 		"title": "The Night Watch",
-		"text": "Fires on the ridge to the east — too many, too close. Someone is watching the settlement.\n\nThe watch post your people built in the founding year sees them first. There is time to prepare.\n\nWithout it, there would not have been.",
+		"text": "The fires appear at dusk. Six points of orange light on the ridge to the east, spread along the skyline at even intervals. Too regular to be natural. Too many to be travellers.\n\nThe watch post — the crude timber platform that your people built in the village's founding weeks — sees them first. The sentry sounds the horn: two short blasts, the signal for 'something on the ridge, not yet a threat.' The village stirs. Doors open. People stand in the lanes between houses and look east.\n\nThe fires burn steadily. They do not move. They do not spread. They are not signal fires — those would flare and die. These are meant to be seen. Meant to say: we are here, and we are watching you, as you once watched us.\n\nThe council gathers at the gate. In the torchlight, faces are drawn. The eldest councillor counts the fires and shakes his head. 'That's a war band,' he says. 'A hunting party carries one fire. A scouting party carries none. Six fires means they want us to count them.'\n\nThe palisade stands between the village and the ridge. Stakes sharpened, ditch cleared. The gate is solid timber, barred from inside. Without it, there would be nothing between those fires and the sleeping houses but open ground.\n\nWith it, there is a choice.",
 		"conditions": {
 			"requires_flag": "has_palisade"
 		},
 		"choices": [
 			{
-				"label": "Stand at the gate and show force — let them see we are ready",
+				"label": "Stand at the gate and show force — let them see we are ready (-5 alignment)",
 				"effect": { "alignment": -5 },
 				"next_event": "",
 				"log_text": "Armed villagers stood at the gate to meet the threat.",
-				"follow_text": "By morning the fires are gone. No one came. Whether they saw the palisade and thought better of it — nobody knows. The watch stays doubled for a week."
+				"follow_text": "Every man and woman who can hold a weapon stands at the palisade. Torches are lit along the wall. Spears are propped against the stakes, visible from the ridge. {chieftain} stands at the gate in full view, arms folded, watching the fires.\n\nThe message is clear: we see you. We are not afraid. Come closer and find out why.\n\nThe fires burn through the night. No one sleeps. The gate guard watches the treeline. Dogs bark in the distance — or something that sounds like dogs.\n\nBy dawn, the fires are cold. Ash and scorched earth, nothing else. No tracks that the scouts can follow. Whoever lit them walked away in the dark, leaving nothing behind but the memory of six points of light on the ridge.\n\nThe watch stays doubled for a week. Then two. The village doesn't relax — it adapts. The palisade becomes part of daily life, the evening patrol a habit. Nobody discusses whether it was worth building."
 			},
 			{
 				"label": "Send a runner to the neighbours — warn them, stand together (+10 alignment)",
 				"effect": { "alignment": 10 },
 				"next_event": "",
 				"log_text": "Neighbouring settlements were warned and a joint watch organised.",
-				"follow_text": "The messenger returns with six armed men from the next valley. The fires fade. In the morning a neighbour's elder clasps {chieftain}'s arm. 'We owe you one,' he says."
+				"follow_text": "The runner leaves through the western gate while the fires still burn on the eastern ridge. A young woman, the fastest in the village, barefoot to move quietly. She carries a torch and a message: fires on the ridge, strength unknown, all settlements should watch their eastern approaches tonight.\n\nShe returns before dawn with six armed men from the neighbouring valley and a promise of six more by midday. The Thurling elder — old Rotgar, who argued about boundary stones not three months ago — arrives with them. He looks at the fires, looks at the palisade, and nods once. Whatever grudge he carries, it is smaller than what burns on that ridge.\n\nBy morning, the fires are gone. The combined watch patrols the ridge and finds nothing but cold ash. But something else has been built in the night — a thread between settlements that was not there before. When Rotgar clasps {chieftain}'s arm before leaving, his grip is firm. 'We owe you one,' he says. He means it."
 			}
 		]
 	},
 
 	"drought_warning": {
 		"title": "The Dry Summer",
-		"text": "The river runs lower than anyone can remember. The elders speak of drought.\nBefore the wells run dry, {chieftain} must act.",
+		"text": "It begins slowly. The river drops a hand's breadth in the first week of summer. Then another. The stones at the crossing — the ones that are always underwater — begin to show their tops, then their sides, then their bases, pale and dry as old bone.\n\nBy midsummer, the river is a stream. The fields to the south, the ones that depend on the overflow, crack and curl. The barley turns yellow at the tips. The well behind the longhouse, the one that has never failed, begins to taste of iron and mud.\n\nThe elders gather at the riverbank and say the word nobody wants to hear: drought. Some of them remember the last one, thirty years ago in the old country. Two seasons without rain. Wells that went dry. Cattle that died standing in the fields because there was nothing left to drink.\n\nThe sky is a pale, washed-out blue, cloudless from horizon to horizon. Heat shimmers over the fields. The children have stopped playing at the river because there isn't enough river left to play in.\n\nThe neighbouring farmstead — a cluster of houses half a day's walk upstream — still has water. Their stretch of the river runs deeper, fed by a spring that hasn't failed yet. Their fields are green. Yours are dying.\n\nBefore the wells run dry, {chieftain} must act.",
 		"choices": [
 			{
 				"label": "Ration water now and dig a deeper well together",
 				"effect": { "set_flag": "has_deep_well" },
 				"next_event": "",
 				"log_text": "Water was rationed and a deeper well was dug communally.",
-				"follow_text": "The work is backbreaking, but the new well holds. The rationing was hard — arguments broke out over buckets — yet the village made it through."
+				"follow_text": "The rationing starts immediately. Two buckets per family per day. No washing. No watering gardens. The communal trough is filled once at dawn and once at dusk, and when it is empty, it is empty.\n\nThe digging begins the same morning. Every hand that isn't tending crops is put to work at the new well site — a spot behind the storehouse where the old woman who remembers the last drought says the water table runs deepest. The earth is hard. The clay is stubborn. Blisters open and bleed. Arguments break out over whose turn it is at the bottom of the shaft.\n\nAt twelve feet, the walls begin to sweat. At eighteen, muddy water seeps through the clay. At twenty-two, the diggers hit a vein that flows cold and clean and doesn't stop.\n\nThe new well holds through the rest of the summer and into autumn. The rationing was hard — tempers frayed, a fight broke out over a bucket on the hottest day — but the village made it through. When the rains finally come in late September, the new well is already shored with stone, and it will outlast every other structure in the settlement."
 			},
 			{
 				"label": "Divert the stream from the neighbouring farmstead — we need it more (-10 alignment)",
 				"effect": { "alignment": -10 },
 				"next_event": "",
 				"log_text": "The stream was diverted from a neighbouring farmstead.",
-				"follow_text": "The crops are saved. The neighbour's fields wither. They come to complain, but there is nothing to discuss — the channel is already dug."
+				"follow_text": "It takes three nights. A channel dug in darkness, angled to catch the upstream flow before it reaches the neighbour's fields. The work is quiet, deliberate. No one speaks. Shovels wrapped in cloth to muffle the sound.\n\nBy the fourth morning, the water runs through the new channel and into your fields. The crops drink. The well fills. The village breathes.\n\nThe neighbour's fields begin to brown within a week. They come to investigate — an old man and his sons, walking the dry streambed, following it upstream until they find the channel. They stand at the edge of the cut earth and look at each other. Then they look across the fields at your village.\n\nThey don't come to argue. They don't send a message. They simply stop speaking to you. At the autumn gathering, they sit at the far end of the hall and leave before the drinking starts. The crops are saved. The water flows. But the cost is measured in something that doesn't grow back."
 			}
 		]
 	}

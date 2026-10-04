@@ -1,0 +1,142 @@
+{
+	"_info": "The Altweib's Warning — an old woman who knows too much. Mystery/social adventure, no combat. Sets altweib flags for future eras. Blade counsel hooks into Nal Ra arc. Altweib vom Hügel from bestiary.",
+	"id": "altweib_warning",
+	"title": "The Altweib's Warning",
+	"description": "An old woman at the river. She knows your name. She knows what stirs beneath the old places.",
+	"conditions": [],
+	"entry": "the_stranger",
+	"scenes": {
+		"the_stranger": {
+			"text": "She's standing at the river crossing when the morning patrol finds her. Small. Bent. A walking stick of pale wood, worn smooth by decades. Or longer.\n\nShe doesn't startle when they approach. Doesn't ask for food or shelter. She asks for {chieftain} by name.\n\nThe patrol brings her to the village edge. She waits there, patient as a stone, while word reaches the longhouse.\n\n{chieftain} finds her sitting on a stump, watching the village with eyes that miss nothing. Milky with age, but sharp underneath. She smiles when she sees you. It is the smile of someone who expected you.",
+			"choices": [
+				{
+					"label": "Hear what she has to say.",
+					"next": "the_warning"
+				},
+				{
+					"label": "How does she know my name?",
+					"next": "question_her"
+				},
+				{
+					"label": "We have nothing for wanderers. Send her on.",
+					"next": "turn_away"
+				}
+			],
+			"_x": 400, "_y": 30
+		},
+
+		"question_her": {
+			"text": "'Names travel,' she says. 'Yours further than most.'\n\nShe doesn't explain. Doesn't seem to think she needs to. She picks at the hem of her shawl — rough wool, colourless, old. Like everything about her.\n\nBut there's something behind the milky eyes. Not madness. Not cunning. Depth. Like looking into a well and not seeing the bottom.\n\nThe patrol stands at a distance. They don't like her. They can't say why.",
+			"choices": [
+				{
+					"label": "Hold her gaze. Look deeper.",
+					"next": "read_her",
+					"conditions": ["wits >= 4"]
+				},
+				{
+					"label": "Say your piece, then.",
+					"next": "the_warning"
+				},
+				{
+					"label": "You know too much for a stranger. Leave.",
+					"next": "turn_away"
+				}
+			],
+			"_x": 600, "_y": 210
+		},
+
+		"read_her": {
+			"text": "You hold her gaze. She lets you.\n\nThe world thins. The village sounds go distant — the hammer, the children, the dogs. There is only the well behind her eyes.\n\nYou see age. Not decades. Not centuries. Something older than counting. The wrinkles on her face aren't wear — they're patience. She has sat on stumps like this one before. Many stumps. Many villages. She has watched them rise and watched them fall and she is still sitting.\n\nShe blinks. The world rushes back. Hammer. Children. Dogs.\n\n'Good,' she whispers. 'You have the sight. Your village will need it.'\n\nShe straightens on the stump. Ready to speak. Whatever she came to say, she'll say it now.",
+			"choices": [
+				{
+					"label": "Speak your warning.",
+					"next": "the_warning"
+				}
+			],
+			"_x": 500, "_y": 390
+		},
+
+		"the_warning": {
+			"text": "She speaks without preamble. No riddles. No poetry. Just a voice like dry leaves.\n\n'Something beneath the old places is stirring. It has been asleep a long time. Longer than your village. Longer than the forest. But it is waking now, and your village is in its path.'\n\nShe looks north. Toward the deep forest.\n\n'I have seen this before. Other villages. Other generations. They built. They grew. They forgot what was underneath. And then the underneath remembered them.'\n\nShe turns back. Waits. The patience of stone.",
+			"choices": [
+				{
+					"label": "The blade I brought back from the forest — you know about it.",
+					"next": "blade_counsel",
+					"conditions": ["has_obsidian_blade == true"]
+				},
+				{
+					"label": "Stay with us. We need someone who sees what we don't.",
+					"next": "offer_shelter"
+				},
+				{
+					"label": "We'll watch our borders. Thank you for the warning.",
+					"next": "farewell"
+				}
+			],
+			"_x": 200, "_y": 210
+		},
+
+		"blade_counsel": {
+			"text": "She goes still. Not surprised — resigned.\n\n'I felt it when I crossed the river. A coldness. A gap in the world.' She hasn't seen the blade. She doesn't need to. 'Obsidian. But not stone. Grown. An edge that doesn't cut — it separates. The things it wounds do not heal the way wounds should.'\n\nShe folds her hands.\n\n'You cannot destroy it. Fire won't touch it. Stone won't break it. It was made by hands that understood things your smiths do not.'\n\nShe pauses. Chooses her words.\n\n'Find a walker between worlds. A sorcerer. Someone who speaks the old languages. They can name the blade. And what they name, they can bind.' She meets your eyes. 'Until then, do not use it. Do not let others touch it. And do not — do not — sleep near it.'",
+			"choices": [
+				{
+					"label": "Stay with us. Help us understand what we're dealing with.",
+					"next": "offer_shelter"
+				},
+				{
+					"label": "We'll find a sorcerer. Thank you.",
+					"next": "farewell"
+				}
+			],
+			"_x": 60, "_y": 390
+		},
+
+		"offer_shelter": {
+			"text": "She considers. Longer than you expected.\n\n'Not inside your walls. I don't sleep under roofs that weren't built for me.' She looks at the tree line beyond the fields. 'A hut at the edge. Between the village and the forest. That is where I belong.'\n\nThe healer, watching from the longhouse door, shakes her head slowly. Not a refusal — a warning. She doesn't trust this woman. But she doesn't trust the forest either.\n\nThe elders mutter. Another mouth. A stranger. An old woman who knows things she shouldn't. The village has enough problems.\n\nBut the children have already gathered around her. She is telling them something about the river. They are listening.",
+			"choices": [
+				{
+					"label": "She stays. Build her a hut at the edge.",
+					"next": "she_stays"
+				},
+				{
+					"label": "The village isn't ready. Not yet.",
+					"next": "farewell"
+				}
+			],
+			"_x": 300, "_y": 390
+		},
+
+		"she_stays": {
+			"text": "They build it in two days. A small hut, wattle and daub, at the place where the fields end and the wild begins. She watches them work. Doesn't help. Doesn't interfere.\n\nThe first week, no one visits. The second week, the healer goes. Comes back quiet. Goes again the next day. By the end of the month, the healer goes every morning.\n\nThe children visit too. She tells them stories — not the kind with heroes. The kind with lessons. The kind that end with 'and they remembered.'\n\nShe asks for nothing. Eats little. Sits outside her hut in the evening and watches the tree line. Some nights, {chieftain} watches too. From the wall. The old woman and the chieftain, both looking north. Both waiting for something that hasn't come yet.\n\nThe village gets used to her. They call her the Altweib. She doesn't correct them.",
+			"end": true,
+			"effects": [
+				"alignment += 5",
+				"set altweib_present = true",
+				"set altweib_heeded = true"
+			],
+			"log": "An old woman came who knew {chieftain}'s name and spoke of something stirring beneath the old places. {chieftain} gave her a hut at the village edge. She watches the tree line. She waits.",
+			"_x": 200, "_y": 570
+		},
+
+		"farewell": {
+			"text": "She nods. No anger. No disappointment. She expected this too.\n\n'You listened. That is more than most.' She takes up her walking stick. Pale wood. Smooth. She has leaned on it a long time.\n\nAt the village edge, she stops. Does not turn around.\n\n'The healer knows more than she says. Trust her when the time comes. And when the shadows lengthen — do not invite them in.'\n\nShe walks east. Not north, not south. East, into the morning light. Within minutes she is gone — not over the horizon, just gone, as if the landscape absorbed her.\n\nThe patrol watches until there is nothing to watch. The stump where she sat is empty. The village goes back to its work. But {chieftain} stands at the edge a while longer, looking east, thinking about wells without bottoms.",
+			"end": true,
+			"effects": [
+				"set altweib_heeded = true"
+			],
+			"log": "A stranger came who knew things she should not have known. She warned of something waking beneath the old places. {chieftain} listened and let her go. She walked east and was gone.",
+			"_x": 400, "_y": 570
+		},
+
+		"turn_away": {
+			"text": "{chieftain} doesn't raise a hand. Doesn't need to. The patrol steps forward. The message is clear.\n\nThe old woman stands. Slowly. Joint by joint. She takes up her stick.\n\n'I came a long way,' she says. Not angry. Tired. 'I will not come again.'\n\nShe walks. At the tree line she stops. Still does not turn.\n\n'When it comes — and it will come — you will wish you had listened. Not to me. To the quiet. To the thing your healer feels but cannot name. To the river when it whispers at night.'\n\nThen she is gone. The forest takes her.\n\nThe patrol returns to their rounds. The morning continues. But the healer stands in her doorway a long time, watching the place where the old woman was. Her hands are shaking. She won't say why.",
+			"end": true,
+			"effects": [
+				"alignment -= 5",
+				"set altweib_rejected = true"
+			],
+			"log": "A stranger came to the village. {chieftain} turned her away without hearing her warning. She left a silence behind her that lasted longer than it should have.",
+			"_x": 600, "_y": 570
+		}
+	}
+}

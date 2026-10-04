@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chronicle Sim — Combat Test</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #1a1a1e; color: #d4cfc4; font-family: 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.5; }
+h1 { font-size: 18px; color: #c8a96e; margin-bottom: 8px; }
+h2 { font-size: 14px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+
+.app { max-width: 900px; margin: 0 auto; padding: 12px; }
+
+/* Setup panels */
+.setup { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.setup-panel { flex: 1; background: #222228; border: 1px solid #333; border-radius: 6px; padding: 12px; }
+.setup-panel.player { border-color: #4a6a4a; }
+.setup-panel.enemy  { border-color: #6a4a4a; }
+.setup-panel.battle { border-color: #6a6a4a; }
+
+.field { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.field label { width: 70px; font-size: 13px; color: #999; }
+.field select, .field input[type=range] { flex: 1; }
+.field .val { width: 20px; text-align: center; font-size: 13px; color: #c8a96e; }
+
+select { background: #2a2a30; color: #d4cfc4; border: 1px solid #444; border-radius: 3px; padding: 4px 6px; font-size: 13px; }
+input[type=range] { accent-color: #c8a96e; }
+
+.checks { display: flex; gap: 12px; margin-top: 4px; }
+.checks label { font-size: 13px; color: #aaa; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+input[type=checkbox] { accent-color: #c8a96e; }
+
+/* Combat area */
+.combat-area { background: #222228; border: 1px solid #333; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+
+.hp-bars { display: flex; gap: 16px; margin-bottom: 10px; }
+.hp-bar { flex: 1; }
+.hp-bar .label { font-size: 12px; color: #888; margin-bottom: 2px; }
+.hp-bar .bar { height: 18px; background: #333; border-radius: 3px; overflow: hidden; position: relative; }
+.hp-bar .fill { height: 100%; transition: width 0.3s; border-radius: 3px; }
+.hp-bar .fill.player { background: #4a8a4a; }
+.hp-bar .fill.enemy  { background: #8a4a4a; }
+.hp-bar .text { position: absolute; right: 6px; top: 0; font-size: 11px; line-height: 18px; color: #ccc; }
+
+.warband-status { font-size: 14px; color: #aaa; margin-bottom: 8px; padding: 6px 10px; background: #1e1e22; border-radius: 4px; border: 1px solid #333; }
+.warband-status span { color: #c8a96e; font-weight: bold; }
+.warband-status .forces { color: #d4cfc4; font-weight: bold; font-size: 15px; }
+
+/* Stances */
+.stances { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.stance-btn { padding: 8px 14px; background: #2a2a30; border: 1px solid #555; border-radius: 4px;
+  color: #d4cfc4; cursor: pointer; font-size: 13px; transition: all 0.15s; flex: 1; text-align: center; min-width: 120px; }
+.stance-btn:hover { background: #3a3a40; border-color: #c8a96e; }
+.stance-btn:disabled { opacity: 0.3; cursor: default; border-color: #333; }
+.stance-btn .stat { font-size: 11px; color: #888; display: block; }
+
+/* Combat log */
+.log { max-height: 500px; overflow-y: auto; }
+.log-entry { margin-bottom: 12px; padding: 10px; background: #1a1a1e; border-radius: 4px; border-left: 3px solid #333; }
+.log-entry.round-start { border-left-color: #c8a96e; }
+.log-entry .round-num { font-size: 12px; color: #c8a96e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.log-entry .atk { color: #ccc; }
+.log-entry .def { color: #ccc; }
+.log-entry .dmg { color: #c8a96e; font-weight: bold; }
+.dmg-line { margin-top: 3px; }
+.log-entry .dmg-player { color: #3a9a7a; font-weight: bold; }
+.log-entry .dmg-enemy { color: #c85050; font-weight: bold; }
+.high-dmg { font-weight: bold; font-size: 1.05em; }
+.log-entry .equip { color: #7a9ab8; font-style: italic; }
+.log-entry .fumble { color: #b86a6a; }
+.log-entry .status { color: #888; font-style: italic; margin-top: 4px; font-size: 15px; }
+.log-entry .result { margin-top: 8px; padding-top: 8px; border-top: 1px solid #333; font-weight: bold; }
+.log-entry .result.win { color: #8ab88a; }
+.log-entry .result.lose { color: #b86a6a; }
+.log-entry .result.stalemate { color: #b8a86a; }
+
+/* Buttons */
+.controls { display: flex; gap: 8px; margin-bottom: 12px; }
+.btn { padding: 10px 20px; background: #c8a96e; color: #1a1a1e; border: none; border-radius: 4px;
+  font-size: 14px; font-weight: bold; cursor: pointer; }
+.btn:hover { background: #d4b97e; }
+.btn.secondary { background: #444; color: #ccc; }
+.btn.secondary:hover { background: #555; }
+.btn:disabled { opacity: 0.4; cursor: default; }
+
+.tier-tag { display: inline-block; padding: 1px 6px; border-radius: 2px; font-size: 11px; font-weight: bold; margin-right: 4px; }
+.tier-fumble { background: #4a2020; color: #d88; }
+.tier-miss { background: #3a3020; color: #b98; }
+.tier-glancing { background: #2a3520; color: #9b8; }
+.tier-solid { background: #204a20; color: #8c8; }
+.tier-critical { background: #204a4a; color: #8cc; }
+.tier-devastating { background: #3a204a; color: #c8c; }
+
+.fx-tag { display: inline-block; padding: 1px 6px; border-radius: 2px; font-size: 11px; font-weight: bold; margin-left: 4px; }
+.fx-tag * { font-weight: bold; }
+.fx-stun { background: #4a3a10; color: #e8c840; }
+.fx-cripple { background: #4a1020; color: #e86060; }
+.fx-bleed { background: #3a1010; color: #c84040; }
+.fx-disarm { background: #2a2a40; color: #8888cc; }
+
+.effect-line { font-size: 13px; margin-top: 4px; padding: 3px 8px; border-left: 2px solid #c8a96e; color: #c8a96e; font-style: italic; font-weight: bold; }
+.bleed-line { color: #b22222; font-size: 13px; font-style: italic; margin-bottom: 4px; font-weight: bold; }
+.stun-line { color: #e8c840; font-size: 13px; font-style: italic; margin-bottom: 4px; font-weight: bold; }
+
+.warband-line { font-size: 13px; color: #aaa; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="app">
+<h1>Combat Test — Chronicle Sim</h1>
+
+<div class="setup">
+  <div class="setup-panel player">
+    <h2>Player (Chieftain)</h2>
+    <div class="field"><label>Weapon</label>
+      <select id="p-weapon">
+        <option value="dagger">Dagger</option>
+        <option value="hunting_knife">Hunting Knife</option>
+        <option value="shortsword">Shortsword</option>
+        <option value="longsword">Longsword</option>
+        <option value="spear" selected>Spear</option>
+        <option value="javelin">Javelin</option>
+        <option value="hand_axe">Hand Axe</option>
+        <option value="battle_axe">Battle Axe</option>
+        <option value="hammer">Hammer</option>
+        <option value="club">Club</option>
+        <option value="bow">Bow</option>
+        <option value="sling">Sling</option>
+      </select></div>
+    <div class="field" id="sidearm-field" style="display:none"><label>Sidearm</label>
+      <select id="p-sidearm">
+        <option value="dagger">Dagger</option>
+        <option value="hunting_knife">Hunting Knife</option>
+        <option value="shortsword" selected>Shortsword</option>
+        <option value="hand_axe">Hand Axe</option>
+      </select></div>
+    <div class="field"><label>Armor</label>
+      <select id="p-armor"><option value="none">None</option><option value="leather">Leather</option><option value="bronze">Bronze (Scale)</option></select></div>
+    <div class="checks">
+      <label><input type="checkbox" id="p-shield"> Shield</label>
+      <label><input type="checkbox" id="p-helm"> Helm</label>
+    </div>
+    <div class="field"><label>Strength</label><input type="range" id="p-strength" min="1" max="5" value="3"><span class="val" id="p-strength-v">3</span></div>
+    <div class="field"><label>Wits</label><input type="range" id="p-wits" min="1" max="5" value="2"><span class="val" id="p-wits-v">2</span></div>
+    <div class="field"><label>Grit</label><input type="range" id="p-grit" min="1" max="5" value="2"><span class="val" id="p-grit-v">2</span></div>
+    <div class="field"><label>Heart</label><input type="range" id="p-heart" min="1" max="5" value="2"><span class="val" id="p-heart-v">2</span></div>
+    <div class="field"><label>Legend</label><input type="range" id="p-legend" min="0" max="5" value="0"><span class="val" id="p-legend-v">0</span></div>
+  </div>
+
+  <div class="setup-panel enemy">
+    <h2>Enemy</h2>
+    <div class="field"><label>Type</label>
+      <select id="e-type"><option value="ashkin">Ashkin Raider</option><option value="bandit">Bandit</option>
+        <option value="wolf">Wolf Pack</option><option value="guard">Armored Guard</option></select></div>
+    <div class="field"><label>Weapon</label>
+      <select id="e-weapon">
+        <option value="bone_club">Bone Club</option>
+        <option value="stone_axe">Stone Axe</option>
+        <option value="rusty_sword">Rusty Sword</option>
+        <option value="bronze_sword">Bronze Sword</option>
+        <option value="broadsword">Broadsword</option>
+        <option value="spear">Spear</option>
+        <option value="hammer">Hammer</option>
+        <option value="teeth">Teeth & Claws</option>
+      </select></div>
+    <div class="field"><label>Armor</label>
+      <select id="e-armor"><option value="none">None</option><option value="leather">Leather</option><option value="bronze">Bronze (Scale)</option></select></div>
+    <div class="checks">
+      <label><input type="checkbox" id="e-shield"> Shield</label>
+      <label><input type="checkbox" id="e-helm"> Helm</label>
+    </div>
+    <div class="field"><label>HP</label><input type="range" id="e-hp" min="4" max="20" value="12"><span class="val" id="e-hp-v">12</span></div>
+    <div class="field"><label>Attack</label><input type="range" id="e-attack" min="1" max="5" value="3"><span class="val" id="e-attack-v">3</span></div>
+    <div class="field"><label>Difficulty</label><input type="range" id="e-diff" min="2" max="12" value="7"><span class="val" id="e-diff-v">7</span></div>
+  </div>
+
+  <div class="setup-panel battle" style="border-color: #6a6a4a;">
+    <h2>Battle</h2>
+    <div class="field"><label>Your Men</label><input type="range" id="b-allies" min="0" max="30" value="12"><span class="val" id="b-allies-v">12</span></div>
+    <div class="field"><label>Enemy Count</label><input type="range" id="b-enemies" min="1" max="30" value="15"><span class="val" id="b-enemies-v">15</span></div>
+    <div class="field"><label>Orders</label>
+      <select id="b-orders">
+        <option value="charge">Charge — aggressive, fast, risky</option>
+        <option value="hold" selected>Hold the line — balanced</option>
+        <option value="shieldwall">Shield wall — defensive, slow</option>
+      </select>
+    </div>
+    <div class="checks">
+      <label><input type="checkbox" id="b-boss"> Boss (no surrender)</label>
+    </div>
+    <div class="checks">
+      <label><input type="checkbox" id="b-archers"> Archers (pre-battle volley)</label>
+    </div>
+    <div class="field" id="archer-count-field" style="display:none"><label>Archers</label><input type="range" id="b-archer-count" min="2" max="10" value="4"><span class="val" id="b-archer-count-v">4</span></div>
+    <div class="field"><label>Dread</label><input type="range" id="b-dread" min="0" max="5" value="0"><span class="val" id="b-dread-v">0</span></div>
+    <div class="field"><label>Nobility</label><input type="range" id="b-nobility" min="0" max="5" value="0"><span class="val" id="b-nobility-v">0</span></div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="btn" id="btn-start" onclick="startCombat()">Start Combat</button>
+  <button class="btn secondary" id="btn-reset" onclick="resetCombat()">Reset</button>
+</div>
+
+<div class="combat-area" id="combat-area" style="display:none">
+  <div class="hp-bars">
+    <div class="hp-bar"><div class="label">Chieftain</div>
+      <div class="bar"><div class="fill player" id="hp-player" style="width:100%"></div><span class="text" id="hp-player-t"></span></div></div>
+    <div class="hp-bar"><div class="label">Enemy</div>
+      <div class="bar"><div class="fill enemy" id="hp-enemy" style="width:100%"></div><span class="text" id="hp-enemy-t"></span></div></div>
+  </div>
+  <div class="warband-status" id="warband-status"></div>
+  <div class="stances" id="stances"></div>
+  <div class="log" id="log"></div>
+</div>
+
+</div>
+<script>
+// ─── Slider value display ───────────────────────────────────────────────
+document.querySelectorAll('input[type=range]').forEach(el => {
+  const v = document.getElementById(el.id + '-v');
+  if (v) { v.textContent = el.value; el.addEventListener('input', () => v.textContent = el.value); }
+});
+
+// ─── Enemy presets ──────────────────────────────────────────────────────
+const ENEMY_PRESETS = {
+  ashkin:  { weapon:'bone_club', armor:'none', shield:false, helm:false, hp:12, attack:3, diff:7, allies:12, enemies:15 },
+  bandit:  { weapon:'rusty_sword', armor:'leather', shield:true, helm:false, hp:10, attack:2, diff:6, allies:10, enemies:8 },
+  wolf:    { weapon:'teeth', armor:'none', shield:false, helm:false, hp:8, attack:3, diff:5, allies:8, enemies:12 },
+  guard:   { weapon:'bronze_sword', armor:'bronze', shield:true, helm:true, hp:14, attack:4, diff:9, allies:15, enemies:20 },
+};
+// Show/hide sidearm when ranged weapon selected; enforce 2H → no shield
+document.getElementById('p-weapon').onchange = function() {
+  const ranged = ['bow', 'sling'].includes(this.value);
+  document.getElementById('sidearm-field').style.display = ranged ? '' : 'none';
+  const w = WEAPONS[this.value];
+  const shieldEl = document.getElementById('p-shield');
+  if (w && (w.twoHanded || w.ranged)) {
+    shieldEl.checked = false;
+    shieldEl.disabled = true;
+  } else {
+    shieldEl.disabled = false;
+  }
+};
+
+document.getElementById('e-type').onchange = function() {
+  const p = ENEMY_PRESETS[this.value]; if (!p) return;
+  setVal('e-weapon', p.weapon); setVal('e-armor', p.armor);
+  document.getElementById('e-shield').checked = p.shield;
+  document.getElementById('e-helm').checked = p.helm;
+  setRange('e-hp', p.hp); setRange('e-attack', p.attack); setRange('e-diff', p.diff);
+  setRange('b-allies', p.allies); setRange('b-enemies', p.enemies);
+};
+function setVal(id,v){ document.getElementById(id).value = v; }
+function setRange(id,v){ const el=document.getElementById(id); el.value=v; const vv=document.getElementById(id+'-v'); if(vv) vv.textContent=v; }
+document.getElementById('b-archers').onchange = function() {
+  document.getElementById('archer-count-field').style.display = this.checked ? '' : 'none';
+};
+
+// ─── Weapon definitions ─────────────────────────────────────────────────
+const WEAPONS = {
+  dagger:       { name:'Dagger',        crit:'puncture', fumble_max:2,  dmg:{glancing:[1,1], solid:[2,3], critical:[4,5], devastating:[6,7]}, self_dmg:[1,1] },
+  hunting_knife:{ name:'Hunting Knife', crit:'slash',    fumble_max:2,  dmg:{glancing:[1,2], solid:[3,4], critical:[5,6], devastating:[7,8]}, self_dmg:[1,2] },
+  shortsword:   { name:'Shortsword',    crit:'slash',    fumble_max:3,  dmg:{glancing:[2,2], solid:[3,4], critical:[5,6], devastating:[7,8]}, self_dmg:[1,2] },
+  longsword:    { name:'Longsword',     crit:'slash',    fumble_max:4,  dmg:{glancing:[2,3], solid:[4,5], critical:[6,7], devastating:[8,9]}, self_dmg:[2,3] },
+  spear:        { name:'Spear',         crit:'puncture', fumble_max:5,  dmg:{glancing:[1,2], solid:[3,4], critical:[5,6], devastating:[7,8]}, self_dmg:[2,3] },
+  javelin:      { name:'Javelin',       crit:'puncture', fumble_max:6,  dmg:{glancing:[1,2], solid:[3,4], critical:[5,7], devastating:[7,8]}, self_dmg:[2,3] },
+  hand_axe:     { name:'Hand Axe',      crit:'slash',    fumble_max:5,  dmg:{glancing:[1,2], solid:[3,4], critical:[5,6], devastating:[7,8]}, self_dmg:[1,2] },
+  battle_axe:   { name:'Battle Axe',   crit:'slash',    fumble_max:9,  dmg:{glancing:[2,3], solid:[4,6], critical:[7,8], devastating:[9,10]}, self_dmg:[2,4], twoHanded:true },
+  hammer:       { name:'Hammer',        crit:'crush',    fumble_max:7,  dmg:{glancing:[1,2], solid:[3,5], critical:[6,7], devastating:[8,9]}, self_dmg:[2,3], twoHanded:true },
+  club:         { name:'Club',          crit:'crush',    fumble_max:8,  dmg:{glancing:[1,2], solid:[3,5], critical:[6,7], devastating:[8,9]}, self_dmg:[2,3] },
+  bow:          { name:'Bow',           crit:'ranged',   fumble_max:5,  dmg:{glancing:[2,2], solid:[3,4], critical:[6,7], devastating:[8,9]}, self_dmg:[1,2], ranged:true },
+  sling:        { name:'Sling',         crit:'ranged',   fumble_max:4,  dmg:{glancing:[1,2], solid:[3,4], critical:[5,6], devastating:[7,8]}, self_dmg:[1,2], ranged:true },
+};
+
+const ENEMY_WEAPONS = {
+  bone_club:    { name:'Bone Club',     crit:'crush' },
+  stone_axe:    { name:'Stone Axe',     crit:'slash' },
+  rusty_sword:  { name:'Rusty Sword',   crit:'slash' },
+  bronze_sword: { name:'Bronze Sword',  crit:'slash' },
+  broadsword:   { name:'Broadsword',    crit:'slash' },
+  spear:        { name:'Spear',         crit:'puncture' },
+  hammer:       { name:'Hammer',        crit:'crush' },
+  teeth:        { name:'Teeth & Claws', crit:'puncture' },
+  fists:        { name:'Fists',        crit:'crush' },
+};
+
+// ─── CONDITIONAL DAMAGE TEXTS ───────────────────────────────────────────
+// Each entry: { text(ctx) → string, dmg(ctx) → number }
+// ctx = { armor, helm, shield, weapon_crit, enemy_armor, enemy_helm, enemy_shield }
+// Player attacks enemy → ctx.armor/helm/shield = ENEMY's gear
+// Enemy attacks player → ctx.armor/helm/shield = PLAYER's gear
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function rng(a,b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+function bladeOrShaft(name) { return ['Spear', 'Javelin'].includes(name) ? 'shaft' : 'blade'; }
+
+const ARMOR_SOAK = { none: 0, leather: 1, bronze: 2 };
+
+// ─── PLAYER ATTACK TEXTS (by weapon crit type) ─────────────────────────
+
+const PLAYER_ATTACKS = {
+  // ── PUNCTURE (spear, javelin, dagger) ───────────────────────────────
+  puncture: {
+    fumble: [
+      ctx => ({ text: `${ctx.weaponName} slips in sweating hands. You stumble forward, exposed.`, dmg: 0, self: rng(2,3) }),
+      ctx => ({ text: `Overcommit on the thrust. He sidesteps. ${ctx.weaponName} buries in dirt.`, dmg: 0, self: rng(2,3) }),
+      ctx => ctx.shield
+        ? { text: `He catches the ${ctx.weaponName.toLowerCase()} on his shield rim and wrenches it sideways. Your wrist screams.`, dmg: 0, self: 3 }
+        : { text: `He grabs your ${ctx.weaponName.toLowerCase()} mid-thrust. Pulls. You go with it, face-first.`, dmg: 0, self: 2 },
+      ctx => ({ text: `Wet ground. Foot slides. The thrust goes wide and your balance goes with it.`, dmg: 0, self: rng(1,2) }),
+      ctx => ({ text: `${ctx.weaponName} tangles with the man beside you. You pull it free too late. He's already swinging.`, dmg: 0, self: rng(1,3) }),
+    ],
+    miss: [
+      ctx => ({ text: `He twists aside. ${ctx.weaponName} takes air.`, dmg: 0, self: 1 }),
+      ctx => ({ text: "Too slow. He reads the thrust.", dmg: 0, self: 0 }),
+      ctx => ctx.shield
+        ? { text: `${ctx.weaponName} thuds into his shield. Point doesn't get through.`, dmg: 0, self: 1 }
+        : { text: "Wide by a hand's width. He doesn't flinch.", dmg: 0, self: 0 },
+      ctx => ({ text: `Thrust. Parried. ${ctx.weaponName} slides off his guard.`, dmg: 0, self: 0 }),
+      ctx => ({ text: `He rocks back just enough. Point passes a finger from his belly.`, dmg: 0, self: 0 }),
+      ctx => ({ text: `He shifts his weight. The point grazes cloth. Nothing more.`, dmg: 0, self: 0 }),
+    ],
+    glancing: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Scrapes across bronze. Sparks. No blood.`, dmg: 1, self: 0 }
+        : ctx.armor === 'leather'
+        ? { text: `Pierces leather at the ribs. Shallow. He hisses.`, dmg: 2, self: 0 }
+        : { text: `Forearm. Thin red line.`, dmg: 2, self: 0 },
+      ctx => ctx.armor !== 'none'
+        ? { text: `Jabs the thigh. Armor blunts it. He limps, barely.`, dmg: 1, self: 0 }
+        : { text: `Outer thigh. Shallow. Blood runs down his leg.`, dmg: 2, self: 0 },
+      ctx => ({ text: `Ear. Tip cuts the lobe clean. Blood down the jaw.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Hip. Glancing. Cloth tears, skin opens. He shifts.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Knuckles. Skin splits. He flexes the hand. Still works.`, dmg: 1, self: 0 }),
+      ctx => ({ text: `Upper arm. Skin parts. He looks at it — annoyed, not worried.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Calf. Tip drags across muscle. He shifts weight to the other leg.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Ribs. Tip scrapes bone. He flinches. Blood beads along the scratch.`, dmg: 2, self: 0 }),
+    ],
+    solid: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Finds the gap at the armpit. Through the scales. He gasps.`, dmg: 3, self: 0, fx: 'bleed_1' }
+        : ctx.armor === 'leather'
+        ? { text: `Through leather into the ribs. He doubles over. Blood darkens the hide.`, dmg: 4, self: 0, fx: 'bleed_1' }
+        : { text: `Below the ribs. Clean entry. He staggers, staring at the ${bladeOrShaft(ctx.weaponName)}.`, dmg: 5, self: 0, fx: 'bleed_1' },
+      ctx => ctx.shield
+        ? { text: `Past the shield edge, into the shoulder. He drops the shield arm.`, dmg: 4, self: 0, fx: 'cripple' }
+        : { text: `Shoulder. Deep. Arm drops. Weapon clatters from nerveless fingers.`, dmg: 5, self: 0, fx: 'cripple' },
+      ctx => ({ text: `Into the side. Muscle and fat. He pulls back. Hand pressed to the wound.`, dmg: 4, self: 0, fx: 'bleed_1' }),
+      ctx => ({ text: `Lower back. He arches. Reaches behind. Can't find the wound with his fingers.`, dmg: 4, self: 0, fx: 'bleed_1' }),
+      ctx => ({ text: `Inner thigh. Deep. He clamps a hand over it. Blood wells between fingers.`, dmg: 5, self: 0, fx: 'bleed_1' }),
+      ctx => ({ text: `Bicep. Through the meat. Arm locks. He can't raise his weapon above the waist.`, dmg: 4, self: 0, fx: 'cripple' }),
+    ],
+    critical: [
+      ctx => ctx.helm
+        ? { text: `${ctx.weaponName} thrust at the face. Helm deflects — point skids across iron and pierces the jaw below the cheekguard. Blood pours. He screams through broken teeth.`, dmg: 5, self: 0, fx: 'stun' }
+        : { text: `${ctx.weaponName} drives into the face. No helm. Through the cheek, out the other side. He grabs the ${bladeOrShaft(ctx.weaponName)} with both hands. Eyes wide. Done.`, dmg: 7, self: 0, fx: 'stun', kill: true },
+      ctx => ctx.armor === 'bronze'
+        ? { text: `${ctx.weaponName} punches into the bronze at his belly. Scales buckle. Shallow penetration — but he feels it. Drops to one knee, arms wrapped around himself.`, dmg: 5, self: 0, fx: 'stun' }
+        : { text: `${ctx.weaponName} drives through the gut. Pins him to the earth. He looks down at the ${bladeOrShaft(ctx.weaponName)}. Mouth opens. No sound comes.`, dmg: 7, self: 0, fx: 'stun' },
+      ctx => ({ text: `${ctx.weaponName} pierces the neck. Between jaw and collarbone. The arterial spray catches the man behind him. Silence spreads outward from the body.`, dmg: 7, self: 0, fx: 'bleed_2', kill: true }),
+      ctx => ({ text: `${ctx.weaponName} takes the knee. Cartilage and tendon. The joint bends sideways. He screams — high and thin — and folds.`, dmg: 6, self: 0, fx: 'cripple' }),
+      ctx => ctx.armor !== 'bronze'
+        ? { text: `Under the ribs, angled up. Into the lung. He breathes out red mist. Breathing becomes drowning.`, dmg: 7, self: 0, fx: 'bleed_2', kill: true }
+        : { text: `${ctx.weaponName} finds the scale gap at the hip. Deep. He doubles over, both hands on the wound.`, dmg: 5, self: 0, fx: 'bleed_1' },
+      ctx => ({ text: `${ctx.weaponName} pins the sword arm to his body. Through forearm, into ribs. He can't pull free. Blade drops from twitching fingers.`, dmg: 6, self: 0, fx: 'disarm' }),
+    ],
+    devastating: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Impossible thrust. ${ctx.weaponName} finds the gap at the gorget. Through bronze, through flesh, through spine. He drops mid-step. Even your own men stop.`, dmg: 8, self: 0, kill: true }
+        : { text: `${ctx.weaponName} punches straight through the chest. Point exits between the shoulder blades. He walks backward off the ${bladeOrShaft(ctx.weaponName)} in slow surprise. The line behind him breaks.`, dmg: 9, self: 0, kill: true },
+      ctx => ctx.helm
+        ? { text: `${ctx.weaponName} drives under the helm rim. Through the eye socket. He was dead before the brain registered the impact. Helm rings on stone as he falls.`, dmg: 8, self: 0, kill: true }
+        : { text: `${ctx.weaponName} through the eye. Perfect line. He drops mid-stride like a puppet with cut strings. Warriors on both sides freeze for one heartbeat.`, dmg: 9, self: 0, kill: true },
+      ctx => ({ text: `${ctx.weaponName} enters beneath the jaw. Up through tongue and palate and brain. His body locks rigid — arms out, back straight. Then the knees give. He drops face-first into the mud.`, dmg: 9, self: 0, kill: true }),
+      ctx => ({ text: `${ctx.weaponName} takes him through the base of the throat. Down into the chest cavity. He drops the weapon. Both hands on the ${bladeOrShaft(ctx.weaponName)}. Blood fills his mouth. Knees hit the dirt.`, dmg: 9, self: 0, kill: true }),
+    ],
+  },
+
+  // ── CRUSH (hammer, club) ────────────────────────────────────────────
+  crush: {
+    fumble: [
+      ctx => ({ text: `${ctx.weaponName} swings wild. Weight carries you past him. Back exposed.`, dmg: 0, self: rng(2,3) }),
+      ctx => ({ text: `${ctx.weaponName} smashes into the ground. Shock runs up through wrist, elbow, shoulder. Fingers go numb.`, dmg: 0, self: 3 }),
+      ctx => ({ text: "A swing so bad the man behind you ducks. You spin, off-balance, arms wide open.", dmg: 0, self: 2 }),
+      ctx => ({ text: `Grip fails at the top of the swing. ${ctx.weaponName} hangs in the air for a heartbeat. You snatch it back. Opening gone.`, dmg: 0, self: rng(1,2) }),
+      ctx => ({ text: `You bring ${ctx.weaponName} down on his shield. It bounces back. Hits your own forehead. Stars.`, dmg: 0, self: 3 }),
+    ],
+    miss: [
+      ctx => ({ text: `Too slow. He steps inside the ${ctx.weaponName.toLowerCase()}'s arc.`, dmg: 0, self: 1 }),
+      ctx => ctx.shield
+        ? { text: `${ctx.weaponName} hammers his shield square. Solid oak. His arm shakes but the shield holds.`, dmg: 0, self: 1 }
+        : { text: `${ctx.weaponName} whistles past his ear. Air. He grins.`, dmg: 0, self: 0 },
+      ctx => ({ text: `He ducks. ${ctx.weaponName} passes over his head. You're wide open.`, dmg: 0, self: 1 }),
+      ctx => ({ text: `Swing catches empty air. He was already moving. Fast for his size.`, dmg: 0, self: 0 }),
+    ],
+    glancing: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Glances off bronze at the shoulder. He barely notices.`, dmg: 1, self: 0 }
+        : ctx.armor === 'leather'
+        ? { text: `Hip through leather. Bruise, not break.`, dmg: 2, self: 0 }
+        : { text: `Forearm. Bone holds. Arm goes white. He switches hands.`, dmg: 2, self: 0 },
+      ctx => ctx.shield
+        ? { text: `Smashes the shield edge. Splinters fly. Arm behind it aches.`, dmg: 1, self: 0 }
+        : { text: `Clips his shoulder. He winces. Slower now.`, dmg: 2, self: 0 },
+      ctx => ({ text: `Knee. Kneecap holds. He limps. Angry.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Elbow. Numbing hit. He shakes the arm. Keeps fighting.`, dmg: 1, self: 0 }),
+      ctx => ({ text: `Ribs. Glancing. He wheezes but stands.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Fingers. Two of them bend wrong. He barely notices in the adrenaline.`, dmg: 1, self: 0 }),
+      ctx => ({ text: `Shin. Bone rings. He hops once, plants the foot. Still in it.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Wrist. Bones grind. His grip loosens for a heartbeat. He tightens it.`, dmg: 2, self: 0 }),
+    ],
+    solid: [
+      ctx => ctx.helm
+        ? { text: `Side of the head. Helm rings. He staggers sideways, eyes unfocused.`, dmg: 3, self: 0, fx: 'stun' }
+        : { text: `Side of the head. No helm. Jaw dislocates. Teeth and blood. He drops.`, dmg: 5, self: 0, fx: 'stun' },
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Ribs. Bronze holds. He doubles over wheezing.`, dmg: 3, self: 0 }
+        : { text: `Ribs crack. He folds. One knee. Then the other.`, dmg: 5, self: 0, fx: 'stun' },
+      ctx => ctx.shield
+        ? { text: `Shield shatters. Two halves fall. Arm behind it numb.`, dmg: 4, self: 0, fx: 'shield_break' }
+        : { text: `Collarbone. Snap. He drops his weapon. Grabs his own shoulder.`, dmg: 5, self: 0, fx: 'cripple' },
+      ctx => ({ text: `Weapon hand. Knuckles cave. Fingers won't close. Blade drops.`, dmg: 4, self: 0, fx: 'disarm' }),
+      ctx => ({ text: `Lower back. Kidneys. He makes a sound that isn't a word. Drops to both knees.`, dmg: 5, self: 0, fx: 'stun' }),
+      ctx => ({ text: `Ankle. Joint folds sideways. He staggers. Can't plant the foot right.`, dmg: 4, self: 0, fx: 'cripple' }),
+    ],
+    critical: [
+      ctx => ctx.helm
+        ? { text: `${ctx.weaponName} smashes down on the crown. Helm dents inward. He drops — not dead, but the world is dark and ringing. Four hours before he opens his eyes. If he opens them.`, dmg: 5, self: 0, fx: 'stun' }
+        : { text: `${ctx.weaponName} caves the top of the skull. No helm. Bone gives. Eyes empty before the body hits the ground. The man beside him takes a step back.`, dmg: 8, self: 0, kill: true },
+      ctx => ctx.armor === 'bronze'
+        ? { text: `${ctx.weaponName} shatters his kneecap. Bronze doesn't cover there. Joint bends sideways. He screams — high, thin — and goes down clawing at his own leg.`, dmg: 6, self: 0, fx: 'cripple' }
+        : { text: `${ctx.weaponName} breaks his hip. Wet crack. He falls sideways, tries to stand, leg folds at the wrong angle. Stays down.`, dmg: 7, self: 0, fx: 'cripple' },
+      ctx => ({ text: `${ctx.weaponName} hammers the back of his neck. Spine compresses. He goes rigid — arms out, fingers splayed — then limp. Paralyzed from the shoulders down.`, dmg: 7, self: 0, fx: 'stun', kill: true }),
+      ctx => ({ text: `${ctx.weaponName} catches the elbow. Joint inverts. Bone through skin. The arm hangs wrong. He stares at it. Doesn't scream yet — that comes later.`, dmg: 6, self: 0, fx: 'cripple' }),
+      ctx => ctx.armor !== 'bronze'
+        ? { text: `Sternum. Chest caves. Something shifts inside. He coughs blood — a lot of it — and sits down heavily. Breathing stops.`, dmg: 7, self: 0, fx: 'stun', kill: true }
+        : { text: `${ctx.weaponName} craters the bronze at his chest. Scales fly. Ribs beneath groan. He goes to his knees gasping.`, dmg: 5, self: 0, fx: 'stun' },
+      ctx => ({ text: `${ctx.weaponName} takes the jaw. Bone fragments and teeth spray sideways. Lower face gone. He drops. Blood pools fast.`, dmg: 7, self: 0, fx: 'stun', kill: true }),
+    ],
+    devastating: [
+      ctx => ctx.helm
+        ? { text: `Full overhead. ${ctx.weaponName} crumples the helm like tin. Skull beneath it is no better. He was standing, then he was not. Even the enemy stops for a breath.`, dmg: 9, self: 0, kill: true }
+        : { text: `${ctx.weaponName} hits the temple. The sound is wrong — wet, final. Head turns at an angle heads don't turn. He falls. Nobody on either side speaks for three heartbeats.`, dmg: 9, self: 0, kill: true },
+      ctx => ({ text: `${ctx.weaponName} caves the chest. Ribcage folds inward. Lungs collapse. Heart stops. His legs buckle. He hits the ground on his knees, then forward, face in the dirt.`, dmg: 9, self: 0, kill: true }),
+      ctx => ({ text: `Overhead. The sound of it carries across the field. He drops straight — no stagger, no stumble. Legs just stop being legs. The ground shakes.`, dmg: 9, self: 0, kill: true }),
+      ctx => ({ text: `${ctx.weaponName} catches him mid-swing. Side of the head. The impact lifts him off his feet. He lands on his back. Doesn't move.`, dmg: 9, self: 0, kill: true }),
+    ],
+  },
+
+  // ── SLASH (shortsword, longsword, axe) ──────────────────────────────
+  slash: {
+    fumble: [
+      ctx => ({ text: `${ctx.weaponName} catches on a root. Wrist twists. Weapon nearly drops.`, dmg: 0, self: rng(1,2) }),
+      ctx => ({ text: "Slash at where he was. Overextended. He knows it.", dmg: 0, self: rng(2,3) }),
+      ctx => ({ text: `Grip slips. ${ctx.weaponName} turns in the hand. Edge bites your own thumb.`, dmg: 0, self: 3 }),
+      ctx => ({ text: `Follow-through hits a shield behind you. Your own man swears. You're open.`, dmg: 0, self: rng(1,2) }),
+    ],
+    miss: [
+      ctx => ({ text: "Parried. Sparks. Arm rings.", dmg: 0, self: 1 }),
+      ctx => ctx.shield
+        ? { text: `Edge bites into shield wood. Sticks. He twists it free. Opening gone.`, dmg: 0, self: 1 }
+        : { text: "Quick slash. He's quicker. Edge passes a finger's width from his throat.", dmg: 0, self: 0 },
+      ctx => ({ text: `${ctx.weaponName} whistles past. Clean miss. He's fast.`, dmg: 0, self: 0 }),
+      ctx => ({ text: `He leans back. Edge passes where his face was. His eyes don't leave yours.`, dmg: 0, self: 0 }),
+      ctx => ({ text: `He catches it on his own blade. Steel screeches. Both weapons slide apart.`, dmg: 0, self: 1 }),
+    ],
+    glancing: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: "Edge skids across bronze. Scratch on metal. Nothing.", dmg: 1, self: 0 }
+        : ctx.armor === 'leather'
+        ? { text: `Opens the leather at the forearm. Shallow. Blood, no muscle.`, dmg: 2, self: 0 }
+        : { text: `Forearm. Not deep. Blood runs down to the fingers.`, dmg: 2, self: 0 },
+      ctx => ({ text: `Cheek. Nick. Blood down his chin.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Across the hand. Skin splits between knuckles. He swears.`, dmg: 1, self: 0 }),
+      ctx => ({ text: `Shoulder. Edge skates off bone. Bruise, not cut.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Shin. Shallow gash. He steps back. Looks down. Keeps coming.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Scalp. Bleeds like murder but it's surface. Head wounds always do.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Back of the hand. Tendons visible for a moment before blood covers them.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Tip catches his jaw. Thin line of red. He spits. Teeth intact.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Across the brow. Blood runs into his eyes. He blinks. Wipes. Keeps coming.`, dmg: 2, self: 0 }),
+    ],
+    solid: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Finds the gap at the armpit. Cuts deep. Blood wells beneath the scales.`, dmg: 3, self: 0, fx: 'bleed_1' }
+        : ctx.armor === 'leather'
+        ? { text: `Through leather into the side. Not killing, but the leather darkens.`, dmg: 4, self: 0, fx: 'bleed_1' }
+        : { text: `Across the belly. Shallow but long. Hand comes away red.`, dmg: 5, self: 0, fx: 'bleed_1' },
+      ctx => ctx.shield
+        ? { text: `Under the shield. Hamstring. Leg gives. He drops to one knee.`, dmg: 4, self: 0, fx: 'cripple' }
+        : { text: `Sword arm. Deep. Grip loosens. Tendons severed.`, dmg: 5, self: 0, fx: 'disarm' },
+      ctx => ({ text: `Collarbone. Edge bites bone. He staggers. Arm goes heavy.`, dmg: 4, self: 0, fx: 'cripple' }),
+      ctx => ({ text: `Thigh. Deep cut through muscle. Blood immediate. He favors the leg.`, dmg: 4, self: 0, fx: 'bleed_1' }),
+      ctx => ({ text: `Ribs. Edge finds the gap between two. Blood wells. He clamps his elbow against his side.`, dmg: 4, self: 0, fx: 'bleed_1' }),
+      ctx => ({ text: `Forearm to bone. Muscle peels back. He stares at the white beneath. Weapon droops.`, dmg: 5, self: 0, fx: 'cripple' }),
+      ctx => ({ text: `Across the back of the calf. Muscle splits. He drops to one knee. Can't straighten the leg.`, dmg: 4, self: 0, fx: 'cripple' }),
+    ],
+    critical: [
+      ctx => ctx.helm
+        ? { text: `Edge catches below the helm rim. ${ctx.weaponName} opens the neck just above the gorget. Blood sheets down the armor. He has seconds. His body doesn't know it yet.`, dmg: 6, self: 0, fx: 'bleed_2' }
+        : { text: `${ctx.weaponName} slashes across the throat. Clean. Fast. He reaches for the wound with both hands. Can't hold it closed. Falls to his knees. Everyone watches.`, dmg: 8, self: 0, fx: 'bleed_2', kill: true },
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Overhand chop splits bronze at the shoulder. Scales scatter. ${ctx.weaponName} bites collarbone beneath. He screams — short, sharp — and his arm goes dead.`, dmg: 6, self: 0, fx: 'cripple' }
+        : { text: `${ctx.weaponName} carves from shoulder to mid-chest. The cut opens like a book. He looks at it — one breath of incomprehension — and falls.`, dmg: 8, self: 0, kill: true },
+      ctx => ctx.shield
+        ? { text: `${ctx.weaponName} cuts around the shield edge. Inside of the thigh. Artery. Blood sprays in pulses. He has maybe a minute. Drops the shield first, then the sword, then himself.`, dmg: 6, self: 0, fx: 'bleed_2' }
+        : { text: `${ctx.weaponName} cleaves the leg above the knee. Through muscle, into bone. Leg buckles at a wrong angle. He goes down screaming. Won't stand again.`, dmg: 7, self: 0, fx: 'cripple' },
+      ctx => ({ text: `${ctx.weaponName} hacks into the weapon arm at the elbow. Joint separates. Forearm and weapon fall together. He watches them land.`, dmg: 7, self: 0, fx: 'cripple' }),
+      ctx => ctx.armor !== 'bronze'
+        ? { text: `Deep into the side. Ribs part. Something wet and dark spills. He presses both hands to it. Can't put it back.`, dmg: 7, self: 0, fx: 'bleed_2', kill: true }
+        : { text: `${ctx.weaponName} splits the bronze at the belly. Scales spray. Shallow cut beneath — but he's shaking. The armor failed him.`, dmg: 5, self: 0, fx: 'bleed_1' },
+      ctx => ({ text: `${ctx.weaponName} opens the scalp to bone. Flap of skin and hair falls over his eyes. Blood blinds him. He swings wild.`, dmg: 6, self: 0, fx: 'stun' }),
+    ],
+    devastating: [
+      ctx => ctx.helm
+        ? { text: `Full swing to the helm. ${ctx.weaponName} splits the iron. Skull beneath it splits. The visor folds inward. He drops straight down — no stagger, no reach, just off. The line breaks.`, dmg: 9, self: 0, kill: true }
+        : { text: `${ctx.weaponName} takes the head. Doesn't stop at bone. Everyone on the field hears it. The body stands for a heartbeat after the head turns. Then down. The enemy line wavers.`, dmg: 9, self: 0, kill: true },
+      ctx => ctx.armor === 'bronze'
+        ? { text: `${ctx.weaponName} finds the neck gap. Cuts through bronze, through flesh, halfway to the spine. Blood sprays across the shield of the man beside him. The body folds sideways.`, dmg: 9, self: 0, kill: true }
+        : { text: `${ctx.weaponName} cleaves chest to navel. One stroke. He comes apart. The man behind him is painted red. Warriors on both sides stop for one breath. Then the roar.`, dmg: 9, self: 0, kill: true },
+      ctx => ({ text: `Diagonal. Shoulder to hip. He opens like a slaughtered animal. Organs spill. The man behind him steps back into the mud. Both sides of the field go quiet. Then your men begin to roar.`, dmg: 9, self: 0, kill: true }),
+    ],
+  },
+
+  // ── RANGED (bow, sling) ─────────────────────────────────────────────
+  ranged: {
+    fumble: [
+      ctx => ({ text: `String snaps against your wrist. Arrow goes wide into the dirt.`, dmg: 0, self: rng(1,2) }),
+      ctx => ({ text: `Arrow slips. Nock breaks. Wasted shot.`, dmg: 0, self: 1 }),
+      ctx => ({ text: `You loose too early. Arrow skitters across the ground. He doesn't even flinch.`, dmg: 0, self: 1 }),
+      ctx => ({ text: `Fingers cramp on the draw. Arrow drops off the rest. Falls at your feet.`, dmg: 0, self: 1 }),
+    ],
+    miss: [
+      ctx => ({ text: `Arrow passes a hand's width from his head. He doesn't know how close.`, dmg: 0, self: 0 }),
+      ctx => ctx.shield
+        ? { text: `Arrow thunks into his shield. Sticks and quivers. He yanks it out.`, dmg: 0, self: 0 }
+        : { text: `He twists. Arrow takes a strip of cloth and nothing else.`, dmg: 0, self: 0 },
+      ctx => ({ text: `Arrow buries in the dirt between his feet. He steps over it.`, dmg: 0, self: 0 }),
+    ],
+    glancing: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Arrow glances off bronze scales. Sparks. He barely notices.`, dmg: 1, self: 0 }
+        : ctx.armor === 'leather'
+        ? { text: `Arrow punctures leather at the shoulder. Shallow. He snaps the shaft.`, dmg: 2, self: 0 }
+        : { text: `Arrow grazes his arm. Red line. He looks down, looks up, keeps coming.`, dmg: 2, self: 0 },
+      ctx => ({ text: `Arrow clips his ear. Blood down the jaw. He doesn't slow.`, dmg: 2, self: 0 }),
+      ctx => ({ text: `Arrow skips off his hip. Cloth tears. Flesh beneath barely scratched.`, dmg: 1, self: 0 }),
+    ],
+    solid: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Arrow finds a gap between the scales. Sinks two fingers deep. He grunts. Reaches for the shaft.`, dmg: 3, self: 0, fx: 'bleed_1' }
+        : ctx.armor === 'leather'
+        ? { text: `Arrow punches through leather into his side. He doubles over. Shaft sticking out at an angle.`, dmg: 4, self: 0, fx: 'bleed_1' }
+        : { text: `Arrow buries in his thigh. Deep. He stumbles. Blood darkens his leg with every step.`, dmg: 5, self: 0, fx: 'bleed_1' },
+      ctx => ({ text: `Arrow takes the shoulder. Clean through. He reaches for it, can't. Arm hangs.`, dmg: 4, self: 0, fx: 'cripple' }),
+    ],
+    critical: [
+      ctx => ctx.helm
+        ? { text: `Arrow hits below the helm rim. Through the cheek. He grabs the shaft with both hands. Falls to his knees.`, dmg: 6, self: 0, fx: 'stun' }
+        : { text: `Arrow through the neck. Clean shot. He claws at the shaft. Blood between his fingers. Done.`, dmg: 7, self: 0, fx: 'bleed_2', kill: true },
+      ctx => ctx.armor !== 'bronze'
+        ? { text: `Arrow sinks into his chest. Fletching against skin. He sits down slowly. Looks surprised.`, dmg: 7, self: 0, fx: 'bleed_2' }
+        : { text: `Arrow punches through bronze at the belly. Scales crack. He folds around the shaft.`, dmg: 6, self: 0, fx: 'stun' },
+      ctx => ({ text: `Arrow through the knee. Joint explodes. He crumples sideways. Not getting up.`, dmg: 6, self: 0, fx: 'cripple' }),
+    ],
+    devastating: [
+      ctx => ctx.helm
+        ? { text: `Arrow finds the eye slit. Through the socket. He drops mid-step. Dead before the ground.`, dmg: 8, self: 0, kill: true }
+        : { text: `Arrow through the eye. Perfect arc. He was running. Now he's not. Both sides go quiet for a heartbeat.`, dmg: 9, self: 0, kill: true },
+      ctx => ({ text: `Arrow through the throat. Out the back of the neck. He reaches for it — can't. Falls forward. Arrow snaps under the body.`, dmg: 9, self: 0, kill: true }),
+      ctx => ({ text: `Arrow punches through the chest. Center mass. He takes one step. Then another. Then his legs give. Face down. Still.`, dmg: 9, self: 0, kill: true }),
+    ],
+  },
+};
+
+// ── ENEMY ATTACK TEXTS ──────────────────────────────────────────────
+const ENEMY_ATTACKS = {
+  crush: {
+    fumble: [
+      ctx => ({ text: "Swings wild. Misses by a foot. Overbalanced.", dmg: 0 }),
+      ctx => ({ text: `${ctx.weaponName} shatters on the ground. Stares at the stump.`, dmg: 0 }),
+    ],
+    miss: [
+      ctx => ctx.shield
+        ? { text: `${ctx.weaponName} thuds into your shield. Arm aches, but the wood holds.`, dmg: 0 }
+        : { text: `You twist aside. ${ctx.weaponName} takes air where your head was.`, dmg: 0 },
+    ],
+    glancing: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Ribs. Bronze holds. Bruise beneath.`, dmg: 1 }
+        : ctx.armor === 'leather'
+        ? { text: "Side through leather. Stings. You've had worse.", dmg: 2 }
+        : { text: "Forearm. Bone holds. Bruise goes deep. Grip weakens.", dmg: 3 },
+      ctx => ({ text: "Knee. Doesn't buckle. Close.", dmg: 2 }),
+      ctx => ({ text: "Hip. Dull pain. Stance shifts.", dmg: 2 }),
+    ],
+    solid: [
+      ctx => ctx.helm
+        ? { text: `Side of your helm. World tilts. Ringing won't stop.`, dmg: 3, fx: 'stun' }
+        : { text: "Side of your head. No helm. Stars. One knee hits dirt. Taste of copper.", dmg: 5, fx: 'stun' },
+      ctx => ctx.shield
+        ? { text: `Shield arm. Bone holds but the force travels. Shoulder numb.`, dmg: 3 }
+        : { text: "Ribs crack. Breathing becomes a conscious decision.", dmg: 5 },
+    ],
+    critical: [
+      ctx => ctx.helm
+        ? { text: `Overhead smash to crown. Helm dents. You drop — world goes grey and narrow. On your back. Sky above. Can't remember which way is up.`, dmg: 5, fx: 'stun' }
+        : { text: "Skull. No helm. The world goes white, then dark, then nothing. You come back seconds or hours later. Blood in your eyes. Wrong side of the fight.", dmg: 7, fx: 'stun' },
+      ctx => ctx.armor === 'bronze'
+        ? { text: `${ctx.weaponName} hits your kneecap. Bronze doesn't cover it. Joint bends sideways. The pain is a white spike from knee to jaw. You go down.`, dmg: 5, fx: 'cripple' }
+        : { text: "Hip. Bone gives. You feel it separate — a grinding, underwater sound. Leg stops working. Ground comes up fast.", dmg: 7, fx: 'cripple' },
+    ],
+    devastating: [
+      ctx => ctx.helm
+        ? { text: `Full overhead to the helm. Iron crumples inward. Skull holds — barely. Darkness. Ringing. You're on the ground and can't remember falling. Blood fills your ear.`, dmg: 7, fx: 'stun' }
+        : { text: "Temple. No helm. The world snaps sideways and doesn't come back. Your men are shouting your name from very far away.", dmg: 9, fx: 'stun' },
+    ],
+  },
+  slash: {
+    fumble: [
+      ctx => ({ text: `${ctx.weaponName} glances off your guard. Sparks. Nothing.`, dmg: 0 }),
+      ctx => ({ text: "Rusty edge snags in his own grip. He fumbles the recovery.", dmg: 0 }),
+    ],
+    miss: [
+      ctx => ctx.shield
+        ? { text: `${ctx.weaponName} bites into shield wood. You wrench it free. His edge is duller now.`, dmg: 0 }
+        : { text: "Quick cut. You lean back. Edge passes a finger's width from your chin.", dmg: 0 },
+    ],
+    glancing: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Skips across bronze scales. Scratch on metal. Nothing.`, dmg: 1 }
+        : ctx.armor === 'leather'
+        ? { text: "Forearm through leather. Shallow. Blood.", dmg: 2 }
+        : { text: "Opens your forearm. Blood runs into your grip. Slippery.", dmg: 3 },
+      ctx => ({ text: "Across the hand. Skin splits. You tighten the grip.", dmg: 2 }),
+      ctx => ({ text: "Shoulder. Shallow cut. Stings.", dmg: 2 }),
+    ],
+    solid: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: `Gap at the armpit. Through bronze into flesh. Blood down your side.`, dmg: 3, fx: 'bleed_1' }
+        : ctx.armor === 'leather'
+        ? { text: `Thigh through leather. Muscle parts. Leg holds, but warns you.`, dmg: 4, fx: 'bleed_1' }
+        : { text: "Belly. Shallow but long. Hand comes away red.", dmg: 5, fx: 'bleed_1' },
+      ctx => ctx.shield
+        ? { text: `Under your shield. Calf. Tendon nicked. Leg stutters.`, dmg: 3, fx: 'cripple' }
+        : { text: `Sword arm. Deep. Fingers tingle. Grip loosens.`, dmg: 5, fx: 'cripple' },
+    ],
+    critical: [
+      ctx => ctx.helm
+        ? { text: `${ctx.weaponName} catches below your helm. Neck. The gorget turns it — barely. Skin opens. Blood sheets. Not the artery. Not yet.`, dmg: 5, fx: 'bleed_1' }
+        : { text: `${ctx.weaponName} across your face. Temple to jaw. Blood blinds the left eye. Skin hangs. You can't blink. The world halves.`, dmg: 7, fx: 'bleed_2' },
+      ctx => ctx.armor === 'bronze'
+        ? { text: `${ctx.weaponName} chops into the shoulder. Bronze scales part. Collarbone doesn't — but the shock runs through you like lightning. Arm goes cold and distant.`, dmg: 5, fx: 'cripple' }
+        : { text: "Deep into your side. You feel the edge scrape rib. The breath leaves you involuntarily — a sound you didn't choose to make.", dmg: 7, fx: 'bleed_2' },
+    ],
+    devastating: [
+      ctx => ctx.helm
+        ? { text: `Full force to the helm. Iron bends but holds. Everything goes white. You're on the ground. Your men are pulling you backward by the arms. The sky tastes like iron.`, dmg: 7, fx: 'stun' }
+        : { text: "Head. No helm. The edge finds bone. The world folds in half. Someone is screaming your name from the end of a long tunnel. The ground is cold.", dmg: 9, fx: 'stun' },
+    ],
+  },
+  puncture: {
+    fumble: [
+      ctx => ({ text: "Teeth snap shut on empty air. Off balance.", dmg: 0 }),
+      ctx => ({ text: "Lunges past you. Clumsy. You sidestep.", dmg: 0 }),
+    ],
+    miss: [
+      ctx => ctx.armor !== 'none'
+        ? { text: "Claws scrape across your armor. Noise, nothing more.", dmg: 0 }
+        : { text: "Snaps at your arm. You pull back. Teeth click shut on nothing.", dmg: 0 },
+    ],
+    glancing: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: "Teeth on bronze. Can't get through. Bruise beneath.", dmg: 1 }
+        : ctx.armor === 'leather'
+        ? { text: "Claws catch leather at the ribs. Scratches beneath. Burns more than bleeds.", dmg: 2 }
+        : { text: "Claw rakes your forearm. Three red lines, beading blood. Stings like fire.", dmg: 3 },
+    ],
+    solid: [
+      ctx => ctx.armor === 'bronze'
+        ? { text: "Jaws close on your arm. Bronze holds but the pressure is enormous. Something in the forearm shifts. Not broken. Close.", dmg: 3 }
+        : { text: "Teeth sink into your shoulder. Deep. You feel the jaw muscles working, grinding. Punch it in the eye to break free. Blood runs.", dmg: 5, fx: 'bleed_1' },
+    ],
+    critical: [
+      ctx => ctx.helm
+        ? { text: "Lunges for your throat. Helm catches the jaw. Teeth scrape iron. You shove it off. Close. Very close.", dmg: 4 }
+        : { text: "Jaws close on the side of your neck. Teeth in muscle. You scream and hammer at its skull. It lets go — takes a mouthful with it.", dmg: 7, fx: 'bleed_2' },
+    ],
+    devastating: [
+      ctx => ctx.armor !== 'none'
+        ? { text: "Three at once. Weight drives you down. Claws find every gap in the armor. Teeth at the throat. Your men haul them off — but the damage is done.", dmg: 7, fx: 'bleed_1' }
+        : { text: "Tackled. Down. Teeth and claws everywhere. Your own blood in your eyes. Someone is pulling at the grey shape on top of you. The world dims.", dmg: 9, fx: 'stun' },
+    ],
+  },
+};
+
+const GROUP_STATUS_TEXT = {
+  strong:   ["Your warriors press forward. They smell victory.", "Line holds firm. War-cries echo.", "Your men fight as one."],
+  holding:  ["Line holds. Sweat and blood and patience.", "Formation bends, doesn't break.", "Steady. Bronze on wood. No one gives ground."],
+  wavering: ["Man on your left stumbles. Line bends. Eyes on you.", "Scream behind you. Rhythm breaks.", "Warriors bunch too tight. Discipline slipping."],
+  breaking: ["A warrior falls. Two step back. Shield wall is a memory.", "They're running. Enough of them.", "A boy drops his spear. Others follow."],
+};
+
+// ─── COMBAT STATE ───────────────────────────────────────────────────────
+let combat = null;
+
+function getSetup() {
+  return {
+    player: {
+      weapon: document.getElementById('p-weapon').value,
+      armor: document.getElementById('p-armor').value,
+      shield: document.getElementById('p-shield').checked,
+      helm: document.getElementById('p-helm').checked,
+      strength: +document.getElementById('p-strength').value,
+      wits: +document.getElementById('p-wits').value,
+      grit: +document.getElementById('p-grit').value,
+      heart: +document.getElementById('p-heart').value,
+      legend: +document.getElementById('p-legend').value,
+    },
+    enemy: {
+      weapon: document.getElementById('e-weapon').value,
+      armor: document.getElementById('e-armor').value,
+      shield: document.getElementById('e-shield').checked,
+      helm: document.getElementById('e-helm').checked,
+      hp: +document.getElementById('e-hp').value,
+      attack: +document.getElementById('e-attack').value,
+      difficulty: +document.getElementById('e-diff').value,
+    },
+    battle: {
+      allies: +document.getElementById('b-allies').value,
+      enemies: +document.getElementById('b-enemies').value,
+      orders: document.getElementById('b-orders').value,
+      boss: document.getElementById('b-boss').checked,
+      archers: document.getElementById('b-archers').checked,
+      archerCount: +document.getElementById('b-archer-count').value,
+      dread: +document.getElementById('b-dread').value,
+      nobility: +document.getElementById('b-nobility').value,
+    },
+  };
+}
+
+function startCombat() {
+  const s = getSetup();
+  const maxEnd = s.player.grit * 3 + 5;
+  combat = {
+    ...s,
+    round: 0,
+    playerHP: maxEnd,
+    playerMaxHP: maxEnd,
+    enemyHP: s.enemy.hp,
+    enemyMaxHP: s.enemy.hp,
+    groupStatus: 'strong',
+    ended: false,
+    shieldBroken: false,
+    // ── Effect tracking ──
+    enemyStunned: false,
+    enemyCrippled: false,
+    enemyBleed: 0,
+    playerStunned: false,
+    playerCrippled: false,
+    playerBleed: 0,
+    // ── Warband state ──
+    allyWarriors: spawnWarriors(s.battle.allies, 'ally', s.battle.orders, s.player.heart),
+    enemyWarriors: spawnWarriors(s.battle.enemies, 'enemy', 'hold', 0),
+    alliesAlive: s.battle.allies,
+    alliesStart: s.battle.allies,
+    enemiesAlive: s.battle.enemies,
+    enemiesStart: s.battle.enemies,
+    orders: s.battle.orders,
+    boss: s.battle.boss,
+    dread: s.battle.dread,
+    nobility: s.battle.nobility,
+    surrenderPending: false,
+    enemyDisarmed: false,
+    killCount: 0,
+    legendThresholds: [1, 3, 6, 10, 15, 21],  // kills needed for each legend point
+    consecutiveKills: 0,
+    enemyAttackNerfed: false,
+    enemyHitCount: 0,
+    // ── Archer state ──
+    archers: s.battle.archers,
+    archerCount: s.battle.archerCount || 0,
+    archerBonus: false,
+    rangedPhase: WEAPONS[s.player.weapon]?.ranged || false,
+    rangedBreakthrough: false,
+    sidearm: document.getElementById('p-sidearm')?.value || 'shortsword',
+  };
+
+  document.getElementById('combat-area').style.display = '';
+  document.getElementById('log').innerHTML = '';
+  updateBars();
+  updateWarbandStatus();
+
+  // ── Pre-battle archer volley ──
+  if (combat.archers && combat.archerCount > 0) {
+    let volleyLog = '<div class="log-entry round-start"><div class="round-num">Pre-Battle — Archer Volley</div>';
+    let enemiesHit = 0;
+    for (let i = 0; i < combat.archerCount; i++) {
+      if (Math.random() < 0.3) enemiesHit++;
+    }
+    enemiesHit = Math.min(enemiesHit, combat.enemiesAlive - 1);
+    combat.enemiesAlive -= enemiesHit;
+
+    if (enemiesHit > 0) {
+      const texts = [
+        `Arrows fall like rain. ${enemiesHit} drop before they reach the line.`,
+        `The volley strikes home. ${enemiesHit} go down in the first breath.`,
+        `Bowstrings sing. ${enemiesHit} of them crumple before the real fighting starts.`,
+      ];
+      volleyLog += `<span class="atk">${pick(texts)}</span>`;
+      volleyLog += `<div class="dmg-line"><span class="dmg-player">[${enemiesHit} enemies down]</span></div>`;
+    } else {
+      volleyLog += `<span class="atk">Arrows fly. Wide, short, lost in the chaos. No one falls.</span>`;
+    }
+
+    if (combat.enemiesAlive > combat.alliesAlive) {
+      volleyLog += `<div class="warband-line">Enemies close fast. Archers drop bows and draw blades. ${combat.archerCount} join the melee.</div>`;
+      combat.alliesAlive += combat.archerCount;
+      combat.alliesStart += combat.archerCount;
+    } else {
+      volleyLog += `<div class="warband-line">Archers hold position behind the line. They keep shooting.</div>`;
+      combat.archerBonus = true;
+    }
+
+    volleyLog += '</div>';
+    document.getElementById('log').innerHTML += volleyLog;
+    updateWarbandStatus();
+  }
+
+  showStances();
+  document.getElementById('btn-start').disabled = true;
+}
+
+function resetCombat() {
+  combat = null;
+  document.getElementById('combat-area').style.display = 'none';
+  document.getElementById('btn-start').disabled = false;
+}
+
+function updateBars() {
+  const pp = Math.max(0, combat.playerHP / combat.playerMaxHP * 100);
+  const ep = Math.max(0, combat.enemyHP / combat.enemyMaxHP * 100);
+  document.getElementById('hp-player').style.width = pp + '%';
+  document.getElementById('hp-enemy').style.width = ep + '%';
+  document.getElementById('hp-player-t').textContent = Math.max(0,combat.playerHP) + '/' + combat.playerMaxHP;
+  document.getElementById('hp-enemy-t').textContent = Math.max(0,combat.enemyHP) + '/' + combat.enemyMaxHP;
+}
+
+function updateWarbandStatus() {
+  const c = combat;
+  let html = '';
+  if (c.alliesStart > 0 || c.enemiesStart > 1) {
+    html += '<span class="forces" style="color:#8ab88a">⚔ ' + c.alliesAlive + '</span>';
+    html += '<span style="color:#666"> / ' + c.alliesStart + ' </span>';
+    html += '<span style="color:#888">vs</span> ';
+    html += '<span class="forces" style="color:#c85050">' + c.enemiesAlive + '</span>';
+    html += '<span style="color:#666"> / ' + c.enemiesStart + '</span>';
+    html += ' · <span>' + c.groupStatus + '</span>';
+    html += ' · <span>' + c.orders + '</span>';
+  } else {
+    html += 'Duel · <span>' + c.groupStatus + '</span>';
+  }
+  if (c.dread > 0) html += ' · Dread: <span style="color:#e86060">' + c.dread + '</span>';
+  if (c.nobility > 0) html += ' · Nobility: <span style="color:#8ab88a">' + c.nobility + '</span>';
+  if (c.player.legend > 0) html += ' · Legend: <span style="color:#c8a96e">' + c.player.legend + '</span>';
+  document.getElementById('warband-status').innerHTML = html;
+}
+
+function showStances() {
+  if (combat.ended) { document.getElementById('stances').innerHTML = ''; return; }
+
+  // Stun recovery: only one option
+  if (combat.playerStunned) {
+    const html = `<button class="stance-btn" onclick="resolveRound('recover','grit',0)">
+      Recover — find your footing<span class="stat">grit ${combat.player.grit} · no attack</span></button>`;
+    document.getElementById('stances').innerHTML = html;
+    return;
+  }
+
+  // Ranged breakthrough — enemy got through the line
+  if (combat.rangedPhase && combat.rangedBreakthrough) {
+    const html = `
+      <div style="color:#c85050; font-style:italic; margin-bottom:8px;">One breaks through! He's running straight at you.</div>
+      <button class="stance-btn" onclick="resolveRangedTransition('drop')" style="border-color:#8ab88a">
+        Drop the bow. Draw blade.<span class="stat">Switch to melee. No free hit.</span></button>
+      <button class="stance-btn" onclick="resolveRangedTransition('shoot')" style="border-color:#c8a96e">
+        Loose.<span class="stat">wits ${combat.player.wits} · hit = second shot. miss = he gets a free hit.</span></button>`;
+    document.getElementById('stances').innerHTML = html;
+    return;
+  }
+
+  const w = WEAPONS[combat.player.weapon];
+  const stances = [
+    { id:'forward', label:'Forward — lead the charge', stat:'strength', bonus:1 },
+    { id:'open', label:'Open — fight in the line', stat:'strength', bonus:0 },
+  ];
+
+  if (combat.player.shield) {
+    stances.push({ id:'defensive', label:'Defensive — shield wall', stat:'grit', bonus:2 });
+  } else {
+    stances.push({ id:'defensive', label:'Defensive — brace and recover', stat:'grit', bonus:0 });
+  }
+
+  if (['bow', 'spear', 'javelin', 'sling'].includes(combat.player.weapon)) {
+    stances.push({ id:'rearward', label:'Rearward — strike from behind the line', stat:'wits', bonus:2 });
+  }
+
+  const html = stances.map(s => {
+    const statVal = combat.player[s.stat];
+    return `<button class="stance-btn" onclick="resolveRound('${s.id}','${s.stat}',${s.bonus})">
+      ${s.label}<span class="stat">${s.stat} ${statVal} · bonus +${s.bonus}</span></button>`;
+  }).join('');
+
+  document.getElementById('stances').innerHTML = html;
+}
+
+// ─── EFFECT LABELS ──────────────────────────────────────────────────────
+const FX_LABELS = {
+  stun:    { css:'fx-stun',    label:'STUNNED' },
+  cripple: { css:'fx-cripple', label:'CRIPPLED' },
+  bleed:   { css:'fx-bleed',   label:'BLEEDING' },
+  disarm:  { css:'fx-disarm',  label:'DISARMED' },
+};
+
+const FX_DESCRIPTIONS = {
+  stun:    'Stunned — cannot act next round.',
+  cripple: 'Crippled — fighting impaired for rest of combat.',
+  bleed:   'Bleeding — loses blood each round.',
+  disarm:  'Disarmed — scrambling for weapon.',
+};
+
+function fxTag(type) {
+  const f = FX_LABELS[type];
+  return f ? ` <span class="fx-tag ${f.css}">${f.label}</span>` : '';
+}
+
+// ─── WARBAND WARRIOR SIMULATION ────────────────────────────────────────
+// Stat profiles per faction
+const WARRIOR_PROFILES = {
+  villager: { hpMin: 8, hpMax: 11, atkMin: 2, atkMax: 3, diffMin: 6, diffMax: 8, fumMin: 3, fumMax: 5 },
+  ashkin:   { hpMin: 5, hpMax: 8,  atkMin: 1, atkMax: 2, diffMin: 4, diffMax: 5, fumMin: 6, fumMax: 8 },
+};
+
+function spawnWarriors(count, side, orders, heartBonus) {
+  const profile = side === 'ally' ? WARRIOR_PROFILES.villager : WARRIOR_PROFILES.ashkin;
+  const warriors = [];
+  for (let i = 0; i < count; i++) {
+    const hp = profile.hpMin + Math.floor(Math.random() * (profile.hpMax - profile.hpMin + 1));
+    const attack = profile.atkMin + Math.floor(Math.random() * (profile.atkMax - profile.atkMin + 1));
+    const difficulty = profile.diffMin + Math.floor(Math.random() * (profile.diffMax - profile.diffMin + 1));
+    const fumbleMax = profile.fumMin + Math.floor(Math.random() * (profile.fumMax - profile.fumMin + 1));
+
+    // Orders modify stats
+    let atkMod = 0, defMod = 0;
+    if (orders === 'charge')    { atkMod = 2; defMod = -1; }
+    if (orders === 'shieldwall'){ atkMod = -1; defMod = 2; }
+
+    // Heart bonus for allies — small morale boost
+    const heartMod = side === 'ally' ? Math.floor(heartBonus / 2) : 0;
+
+    warriors.push({
+      hp, maxHp: hp,
+      attack: Math.max(1, attack + atkMod + heartMod),
+      difficulty: Math.max(3, difficulty - defMod),
+      fumbleMax,
+      stunned: false,
+      bleed: 0,
+    });
+  }
+  return warriors;
+}
+
+function resolveWarbandCombat() {
+  const allies = combat.allyWarriors.filter(w => w.hp > 0);
+  const enemies = combat.enemyWarriors.filter(w => w.hp > 0);
+
+  if (allies.length === 0 || enemies.length === 0) return '';
+
+  // Pair up warriors — shuffle for random matchups
+  const shuffled = [...enemies].sort(() => Math.random() - 0.5);
+
+  // Each ally fights one enemy (or multiple if outnumbering)
+  for (let i = 0; i < allies.length; i++) {
+    const ally = allies[i];
+    const enemy = shuffled[i % shuffled.length]; // wrap around if outnumbering
+    if (ally.hp <= 0 || enemy.hp <= 0) continue;
+
+    // Apply bleed
+    if (ally.bleed > 0) { ally.hp -= ally.bleed; }
+    if (enemy.bleed > 0) { enemy.hp -= enemy.bleed; }
+    if (ally.hp <= 0 || enemy.hp <= 0) continue;
+
+    // Skip if stunned
+    if (!ally.stunned) {
+      // Ally attacks enemy
+      const roll = rng(1, 100);
+      const effective = roll + ally.attack * 5 - enemy.difficulty * 2;
+      const tier = getTier(effective, ally.fumbleMax);
+      const dmg = warbandDamage(tier);
+      enemy.hp -= dmg.damage;
+      if (dmg.stun) enemy.stunned = true;
+      if (dmg.bleed) enemy.bleed += 1;
+    } else {
+      ally.stunned = false;
+    }
+
+    if (enemy.hp <= 0) continue;
+
+    // Enemy counter-attacks (if not stunned)
+    if (!enemy.stunned) {
+      const roll2 = rng(1, 100);
+      const effective2 = roll2 + enemy.attack * 5 - ally.difficulty * 2;
+      const tier2 = getTier(effective2, enemy.fumbleMax);
+      const dmg2 = warbandDamage(tier2);
+      ally.hp -= dmg2.damage;
+      if (dmg2.stun) ally.stunned = true;
+      if (dmg2.bleed) ally.bleed += 1;
+    } else {
+      enemy.stunned = false;
+    }
+  }
+
+  // Extra attacks for outnumbering side (unpaired warriors get free hits)
+  if (enemies.length > allies.length) {
+    for (let i = allies.length; i < enemies.length; i++) {
+      const enemy = shuffled[i];
+      if (enemy.hp <= 0 || enemy.stunned) continue;
+      // Attack random alive ally
+      const targets = allies.filter(a => a.hp > 0);
+      if (targets.length === 0) break;
+      const target = targets[Math.floor(Math.random() * targets.length)];
+      const roll = rng(1, 100);
+      const effective = roll + enemy.attack * 5 - target.difficulty * 2;
+      const tier = getTier(effective, enemy.fumbleMax);
+      const dmg = warbandDamage(tier);
+      target.hp -= dmg.damage;
+      if (dmg.stun) target.stunned = true;
+      if (dmg.bleed) target.bleed += 1;
+    }
+  }
+
+  // Archer bonus — each archer takes a shot at a random enemy
+  if (combat.archerBonus && combat.archerCount > 0) {
+    for (let i = 0; i < combat.archerCount; i++) {
+      const targets = combat.enemyWarriors.filter(e => e.hp > 0);
+      if (targets.length === 0) break;
+      const target = targets[Math.floor(Math.random() * targets.length)];
+      const roll = rng(1, 100);
+      const effective = roll + 2 * 5 - target.difficulty * 2; // archers have ~2 attack
+      const tier = getTier(effective, 5);
+      const dmg = warbandDamage(tier);
+      target.hp -= dmg.damage;
+    }
+  }
+
+  // Dread: chance for wounded enemies to break
+  if (combat.dread > 0) {
+    combat.enemyWarriors.forEach(e => {
+      if (e.hp > 0 && e.hp < e.maxHp * 0.5 && Math.random() < combat.dread * 0.05) {
+        e.hp = 0; // breaks and runs
+      }
+    });
+  }
+
+  // Count survivors
+  const alliesNow = combat.allyWarriors.filter(w => w.hp > 0).length;
+  const enemiesNow = combat.enemyWarriors.filter(w => w.hp > 0).length;
+  const allyLoss = combat.alliesAlive - alliesNow;
+  const enemyLoss = combat.enemiesAlive - enemiesNow;
+  combat.alliesAlive = alliesNow;
+  combat.enemiesAlive = enemiesNow;
+
+  let log = '';
+  if (enemyLoss > 0 || allyLoss > 0) {
+    const parts = [];
+    if (allyLoss > 0) parts.push(`<span class="dmg-enemy">${allyLoss} of your men fall.</span>`);
+    if (enemyLoss > 0) parts.push(`<span class="dmg-player">${enemyLoss} of theirs go down.</span>`);
+    log += `<div class="warband-line">${parts.join(' ')}</div>`;
+  }
+
+  return log;
+}
+
+function warbandDamage(tier) {
+  switch (tier) {
+    case 'fumble':      return { damage: 0, stun: false, bleed: false };
+    case 'miss':        return { damage: 0, stun: false, bleed: false };
+    case 'glancing':    return { damage: rng(1, 2), stun: false, bleed: false };
+    case 'solid':       return { damage: rng(3, 4), stun: Math.random() < 0.2, bleed: Math.random() < 0.15 };
+    case 'critical':    return { damage: rng(5, 7), stun: Math.random() < 0.4, bleed: Math.random() < 0.3 };
+    case 'devastating': return { damage: rng(7, 9), stun: true, bleed: Math.random() < 0.4 };
+    default:            return { damage: 0, stun: false, bleed: false };
+  }
+}
+
+// ─── WARBAND ATTRITION ──────────────────────────────────────────────────
+function resolveWarband() {
+  if (combat.alliesStart === 0 && combat.enemiesStart <= 1) return ''; // solo/duel — no warband
+  return resolveWarbandCombat();
+}
+
+// ─── SURRENDER CHECK ────────────────────────────────────────────────────
+function checkSurrender() {
+  if (combat.boss) return null;
+  if (combat.enemiesAlive > 2) return null;
+  if (combat.enemyHP > combat.enemyMaxHP * 0.5) return null;
+
+  // Dread makes enemies surrender sooner (even at 3-4 remaining)
+  const dreadThreshold = Math.min(4, 2 + combat.dread);
+  if (combat.enemiesAlive > dreadThreshold && combat.dread === 0) return null;
+
+  // High dread: enemies might fight to death instead (no mercy expected)
+  if (combat.dread >= 4 && Math.random() < 0.4) {
+    return `<div class="effect-line" style="color:#e86060">They know your reputation. No surrender — they fight to the death, cornered and desperate.</div>`;
+  }
+
+  const texts = [
+    "The last of them throw down their weapons. Hands up. Eyes on you.",
+    "He drops his blade. Falls to his knees. 'Mercy.' The word comes out broken.",
+    "They stop fighting. Shields lowered. Waiting for the word — yours.",
+  ];
+
+  let html = `<div class="result" style="color:#c8a96e; border-top:1px solid #555; margin-top:8px; padding-top:8px;">${pick(texts)}</div>`;
+  html += `<div class="mercy-choice" id="mercy-choice" style="display:flex;gap:8px;margin-top:8px;">`;
+  html += `<button class="stance-btn" onclick="resolveMercy('spare')" style="border-color:#8ab88a">Spare them. Let them go.<span class="stat" style="color:#8ab88a">+1 Nobility</span></button>`;
+  html += `<button class="stance-btn" onclick="resolveMercy('execute')" style="border-color:#e86060">No mercy. End it.<span class="stat" style="color:#e86060">+1 Dread</span></button>`;
+  html += `</div>`;
+
+  combat.surrenderPending = true;
+  return html;
+}
+
+// ─── MERCY RESOLUTION ───────────────────────────────────────────────────
+function resolveMercy(choice) {
+  if (!combat.surrenderPending) return;
+  combat.surrenderPending = false;
+
+  document.getElementById('mercy-choice').remove();
+
+  let log = '';
+  if (choice === 'spare') {
+    combat.nobility++;
+    const spareTexts = [
+      "You lower your weapon. 'Go.' They scramble to their feet and run. Your men watch in silence. Some nod.",
+      "You wave them off. They go — fast, not looking back. Your warriors stand taller. This is what separates a chief from a butcher.",
+      "Mercy. The word spreads through both sides. Your men grip their weapons a little less tight. This was the right call. They know it.",
+    ];
+    log = `<div class="result win" style="color:#8ab88a">${pick(spareTexts)}</div>`;
+    log += `<div class="effect-line" style="color:#8ab88a">Nobility rises. You are known for mercy.</div>`;
+  } else {
+    combat.dread++;
+    const executeTexts = [
+      "Quick. Efficient. They don't suffer long. Your men say nothing. The silence after is heavier than the fighting.",
+      "No mercy. The work is done in minutes. Your warriors clean their blades without meeting each other's eyes. They will remember this.",
+      "You give the word. It's over fast. The bodies lie where they fell. Your reputation grows — and darkens.",
+    ];
+    log = `<div class="result win" style="color:#e86060">${pick(executeTexts)}</div>`;
+    log += `<div class="effect-line" style="color:#e86060">Dread rises. They will fear your name.</div>`;
+  }
+
+  document.getElementById('log').innerHTML += log;
+  scrollLog();
+  endCombat('', choice === 'spare' ? 'mercy' : 'execute');
+}
+
+// ─── Helper: fire a ranged shot, return {log, tier, atkDmg, killed} ──
+function fireRangedShot(label) {
+  const w = WEAPONS[combat.player.weapon];
+  const roll = rng(1, 100);
+  const statVal = combat.player.wits;
+  const effective = roll + statVal * 5 - combat.enemy.difficulty * 2;
+  const tier = getTier(effective, w.fumble_max);
+  const enemySoak = ARMOR_SOAK[combat.enemy.armor] || 0;
+  const atkCtx = { armor: combat.enemy.armor, helm: combat.enemy.helm, shield: combat.enemy.shield, weaponName: w.name };
+  const entries = PLAYER_ATTACKS[w.crit][tier];
+  const entry = pick(entries)(atkCtx);
+  let atkDmg = Math.max(0, entry.dmg - enemySoak);
+  const fx = entry.fx || null;
+
+  if (entry.kill) combat.enemyHP = -1;
+  else combat.enemyHP -= atkDmg;
+  if (atkDmg > 0) combat.enemyHitCount++;
+  if (fx) {
+    if (fx === 'stun') combat.enemyStunned = true;
+    if (fx === 'cripple') combat.enemyCrippled = true;
+    if (fx === 'bleed_1') combat.enemyBleed += 1;
+    if (fx === 'bleed_2') combat.enemyBleed += 2;
+  }
+
+  let frag = '';
+  if (label) frag += `<div style="color:#999; font-style:italic; margin:4px 0;">${label}</div>`;
+  frag += `<span class="tier-tag tier-${tier}">${tier.toUpperCase()}</span> `;
+  frag += `<span class="atk">${entry.text}</span>`;
+  let dmgLine = '';
+  if (atkDmg > 0) dmgLine += `<span class="dmg-player${atkDmg >= 5 ? ' high-dmg' : ''}">[${atkDmg} dmg]</span>`;
+  if (enemySoak > 0 && entry.dmg > 0) dmgLine += ` <span class="equip">(${combat.enemy.armor} absorbs ${Math.min(enemySoak, entry.dmg)})</span>`;
+  if (fx) dmgLine += fxTag(fx === 'bleed_1' || fx === 'bleed_2' ? 'bleed' : fx);
+  if (dmgLine) frag += `<div class="dmg-line">${dmgLine}</div>`;
+
+  return { frag, tier, atkDmg, killed: combat.enemyHP <= 0 };
+}
+
+// ─── RANGED → MELEE TRANSITION ──────────────────────────────────────────
+function resolveRangedTransition(choice) {
+  combat.round++;
+  let log = `<div class="log-entry round-start"><div class="round-num">Round ${combat.round}</div>`;
+
+  if (choice === 'drop') {
+    // Drop bow, switch to melee — no free hit
+    const dropTexts = [
+      "You let the bow fall. Hand finds the blade. Familiar weight.",
+      "Bow drops. Blade out. He's close now.",
+      "No time for another arrow. The blade is faster to the hand.",
+    ];
+    log += `<div class="status" style="color:#ccc; font-style:normal;">${pick(dropTexts)}</div>`;
+    combat.player.weapon = combat.sidearm;
+    combat.rangedPhase = false;
+    combat.rangedBreakthrough = false;
+  } else {
+    // ── First shot at the charging enemy ──
+    const shot1 = fireRangedShot(null);
+    log += shot1.frag;
+
+    if (shot1.killed) {
+      log += `<div class="result win">He drops mid-stride. Arrow was enough.</div>`;
+      combat.enemiesAlive--;
+      if (combat.enemiesAlive <= 0) {
+        log += `<div class="result win" style="font-size:1.1em">The field is yours.</div></div>`;
+        endCombat(log, 'win');
+        return;
+      }
+      // More enemies — reset, stay ranged, breakthrough resolved
+      combat.enemyHP = combat.enemyMaxHP;
+      combat.enemyStunned = false; combat.enemyCrippled = false;
+      combat.enemyBleed = 0; combat.enemyDisarmed = false;
+      combat.enemyHitCount = 0;
+      combat.rangedBreakthrough = false;
+      log += `<div class="warband-line" style="color:#c8a96e">He's down. You nock another arrow.</div>`;
+      // Continue as ranged — warband round, then check next breakthrough
+      log += resolveWarband();
+      if (combat.alliesStart > 0 && combat.alliesAlive <= 0) {
+        log += `<div class="result lose">Your war-band is broken.</div></div>`;
+        endCombat(log, 'lose');
+        return;
+      }
+      log += checkRangedBreakthrough();
+      log += `<div class="status">${pick(GROUP_STATUS_TEXT[combat.groupStatus])}</div>`;
+      log += '</div>';
+      document.getElementById('log').innerHTML += log;
+      updateBars(); updateWarbandStatus(); showStances();
+      scrollLog();
+      return;
+    }
+
+    if (shot1.atkDmg > 0) {
+      // ── Hit but alive — wounded, still coming. Second shot. ──
+      const closingTexts = [
+        "He staggers. Blood. But he keeps coming. Slower now.",
+        "Arrow hit. He stumbles. Doesn't stop. Eyes locked on you.",
+        "Wounded. Still running. You reach for another arrow.",
+      ];
+      log += `<div style="color:#c8a96e; font-style:italic; margin:4px 0;">${pick(closingTexts)}</div>`;
+
+      // Second shot
+      const shot2 = fireRangedShot("Second arrow. Last chance.");
+      log += shot2.frag;
+
+      if (shot2.killed) {
+        log += `<div class="result win">He falls. Two steps from you. Close.</div>`;
+        combat.enemiesAlive--;
+        if (combat.enemiesAlive <= 0) {
+          log += `<div class="result win" style="font-size:1.1em">The field is yours.</div></div>`;
+          endCombat(log, 'win');
+          return;
+        }
+        combat.enemyHP = combat.enemyMaxHP;
+        combat.enemyStunned = false; combat.enemyCrippled = false;
+        combat.enemyBleed = 0; combat.enemyDisarmed = false;
+        combat.enemyHitCount = 0;
+        combat.rangedBreakthrough = false;
+        log += `<div class="warband-line" style="color:#c8a96e">Down. You nock another arrow.</div>`;
+        log += resolveWarband();
+        if (combat.alliesStart > 0 && combat.alliesAlive <= 0) {
+          log += `<div class="result lose">Your war-band is broken.</div></div>`;
+          endCombat(log, 'lose');
+          return;
+        }
+        log += checkRangedBreakthrough();
+        log += `<div class="status">${pick(GROUP_STATUS_TEXT[combat.groupStatus])}</div>`;
+        log += '</div>';
+        document.getElementById('log').innerHTML += log;
+        updateBars(); updateWarbandStatus(); showStances();
+        scrollLog();
+        return;
+      }
+
+      // Second shot didn't kill — switch to melee, no free hit (you did wound him)
+      const switchTexts = [
+        "He's on you. Bow drops. Blade out.",
+        "Too close. Bow falls. Steel in hand.",
+      ];
+      log += `<div class="status" style="color:#ccc; font-style:normal;">${pick(switchTexts)}</div>`;
+      combat.player.weapon = combat.sidearm;
+      combat.rangedPhase = false;
+      combat.rangedBreakthrough = false;
+
+    } else {
+      // ── First shot missed — he closes. Free hit. ──
+      const switchTexts = [
+        "Bow drops. Fumble for the blade. He's already here.",
+        "Missed. He's on you. Too close for arrows.",
+      ];
+      log += `<div class="status" style="color:#ccc; font-style:normal;">${pick(switchTexts)}</div>`;
+      combat.player.weapon = combat.sidearm;
+      combat.rangedPhase = false;
+      combat.rangedBreakthrough = false;
+
+      const freeHitTexts = [
+        "He's on you before the blade clears the sheath.",
+        "Too slow. He closes the gap while you scramble for steel.",
+      ];
+      log += `<div style="color:#c85050; font-style:italic; margin:4px 0;">${pick(freeHitTexts)}</div>`;
+      const c = calcCounter('open', 0, combat.player.strength);
+      applyCounter(c);
+      log += c.logFrag;
+      log += c.fxFrag;
+      if (combat.playerHP <= 0) {
+        const pDown = checkPlayerDown(log);
+        if (pDown.ended) return;
+        log = pDown.log;
+      }
+    }
+  }
+
+  // Warband round
+  log += resolveWarband();
+  if (combat.alliesStart > 0 && combat.alliesAlive <= 0) {
+    log += `<div class="result lose">Your war-band is broken.</div></div>`;
+    endCombat(log, 'lose');
+    return;
+  }
+  log += `<div class="status">${pick(GROUP_STATUS_TEXT[combat.groupStatus])}</div>`;
+
+  log += '</div>';
+  document.getElementById('log').innerHTML += log;
+  updateBars(); updateWarbandStatus(); showStances();
+  scrollLog();
+}
+
+// ─── COMBAT RESOLUTION ──────────────────────────────────────────────────
+function resolveRound(stanceId, stat, stanceBonus) {
+  combat.round++;
+  const w = WEAPONS[combat.player.weapon];
+  const ew = ENEMY_WEAPONS[combat.enemy.weapon];
+
+  // Stun recovery
+  if (stanceId === 'recover' && combat.playerStunned) {
+    combat.playerStunned = false;
+  }
+
+  let statVal = combat.player[stat];
+  const weaponBonus = combat.player.legend >= 3 ? 2 : combat.player.legend >= 1 ? 1 : 0;
+
+  let log = `<div class="log-entry round-start"><div class="round-num">Round ${combat.round}</div>`;
+
+  // ── Round 1 opening flavor ──
+  if (combat.round === 1) {
+    const wn = w.name.toLowerCase();
+    const dread = combat.dread || 0;
+    const nobility = combat.nobility || 0;
+
+    // Disposition-specific openings
+    const dreadOpeners = [
+      `You bare your teeth. The ${wn} feels light. You've done this before. They know it.`,
+      `You lock eyes with the nearest one. He flinches. Good. The ${wn} comes up.`,
+      `No war-cry. Just silence and a slow smile. That's worse. They know what's coming.`,
+      `You drag a thumb across the ${wn}'s edge. Blood wells. You hold it up. They see.`,
+    ];
+    const nobilityOpeners = [
+      `A prayer to the old gods — brief, earnest. Then the ${wn} comes up. Steady hands.`,
+      `You touch the charm at your throat. A word for the fallen. Then forward.`,
+      `You raise the ${wn} and call to your men. 'For hearth and kin.' They answer.`,
+      `A breath. A promise to come home. The ${wn} feels heavier than it should.`,
+    ];
+
+    const openings = {
+      forward: dread >= 3
+        ? dreadOpeners
+        : nobility >= 3
+        ? [`You raise the ${wn} high. Your men see it and roar. You charge together.`,
+           `'Forward!' The word leaves you like a battle-hymn. The ${wn} leads.`,
+           ...nobilityOpeners.slice(0, 1)]
+        : [`You grip the ${wn} and storm forward. No hesitation.`,
+           `A roar from your throat. You charge. The ${wn} is already moving.`,
+           `You spit, tighten your grip, and go straight at him.`,
+           `First blood is yours to take. You surge forward, ${wn} raised.`],
+      open: dread >= 3
+        ? dreadOpeners
+        : nobility >= 3
+        ? nobilityOpeners
+        : [`You settle into the line. ${w.name} up. Steady breathing. Wait for it.`,
+           `You roll your shoulders. Test the grip. Eyes on him. Ready.`,
+           `You spit in the dirt. Widen your stance. Here it comes.`],
+      defensive: dread >= 3
+        ? [`Shield up. Eyes flat. Let them come to you. Let them see what waits.`,
+           `You stand still. The ${wn} rests easy. Patience is its own threat.`]
+        : nobility >= 3
+        ? [`Shield up. Weight low. You await the first attack. Calm. Centered.`,
+           `A prayer under your breath. Then the shield comes up. Steady.`]
+        : [`Shield up. Weight low. You await the first attack.`,
+           `You plant your feet and brace. Let them come.`,
+           `Steady. Patient. The ${wn} stays close. You wait.`],
+      rearward: [`You step behind the line. Sight down the ${wn}. Pick your target.`,
+        `From the second rank you watch him. Distance is your weapon now.`,
+        `Behind your men, you nock and breathe. The first shot matters most.`],
+      recover: [`You steady yourself. Find your footing. Not yet.`],
+    };
+    const stanceTexts = openings[stanceId] || openings.open;
+    log += `<div class="status" style="color:#ccc; font-style:normal;">${pick(stanceTexts)}</div>`;
+  }
+
+  // ── Apply start-of-round effects ──
+  if (combat.enemyBleed > 0) {
+    combat.enemyHP -= combat.enemyBleed;
+    log += `<div class="bleed-line">He bleeds. [${combat.enemyBleed} dmg]</div>`;
+    if (combat.enemyHP <= 0) {
+      log += `<div class="result win">He bleeds out. Falls. Doesn't get up.</div>`;
+      combat.enemiesAlive--;
+      if (combat.enemiesAlive > 0 && !combat.boss) {
+        const nextTexts = [
+          "Another steps forward over the body.",
+          "No rest. The next one is already here.",
+        ];
+        log += `<div class="warband-line" style="color:#c8a96e">${pick(nextTexts)}</div>`;
+        combat.enemyHP = combat.enemyMaxHP;
+        combat.enemyStunned = false;
+        combat.enemyCrippled = false;
+        combat.enemyBleed = 0;
+        combat.enemyDisarmed = false;
+        combat.enemyAttackNerfed = false;
+        combat.shieldBroken = false;
+        combat.enemyHitCount = 0;
+        // Don't return — continue the round
+      } else {
+        log += '</div>';
+        endCombat(log, 'win');
+        return;
+      }
+    }
+  }
+  if (combat.playerBleed > 0) {
+    combat.playerHP -= combat.playerBleed;
+    log += `<div class="bleed-line">Your wound bleeds. [${combat.playerBleed} dmg to you]</div>`;
+    if (combat.playerHP <= 0) {
+      log += `<div class="result lose">Blood loss takes you. Knees fold. Darkness.</div>`;
+      log += resolveUnconsciousBattle();
+      log += '</div>';
+      document.getElementById('log').innerHTML += log;
+      endCombat('', combat.playerHP > 0 ? 'wounded' : 'lose');
+      return;
+    }
+  }
+
+  // ── Stun recovery log ──
+  if (stanceId === 'recover') {
+    log += `<div class="stun-line">You stagger upright. Shake it off. Not done yet.</div>`;
+  }
+
+  // ── Player cripple penalty ──
+  if (combat.playerCrippled) statVal = Math.max(1, statVal - 1);
+
+  // ── Player attack roll ──
+  const roll = rng(1, 100);
+  const effective = roll + (statVal + weaponBonus + stanceBonus) * 5 - combat.enemy.difficulty * 2;
+  const tier = getTier(effective, w.fumble_max);
+
+  // Armor soak on enemy
+  const enemySoak = ARMOR_SOAK[combat.enemy.armor] || 0;
+
+  // Context for text generation (enemy's gear)
+  const atkCtx = {
+    armor: combat.enemy.armor,
+    helm: combat.enemy.helm,
+    shield: combat.enemy.shield && !combat.shieldBroken,
+    weaponName: w.name,
+  };
+
+  // Get attack text + effects
+  const critType = w.crit;
+  const entries = PLAYER_ATTACKS[critType][tier];
+  const entry = pick(entries)(atkCtx);
+  let atkDmg = Math.max(0, entry.dmg - enemySoak);
+  const selfDmg = entry.self || 0;
+  const fx = entry.fx || null;
+
+  // Kill flag — text describes unambiguous death, force kill regardless of remaining HP
+  if (entry.kill) combat.enemyHP = -1;
+  else combat.enemyHP -= atkDmg;
+  combat.playerHP -= selfDmg;
+  if (atkDmg > 0) combat.enemyHitCount++;
+
+  // ── Grit save: >50% HP loss in one hit → stun check ──
+  let gritSaveStun = false;
+  if (atkDmg > combat.enemyMaxHP * 0.5 && !combat.enemyStunned && combat.enemyHP > 0) {
+    const saveChance = tier === 'devastating' ? 0.2 : tier === 'critical' ? 0.3 : 0.5;
+    if (Math.random() > saveChance) {
+      combat.enemyStunned = true;
+      gritSaveStun = true;
+    }
+  }
+
+  // ── Apply effects from player attack ──
+  if (fx) {
+    if (fx === 'stun')         combat.enemyStunned = true;
+    if (fx === 'cripple')      combat.enemyCrippled = true;
+    if (fx === 'bleed_1')    { combat.enemyBleed += 1; }
+    if (fx === 'bleed_2')    { combat.enemyBleed += 2; }
+    if (fx === 'shield_break') combat.shieldBroken = true;
+    if (fx === 'disarm')       combat.enemyDisarmed = true;
+  }
+
+  // ── Build player attack fragment (not appended to log yet) ──
+  let pFrag = `<span class="tier-tag tier-${tier}">${tier.toUpperCase()}</span> `;
+  pFrag += `<span class="atk">${entry.text}</span>`;
+  let dmgLine = '';
+  if (atkDmg > 0) dmgLine += `<span class="dmg-player${atkDmg >= 5 ? ' high-dmg' : ''}">[${atkDmg} dmg]</span>`;
+  if (enemySoak > 0 && entry.dmg > 0) dmgLine += ` <span class="equip">(${combat.enemy.armor} absorbs ${Math.min(enemySoak, entry.dmg)})</span>`;
+  if (selfDmg > 0) dmgLine += `<span class="fumble">[${selfDmg} self-damage]</span>`;
+  if (fx) dmgLine += fxTag(fx === 'bleed_1' || fx === 'bleed_2' ? 'bleed' : fx === 'shield_break' ? 'disarm' : fx);
+  if (dmgLine) pFrag += `<div class="dmg-line">${dmgLine}</div>`;
+
+  // Player fx description fragment
+  let pFxFrag = '';
+  if (fx === 'stun')         pFxFrag = `<div class="effect-line">He's down. Stunned. Won't act next round.</div>`;
+  if (fx === 'cripple')      pFxFrag = `<div class="effect-line">Crippled. He fights on, but slower, weaker. He knows it.</div>`;
+  if (fx === 'bleed_1')      pFxFrag = `<div class="effect-line">Bleeding. The wound won't close. Time works against him now.</div>`;
+  if (fx === 'bleed_2')      pFxFrag = `<div class="effect-line">Arterial. Blood pulses from the wound in rhythm with his heart. He has minutes.</div>`;
+  if (fx === 'shield_break') pFxFrag = `<div class="effect-line">Shield shattered. His left side is open.</div>`;
+  if (fx === 'disarm')       pFxFrag = `<div class="effect-line">Disarmed. Weapon torn from his grip. He stares at empty hands.</div>`;
+  if (gritSaveStun && fx !== 'stun') pFxFrag += `<div class="effect-line">The blow staggers him. Eyes glaze. He can't answer — not this round.</div>`;
+
+  // ── Check enemy down ──
+  if (combat.enemyHP <= 0) {
+    log += pFrag;
+    const winTexts = [
+      "He falls. Doesn't move. Your men raise a shout.",
+      "He crumbles. The fight leaves him all at once.",
+      "Down. Still. Your warriors hammer shields and roar.",
+      "He drops like a cut rope. The war-band surges forward over his body.",
+    ];
+    log += `<div class="result win">${pick(winTexts)}</div>`;
+
+    // ── Legend system: escalating kill thresholds ──
+    combat.killCount++;
+    combat.consecutiveKills++;
+    const legendEarned = (combat.legendThresholds.length > 0 && combat.killCount >= combat.legendThresholds[0]) || combat.boss;
+    if (legendEarned) {
+      if (combat.legendThresholds.length > 0 && combat.killCount >= combat.legendThresholds[0]) combat.legendThresholds.shift();
+      combat.player.legend++;
+      const wName = WEAPONS[combat.player.weapon].name;
+      const legendTexts = combat.boss
+        ? [
+          `The ${wName} drinks deep. A chieftain's weapon, blooded on a worthy foe.`,
+          `${wName} hums. The kill will be remembered. The weapon will make sure of it.`,
+          `A kill that matters. The ${wName} is more than iron now.`,
+        ]
+        : combat.killCount === 1
+        ? [
+          `First blood. The ${wName} wakes in your hand.`,
+          `The ${wName} tastes battle. It remembers.`,
+          `One kill. The ${wName} grows warm. It knows what it's for now.`,
+        ]
+        : [
+          `The ${wName} hums. ${combat.killCount} have fallen to it today. It is more than iron and wood now.`,
+          `${combat.killCount} kills. The ${wName} grows in legend with every stroke.`,
+          `Warriors on both sides watch the ${wName}. They will speak of this.`,
+        ];
+      log += `<div class="effect-line" style="color:#c8a96e; border-left-color:#c8a96e;"><strong>LEGEND +1</strong> — ${pick(legendTexts)}</div>`;
+    }
+
+    combat.enemiesAlive--;
+
+    if (combat.enemiesAlive > 0 && !combat.boss) {
+      const nextTexts = [
+        "Another steps forward. Fresh. Angry.",
+        "Before the body hits the ground, the next one is on you.",
+        "No rest. Another takes his place. Weapon up. Eyes locked.",
+        "One down. One more. The line pushes another into your path.",
+      ];
+      log += `<div class="warband-line" style="color:#c8a96e">${pick(nextTexts)}</div>`;
+      combat.enemyHP = combat.enemyMaxHP;
+      combat.enemyStunned = false;
+      combat.enemyCrippled = false;
+      combat.enemyBleed = 0;
+      combat.enemyDisarmed = false;
+      combat.enemyAttackNerfed = false;
+      combat.shieldBroken = false;
+      combat.enemyHitCount = 0;
+
+      updateGroupMorale(tier);
+
+      // ── Consecutive kills → force morale down ──
+      if (combat.consecutiveKills >= 3) {
+        combat.groupStatus = 'breaking';
+        log += `<div class="effect-line" style="color:#e86060">Fear spreads through their line. Some look for escape routes.</div>`;
+      } else if (combat.consecutiveKills >= 2) {
+        if (combat.groupStatus === 'strong') combat.groupStatus = 'holding';
+        else if (combat.groupStatus === 'holding') combat.groupStatus = 'wavering';
+        else if (combat.groupStatus === 'wavering') combat.groupStatus = 'breaking';
+        log += `<div class="effect-line" style="color:#e86060">The enemy line hesitates.</div>`;
+      }
+
+      // ── Rout check: >50% dead + breaking → flee ──
+      if (!combat.boss && combat.groupStatus === 'breaking' && combat.enemiesAlive <= combat.enemiesStart * 0.5) {
+        const routTexts = [
+          "Their nerve breaks. Weapons clatter to the ground as they scatter.",
+          "The last of them turn and run. Your men let them go — or don't.",
+          "It's over. Not because you killed them all, but because the rest chose life.",
+        ];
+        log += `<div class="result win" style="font-size:1.1em">${pick(routTexts)}</div></div>`;
+        endCombat(log, 'win');
+        return;
+      }
+
+      log += resolveWarband();
+      if (combat.alliesStart > 0 && combat.alliesAlive <= 0) {
+        log += `<div class="result lose">Your war-band is broken. The last of your men fall around you. Alone against many.</div></div>`;
+        endCombat(log, 'lose');
+        return;
+      }
+      log += checkRangedBreakthrough();
+      log += `<div class="status">${pick(GROUP_STATUS_TEXT[combat.groupStatus])}</div>`;
+      log += '</div>';
+      document.getElementById('log').innerHTML += log;
+      updateBars(); updateWarbandStatus(); showStances();
+      scrollLog();
+      return;
+    } else if (combat.enemiesAlive <= 0) {
+      log += `<div class="result win" style="font-size:1.1em">The field is yours. No enemy stands.</div></div>`;
+      endCombat(log, 'win');
+      return;
+    } else {
+      log += '</div>';
+      endCombat(log, 'win');
+      return;
+    }
+  }
+
+  // ── Enemy counter-attack resolution ──
+  const playerCritDev = (tier === 'critical' || tier === 'devastating');
+  const hasInitiative = (stanceId === 'forward');
+
+  if (playerCritDev) {
+    // Critical/Devastating — no counter, enemy is reeling
+    log += pFrag + pFxFrag;
+    const noCounterTexts = [
+      "He staggers. Can't answer.",
+      "He reels. No counter comes.",
+      "He's done for the moment. Gasping. Trying to stay upright.",
+      "He stumbles back. The blow took everything out of him.",
+    ];
+    log += `<div style="color:#999; font-style:italic; margin:4px 0;">${pick(noCounterTexts)}</div>`;
+  } else if (combat.enemyStunned) {
+    // Stunned — no counter
+    log += pFrag + pFxFrag;
+    log += `<br><br><span class="stun-line">He's on the ground. No counter-attack.</span>`;
+  } else if (combat.enemyDisarmed) {
+    // Disarmed — show player attack first, then handle disarm
+    log += pFrag + pFxFrag;
+    if (combat.enemiesAlive > 2) {
+      const disarmTexts = [
+        "Weaponless, he stumbles back into the press. Another takes his place.",
+        "He scrambles for a fallen blade. Your next opponent is already here.",
+        "Disarmed. He backs away. The line pushes a fresh fighter toward you.",
+      ];
+      log += `<br><br><div class="warband-line" style="color:#c8a96e">${pick(disarmTexts)}</div>`;
+      combat.enemiesAlive--;
+      combat.enemyHP = combat.enemyMaxHP;
+      combat.enemyStunned = false;
+      combat.enemyCrippled = false;
+      combat.enemyBleed = 0;
+      combat.enemyDisarmed = false;
+      combat.enemyAttackNerfed = false;
+      combat.shieldBroken = false;
+      combat.enemyHitCount = 0;
+    } else {
+      const disarmResult = resolveDisarm(log);
+      log = disarmResult.log;
+      if (disarmResult.ended) return;
+      // Fight on with fists — no reorder for this edge case
+      const c = calcCounter(stanceId, stanceBonus, statVal, 'fists');
+      applyCounter(c);
+      log += c.logFrag;
+      const pDown = checkPlayerDown(log);
+      if (pDown.ended) return;
+      log = pDown.log;
+      log += c.fxFrag;
+    }
+  } else if (hasInitiative) {
+    // ── Forward initiative — player always strikes first ──
+    // Player attack already resolved above; if enemy survived, counter comes after
+    log += pFrag + pFxFrag;
+    const c = calcCounter(stanceId, stanceBonus, statVal);
+    applyCounter(c);
+    log += c.logFrag;
+    log += c.fxFrag;
+
+    const pDown = checkPlayerDown(log);
+    if (pDown.ended) return;
+    log = pDown.log;
+  } else {
+    // ── Normal counter — order by damage (lighter first) ──
+    const c = calcCounter(stanceId, stanceBonus, statVal);
+
+    if (atkDmg > 0 && c.dmg > 0) {
+      // Both hit — show lighter first, transition, then heavier
+      if (c.dmg <= atkDmg) {
+        // Enemy hit is lighter → show enemy first, transition (player shrugs it off), then player attack
+        applyCounter(c);
+        log += c.logFrag;
+        log += pickTransition('player', c.dmg);
+        log += pFrag + pFxFrag;
+        log += c.fxFrag;
+      } else {
+        // Player hit is lighter → show player first, transition (enemy shrugs it off), then enemy counter
+        log += pFrag + pFxFrag;
+        log += pickTransition('enemy', atkDmg);
+        applyCounter(c);
+        log += c.logFrag;
+        log += c.fxFrag;
+      }
+    } else {
+      // One or both missed — default order, no transition
+      log += pFrag + pFxFrag;
+      applyCounter(c);
+      log += c.logFrag;
+      log += c.fxFrag;
+    }
+
+    // Check player down after counter
+    const pDown = checkPlayerDown(log);
+    if (pDown.ended) return;
+    log = pDown.log;
+  }
+
+  // Update group morale
+  updateGroupMorale(tier);
+
+  // ── Warband attrition ──
+  log += resolveWarband();
+
+  // ── Warband wipe checks (skip for solo combat) ──
+  if (combat.alliesStart > 0 && combat.alliesAlive <= 0) {
+    log += `<div class="result lose">Your war-band is broken. The last of your men fall around you. Alone against many.</div></div>`;
+    endCombat(log, 'lose');
+    return;
+  }
+  if (combat.enemiesStart > 1 && combat.enemiesAlive <= 0 && combat.enemyHP > 0) {
+    log += `<div class="result win">Their line collapses. The last of them scatter. Only your opponent remains — and he knows it's over.</div>`;
+    combat.enemy.attack = Math.max(1, combat.enemy.attack - 1);
+  }
+
+  // ── Surrender check ──
+  const surrenderResult = checkSurrender();
+  if (surrenderResult) {
+    log += surrenderResult;
+    log += `<div class="status">${pick(GROUP_STATUS_TEXT[combat.groupStatus])}</div>`;
+    log += '</div>';
+    document.getElementById('log').innerHTML += log;
+    updateBars(); updateWarbandStatus();
+    scrollLog();
+    return;
+  }
+
+  log += `<div class="status">${pick(GROUP_STATUS_TEXT[combat.groupStatus])}</div>`;
+
+  // ── Ranged breakthrough check ──
+  log += checkRangedBreakthrough();
+
+  log += '</div>';
+  document.getElementById('log').innerHTML += log;
+  updateBars(); updateWarbandStatus(); showStances();
+  scrollLog();
+}
+
+// ── Ranged breakthrough check ──
+function checkRangedBreakthrough() {
+  if (!combat.rangedPhase || combat.rangedBreakthrough) return '';
+  // Solo: immediate breakthrough
+  if (combat.alliesStart === 0) {
+    combat.rangedBreakthrough = true;
+    return '<div style="color:#c85050; font-style:italic; margin-top:4px;">No line to hold. He\'s coming straight for you.</div>';
+  }
+  // Overmatch: no breakthrough possible
+  if (combat.alliesAlive >= combat.enemiesAlive) return '';
+  // Chance = (enemies - allies) / enemies
+  const chance = (combat.enemiesAlive - combat.alliesAlive) / combat.enemiesAlive;
+  if (Math.random() < chance) {
+    combat.rangedBreakthrough = true;
+    const texts = [
+      "One slips through the line. Eyes on you. Running.",
+      "Your men can't hold them all. One breaks free. He sees the bow.",
+      "A gap in the shield wall. An enemy surges through. Headed your way.",
+    ];
+    return `<div style="color:#c85050; font-style:italic; margin-top:4px;">${pick(texts)}</div>`;
+  }
+  return '';
+}
+
+// ── Transition texts between lighter and heavier hit ──
+function pickTransition(whoShrugs, lightDmg) {
+  let texts;
+  if (whoShrugs === 'player') {
+    texts = lightDmg <= 2
+      ? ["You shrug it off.", "Barely felt.", "You don't flinch.", "A scratch. Nothing more."]
+      : ["You spit. Grin.", "You grit your teeth. Step forward.", "Pain. But you've had worse.", "You spit blood. Keep your feet."];
+  } else {
+    texts = lightDmg <= 2
+      ? ["He shrugs it off.", "He barely notices.", "He doesn't slow.", "It won't stop him."]
+      : ["He holds on.", "He cries out but stands.", "He staggers. Steadies.", "He grits his teeth. Comes back harder."];
+  }
+  return `<div style="color:#999; font-style:italic; margin:4px 0;">${pick(texts)}</div>`;
+}
+
+// ── Calculate enemy counter (pure, no side effects) ──
+function calcCounter(stanceId, stanceBonus, statVal, weaponOverride) {
+  const wKey = weaponOverride || combat.enemy.weapon;
+  const ew = ENEMY_WEAPONS[wKey];
+  const counterRoll = rng(1, 100);
+  let counterEff = counterRoll + combat.enemy.attack * 10 - (statVal + stanceBonus) * 3;
+  const defBonus = (stanceId === 'defensive' || stanceId === 'recover') ? -15 : stanceId === 'rearward' ? -20 : 0;
+  counterEff += defBonus;
+  if (combat.enemyCrippled) counterEff -= 15;
+
+  const counterTier = getTier(counterEff, 5);
+  const defCtx = { armor: combat.player.armor, helm: combat.player.helm, shield: combat.player.shield, weaponName: ew.name };
+  const counterCrit = ew.crit;
+  const counterEntries = ENEMY_ATTACKS[counterCrit]?.[counterTier] || ENEMY_ATTACKS.crush[counterTier];
+  const counterEntry = pick(counterEntries)(defCtx);
+  let counterDmg = counterEntry.dmg;
+  const counterFx = counterEntry.fx || null;
+
+  const playerSoak = ARMOR_SOAK[combat.player.armor] || 0;
+  if (combat.player.shield && counterDmg > 0) counterDmg = Math.max(0, counterDmg - 1);
+  counterDmg = Math.max(0, counterDmg - playerSoak);
+
+  // Build log fragment
+  let logFrag = `<br><br><span class="tier-tag tier-${counterTier}">${counterTier.toUpperCase()}</span> `;
+  logFrag += `<span class="def">${counterEntry.text}</span>`;
+  let cDmgLine = '';
+  if (counterDmg > 0) cDmgLine += `<span class="dmg-enemy${counterDmg >= 5 ? ' high-dmg' : ''}">[${counterDmg} dmg to you]</span>`;
+  if (playerSoak > 0 && counterEntry.dmg > 0) cDmgLine += ` <span class="equip">(${combat.player.armor} absorbs ${Math.min(playerSoak, counterEntry.dmg)})</span>`;
+  if (combat.player.shield && counterEntry.dmg > 0) cDmgLine += ` <span class="equip">(shield blocks 1)</span>`;
+  if (counterFx) cDmgLine += fxTag(counterFx === 'bleed_1' || counterFx === 'bleed_2' ? 'bleed' : counterFx);
+  if (cDmgLine) logFrag += `<div class="dmg-line">${cDmgLine}</div>`;
+
+  // Build fx description fragment
+  let fxFrag = '';
+  if (counterFx === 'stun')    fxFrag = `<div class="effect-line">Your vision swims. Stunned — you lose next round.</div>`;
+  if (counterFx === 'cripple') fxFrag = `<div class="effect-line">Something is wrong inside. You fight on, but diminished.</div>`;
+  if (counterFx === 'bleed_1') fxFrag = `<div class="effect-line">Bleeding. The wound leaks steadily. You feel it with every heartbeat.</div>`;
+  if (counterFx === 'bleed_2') fxFrag = `<div class="effect-line">Bleeding badly. The warmth spreading down your side is your life leaving.</div>`;
+
+  return { tier: counterTier, dmg: counterDmg, fx: counterFx, logFrag, fxFrag };
+}
+
+// ── Apply counter effects to combat state ──
+function applyCounter(c) {
+  combat.playerHP -= c.dmg;
+  if (c.dmg > 3) combat.consecutiveKills = 0;
+  if (c.fx) {
+    if (c.fx === 'stun')      combat.playerStunned = true;
+    if (c.fx === 'cripple')   combat.playerCrippled = true;
+    if (c.fx === 'bleed_1') { combat.playerBleed += 1; }
+    if (c.fx === 'bleed_2') { combat.playerBleed += 2; }
+  }
+}
+
+// ── Check player unconscious after counter ──
+function checkPlayerDown(log) {
+  if (combat.playerHP <= 0) {
+    const unconsciousTexts = [
+      "Darkness. The ground takes you. Voices fade.",
+      "Everything goes distant. Someone is pulling you by the arms. Then nothing.",
+      "Your knees fold. The sky tilts. The world goes dark.",
+      "You go down. The last thing you see is your men closing ranks over your body.",
+    ];
+    log += `<div class="result lose">${pick(unconsciousTexts)}</div>`;
+    log += resolveUnconsciousBattle();
+    log += '</div>';
+    document.getElementById('log').innerHTML = (document.getElementById('log').innerHTML || '') + log;
+    endCombat('', combat.playerHP > 0 ? 'wounded' : 'lose');
+    return { log, ended: true };
+  }
+  return { log, ended: false };
+}
+
+function calcFleeChance() {
+  let chance = 0.4;
+  const hpRatio = combat.enemyHP / combat.enemyMaxHP;
+  if (hpRatio < 0.3) chance += 0.3;
+  else if (hpRatio < 0.5) chance += 0.15;
+  chance += combat.dread * 0.06;
+  if (combat.boss) chance = 0;
+  return Math.min(0.85, chance);
+}
+
+function resolveDisarm(log) {
+  const fleeChance = calcFleeChance();
+  const roll = Math.random();
+
+  if (roll < fleeChance * 0.5) {
+    // Surrender
+    const texts = [
+      "Weaponless. He drops to his knees. Hands up. Done.",
+      "Without a weapon, the fight leaves him. He kneels. Waiting.",
+      "He looks at his empty hands. Then at you. Slowly, he kneels.",
+    ];
+    log += `<br><br><div class="result" style="color:#c8a96e; border-top:1px solid #555; margin-top:8px; padding-top:8px;">${pick(texts)}</div>`;
+    log += `<div class="mercy-choice" id="mercy-choice" style="display:flex;gap:8px;margin-top:8px;">`;
+    log += `<button class="stance-btn" onclick="resolveMercy('spare')" style="border-color:#8ab88a">Spare him.<span class="stat" style="color:#8ab88a">+1 Nobility</span></button>`;
+    log += `<button class="stance-btn" onclick="resolveMercy('execute')" style="border-color:#e86060">No mercy.<span class="stat" style="color:#e86060">+1 Dread</span></button>`;
+    log += `</div>`;
+    combat.surrenderPending = true;
+    log += '</div>';
+    document.getElementById('log').innerHTML += log;
+    updateBars(); updateWarbandStatus();
+    scrollLog();
+    return { log, ended: true };
+  } else if (roll < fleeChance) {
+    // Flee
+    const texts = [
+      "Without his weapon, he runs. Turns and sprints. Your men let him go — or don't.",
+      "He scrambles backward, weaponless. Trips. Gets up. Runs.",
+      "No weapon, no courage. He breaks and runs.",
+    ];
+    log += `<br><br><div class="result win">${pick(texts)}</div></div>`;
+    endCombat(log, 'win');
+    return { log, ended: true };
+  } else {
+    // Fight on with fists
+    log += `<br><br><div class="stun-line">Weaponless. He fights on with bare hands — desperate, clumsy.</div>`;
+    if (!combat.enemyAttackNerfed) {
+      combat.enemy.attack = Math.max(1, combat.enemy.attack - 2);
+      combat.enemyAttackNerfed = true;
+    }
+    return { log, ended: false };
+  }
+}
+
+// ─── UNCONSCIOUS BATTLE RESOLUTION ─────────────────────────────────────
+function resolveUnconsciousBattle() {
+  let log = '';
+  // Simulate remaining rounds using real combat rules
+  let rounds = 0;
+  const maxRounds = 30; // safety cap
+
+  while (combat.alliesAlive > 0 && combat.enemiesAlive > 0 && rounds < maxRounds) {
+    rounds++;
+    // Run one round of real warband combat
+    resolveWarbandCombat();
+
+    // Without chieftain, morale penalty — wounded allies more likely to fall
+    combat.allyWarriors.forEach(a => {
+      if (a.hp > 0 && a.hp < a.maxHp * 0.4 && Math.random() < 0.1) {
+        a.hp = 0; // breaks without leadership
+      }
+    });
+    combat.alliesAlive = combat.allyWarriors.filter(w => w.hp > 0).length;
+    combat.enemiesAlive = combat.enemyWarriors.filter(w => w.hp > 0).length;
+  }
+
+  if (combat.alliesAlive > 0 && combat.enemiesAlive <= 0) {
+    // Warband wins — chieftain survives wounded
+    const wakeHP = Math.max(1, Math.floor(combat.playerMaxHP * 0.2));
+    combat.playerHP = wakeHP;
+    const wakeTexts = [
+      `You wake to voices. Your men won. The field is yours. Everything hurts. [${wakeHP}/${combat.playerMaxHP} HP]`,
+      `Light returns. Faces above you. Worried. Then relieved. You're alive. Barely. [${wakeHP}/${combat.playerMaxHP} HP]`,
+      `Someone is pouring water on your face. You cough. The fighting is over. Your men carried you through. [${wakeHP}/${combat.playerMaxHP} HP]`,
+    ];
+    log += `<div class="result win" style="color:#c8a96e">${pick(wakeTexts)}</div>`;
+    log += `<div class="warband-line">Your men: ${combat.alliesAlive}/${combat.alliesStart} standing. All enemies down.</div>`;
+  } else if (combat.alliesAlive > 0) {
+    // Stalemate — warband retreats with unconscious chief
+    const wakeHP = Math.max(1, Math.floor(combat.playerMaxHP * 0.15));
+    combat.playerHP = wakeHP;
+    const retreatTexts = [
+      `Your men drag you from the field. The enemy doesn't pursue. Both sides had enough. [${wakeHP}/${combat.playerMaxHP} HP]`,
+      `You wake on a stretcher. Moving. Trees above. Your men are retreating. The fight was a draw. [${wakeHP}/${combat.playerMaxHP} HP]`,
+    ];
+    log += `<div class="result stalemate">${pick(retreatTexts)}</div>`;
+    log += `<div class="warband-line">Your men: ${combat.alliesAlive}/${combat.alliesStart}. Enemies: ${combat.enemiesAlive}/${combat.enemiesStart}. Retreated.</div>`;
+  } else {
+    // Warband wiped — true defeat
+    combat.playerHP = 0;
+    const defeatTexts = [
+      "Your men fight on without you. Brave. Doomed. When the last one falls, the field belongs to the enemy.",
+      "Without their chief, the line breaks. They fight in knots, then alone, then not at all.",
+      "The warband dies around your body. The enemy strips the dead. You are carried away — to slavery, or worse.",
+    ];
+    log += `<div class="result lose">${pick(defeatTexts)}</div>`;
+    log += `<div class="warband-line">Your men: 0/${combat.alliesStart}. Total defeat.</div>`;
+  }
+
+  return log;
+}
+
+function scrollLog() {
+  const logEl = document.getElementById('log');
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function getTier(effective, fumbleMax) {
+  if (effective <= fumbleMax) return 'fumble';
+  if (effective <= 25) return 'miss';
+  if (effective <= 50) return 'glancing';
+  if (effective <= 75) return 'solid';
+  if (effective <= 90) return 'critical';
+  return 'devastating';
+}
+
+function updateGroupMorale(tier) {
+  const s = combat.groupStatus;
+  const heart = combat.player.heart;
+  const missHolding = heart >= 2 ? 'holding' : 'wavering';
+  const fumbleWavering = heart >= 3 ? 'wavering' : 'breaking';
+  const transitions = {
+    devastating: { strong:'strong', holding:'strong', wavering:'strong', breaking:'strong' },
+    critical:    { strong:'strong', holding:'strong', wavering:'strong', breaking:'strong' },
+    solid:       { strong:'strong', holding:'holding', wavering:'holding', breaking:'wavering' },
+    glancing:    { strong:s, holding:s, wavering:s, breaking:s },
+    miss:        { strong:'holding', holding:missHolding, wavering:'wavering', breaking:'wavering' },
+    fumble:      { strong:'wavering', holding:'wavering', wavering:fumbleWavering, breaking:'breaking' },
+  };
+  combat.groupStatus = transitions[tier]?.[s] || s;
+}
+
+function endCombat(log, result) {
+  combat.ended = true;
+  if (log) document.getElementById('log').innerHTML += log;
+  document.getElementById('stances').innerHTML = '';
+  updateBars();
+  updateWarbandStatus();
+  // Show final warband status
+  const finalStatus = `<div class="warband-line" style="margin-top:8px;">Allies remaining: ${combat.alliesAlive}/${combat.alliesStart}. Enemies remaining: ${combat.enemiesAlive}/${combat.enemiesStart}.</div>`;
+  document.getElementById('log').innerHTML += finalStatus;
+  document.getElementById('btn-start').disabled = false;
+  scrollLog();
+}
+
+// ── Headless simulation (call from console) ──
+function simFight(weaponKey, stanceId, statVal, stanceBonus, enemy, N) {
+  const w = WEAPONS[weaponKey];
+  const ew = ENEMY_WEAPONS[enemy.weapon];
+  let wins = 0;
+  for (let i = 0; i < N; i++) {
+    let pHP = 12, eHP = enemy.hp;
+    let eCrippled = false, pCrippled = false;
+    let eStunned = false, pStunned = false;
+    let eBleed = 0, pBleed = 0;
+    let round = 0;
+    while (pHP > 0 && eHP > 0 && round < 50) {
+      round++;
+      // Bleeds
+      if (eBleed > 0) { eHP -= eBleed; if (eHP <= 0) break; }
+      if (pBleed > 0) { pHP -= pBleed; if (pHP <= 0) break; }
+      // Player stun skip
+      if (pStunned) { pStunned = false; continue; }
+      // Player cripple
+      const sv = pCrippled ? Math.max(1, statVal - 1) : statVal;
+      // Player attack
+      const roll = rng(1, 100);
+      const eff = roll + (sv + stanceBonus) * 5 - enemy.difficulty * 2;
+      const tier = getTier(eff, w.fumble_max);
+      const dmgRange = w.dmg[tier] || [0,0];
+      let atkDmg = (tier === 'fumble' || tier === 'miss') ? 0 : rng(dmgRange[0], dmgRange[1]);
+      const enemySoak = ARMOR_SOAK[enemy.armor] || 0;
+      atkDmg = Math.max(0, atkDmg - enemySoak);
+      // Fumble self-dmg
+      if (tier === 'fumble') pHP -= rng(w.self_dmg[0], w.self_dmg[1]);
+      // Simple fx chance on critical/devastating
+      if (tier === 'critical' || tier === 'devastating') {
+        const fxRoll = Math.random();
+        if (fxRoll < 0.2) eStunned = true;
+        else if (fxRoll < 0.35) eCrippled = true;
+        else if (fxRoll < 0.5) eBleed += 1;
+      }
+      // Kill flag: devastating always kills, critical ~40% chance
+      if (tier === 'devastating') eHP = -1;
+      else eHP -= atkDmg;
+      if (eHP <= 0) break;
+      // Grit save: >50% HP loss in one hit → stun chance
+      if (atkDmg > enemy.hp * 0.5 && !eStunned) {
+        const saveChance = tier === 'devastating' ? 0.2 : tier === 'critical' ? 0.3 : 0.5;
+        if (Math.random() > saveChance) eStunned = true;
+      }
+      // Forward initiative: if player killed enemy above, no counter (break already happened)
+      // Critical/Devastating: no counter
+      if (tier === 'critical' || tier === 'devastating') continue;
+      // Stunned enemy: no counter
+      if (eStunned) continue;
+      // Enemy counter
+      const cRoll = rng(1, 100);
+      let cEff = cRoll + enemy.attack * 10 - (sv + stanceBonus) * 3;
+      const defBonus = (stanceId === 'defensive') ? -15 : stanceId === 'rearward' ? -20 : 0;
+      cEff += defBonus;
+      if (eCrippled) cEff -= 15;
+      const cTier = getTier(cEff, 5);
+      // Enemy damage (simplified: use fixed ranges by tier)
+      const eDmgTable = { fumble:[0,0], miss:[0,0], glancing:[1,2], solid:[3,4], critical:[5,6], devastating:[7,8] };
+      let cDmg = (cTier === 'fumble' || cTier === 'miss') ? 0 : rng(eDmgTable[cTier][0], eDmgTable[cTier][1]);
+      const pSoak = ARMOR_SOAK['leather'] || 0;
+      cDmg = Math.max(0, cDmg - pSoak);
+      if (cTier === 'critical' || cTier === 'devastating') {
+        const cfx = Math.random();
+        if (cfx < 0.2) pStunned = true;
+        else if (cfx < 0.35) pCrippled = true;
+        else if (cfx < 0.5) pBleed += 1;
+      }
+      pHP -= cDmg;
+    }
+    if (pHP > 0 && eHP <= 0) wins++;
+  }
+  return wins;
+}
+
+function runBalanceTest() {
+  const N = 5000;
+  const meleeWeapons = ['dagger','hunting_knife','shortsword','longsword','spear','javelin','hand_axe','battle_axe','hammer','club'];
+  const stances = [
+    { id:'forward',   label:'Forward',          stat:'strength', bonus:1, statVal:2 },
+    { id:'open',      label:'Open',             stat:'strength', bonus:0, statVal:2 },
+    { id:'defensive', label:'Defensive(shield)', stat:'grit',    bonus:2, statVal:2 },
+    { id:'defensive', label:'Defensive(no shd)', stat:'grit',    bonus:0, statVal:2 },
+  ];
+  const enemy = { hp:8, attack:2, difficulty:6, armor:'none', weapon:'bone_club' };
+
+  console.log(`\n=== BALANCE TEST (${N} fights each) ===`);
+  console.log(`Enemy: HP ${enemy.hp}, ATK ${enemy.attack}, DIFF ${enemy.difficulty}, ${enemy.armor}`);
+  console.log(`Player: HP 12, Stat 2, Leather armor\n`);
+
+  let header = 'Weapon'.padEnd(14);
+  stances.forEach(s => header += s.label.padStart(18));
+  console.log(header);
+  console.log('-'.repeat(header.length));
+
+  for (const wk of meleeWeapons) {
+    let row = WEAPONS[wk].name.padEnd(14);
+    for (const s of stances) {
+      // 2H weapons cannot use shield
+      if (WEAPONS[wk].twoHanded && s.bonus === 2 && s.id === 'defensive') {
+        row += '---'.padStart(18);
+        continue;
+      }
+      const wins = simFight(wk, s.id, s.statVal, s.bonus, enemy, N);
+      row += `${(wins/N*100).toFixed(1)}%`.padStart(18);
+    }
+    console.log(row);
+  }
+
+  // Stat distribution comparison for Battle Axe
+  console.log(`\n=== STAT DISTRIBUTION — Battle Axe ===`);
+  const statTests = [
+    { label:'Str3/Grit1 Forward',  id:'forward',   bonus:1, statVal:3 },
+    { label:'Str1/Grit3 Forward',  id:'forward',   bonus:1, statVal:1 },
+    { label:'Str3/Grit1 Def(no shd)', id:'defensive', bonus:0, statVal:1 },
+    { label:'Str1/Grit3 Def(no shd)', id:'defensive', bonus:0, statVal:3 },
+    { label:'Str2/Grit2 Forward',  id:'forward',   bonus:1, statVal:2 },
+    { label:'Str2/Grit2 Def(no shd)', id:'defensive', bonus:0, statVal:2 },
+  ];
+  for (const st of statTests) {
+    const wins = simFight('battle_axe', st.id, st.statVal, st.bonus, enemy, N);
+    console.log(`  ${st.label.padEnd(24)} ${(wins/N*100).toFixed(1)}%`);
+  }
+}
+</script>
+</body>
+</html>

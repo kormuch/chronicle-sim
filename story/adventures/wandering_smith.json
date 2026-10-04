@@ -1,0 +1,82 @@
+{
+	"_info": "The Wandering Smith — lighthearted spring adventure. A traveling smith offers to build one thing. Village factions disagree on what. Character piece with faction politics. Sets infrastructure flags.",
+	"id": "wandering_smith",
+	"title": "The Wandering Smith",
+	"description": "A big man with a cart full of hammers. He has a week and one project to give.",
+	"conditions": [],
+	"entry": "the_smith",
+	"scenes": {
+		"the_smith": {
+			"text": "He doesn't arrive so much as he accumulates. First the noise — iron clanking against iron, a tuneless whistle, the groan of cart wheels that haven't been greased since the last village. Then the mule, which is the most tired-looking animal anyone has ever seen. Then the man.\n\nBroad. Arms like oak roots. Hands that could crush a stone or shape one — it's hard to tell which they'd prefer. His apron is burned in eleven places and he wears it like a king wears ermine.\n\n'Name's Torben,' he says, dropping from the cart with a thud that makes the ground flinch. 'Smith. Traveling kind. Your gate guard said you might have work.'\n\nHe surveys the village with professional eyes. Lingers on the tool rack. Winces at the state of the plowshare. Looks at the bridge and makes a sound like a man watching someone drown.\n\n'I've got a week,' he says. 'One project. You feed me, I build. Fair?'",
+			"choices": [
+				{
+					"label": "Show us what you can do.",
+					"next": "his_offer"
+				},
+				{
+					"label": "We're managing with what we have.",
+					"next": "send_away"
+				}
+			],
+			"_x": 400, "_y": 30
+		},
+
+		"his_offer": {
+			"text": "That evening, Torben sits at the fire with the council. He eats like three men and talks like six.\n\nBetween mouthfuls, he lays it out. 'One week. One project. I can do three things well and a hundred things badly, so let's stick with the three.'\n\nHe holds up fingers thick as sausages.\n\n'One: weapons. Proper spearheads, a shield boss or two. I saw your guards carrying sticks with rocks on them. No offence, but offence.' He grins.\n\n'Two: farm tools. That plowshare out there is a crime against agriculture. I can forge a set that'll last ten years and cut through root and rock.'\n\n'Three: your bridge.' He jerks a thumb toward the river. 'I watched a cart try to cross it today. The bridge won. The cart lost. Iron joints, proper planks, and it'll hold until your grandchildren are fat.'\n\nThe council erupts. The warriors want weapons. The farmers want tools. The traders want the bridge. Torben watches the argument with the expression of a man who has seen this exact scene in every village he's visited.\n\nHe looks at {chieftain}. 'Your call, chief. I just swing the hammer.'",
+			"choices": [
+				{
+					"label": "Weapons. We need to protect what we're building.",
+					"next": "forge_weapons"
+				},
+				{
+					"label": "Farm tools. Full bellies before sharp blades.",
+					"next": "forge_tools"
+				},
+				{
+					"label": "The bridge. A village that can't trade can't grow.",
+					"next": "fix_bridge"
+				}
+			],
+			"_x": 300, "_y": 210
+		},
+
+		"send_away": {
+			"text": "Torben looks at the plowshare. Looks at the bridge. Looks at {chieftain}.\n\n'Managing,' he repeats. Not insulted. Not even surprised. He's heard it before.\n\n'Right then.' He climbs back on the cart. The mule sighs — it had been hoping for a rest. 'If you change your mind, I'll be heading east. Follow the sound of regret.'\n\nHe waves. The cart clatters off. The plowshare continues to be a crime against agriculture. The bridge continues to win arguments with carts.\n\nThe gate guard watches him go. 'Was that wise?' he asks no one in particular.",
+			"end": true,
+			"effects": [],
+			"log": "A wandering smith named Torben offered his services. {chieftain} declined. The plowshare and the bridge remained as they were.",
+			"_x": 600, "_y": 210
+		},
+
+		"forge_weapons": {
+			"text": "Torben builds a forge in the yard by noon. By evening, the village has a new sound: the ring of iron on iron, steady as a heartbeat.\n\nHe works from dawn to dusk and then past dusk into the hours where sensible men sleep. The sparks from his anvil light up the yard like fireflies. Children gather to watch. He lets them work the bellows and tells them stories about swords he's made — each one more outrageous than the last.\n\nDay four, the warriors come to test the first spearheads. Torben watches with his arms crossed as the captain throws one into a target post. It buries itself to the shaft. The captain stares at it. Throws another. Same result.\n\n'I made them heavy in the head,' Torben says. 'Penetrates better. Your enemies won't appreciate the engineering, but their shields will.'\n\nBy the end of the week: twelve spearheads, four shield bosses, and a short sword that Torben presents to {chieftain} personally. 'Not fancy,' he says. 'But it'll do what swords do. And it'll do it for a long time.'\n\nThe morning he leaves, the warriors line the road. They don't salute — they're not that kind of village. But they stand. And Torben nods at each one, climbs onto his cart, and rides east.\n\nThe ring of his hammer echoes in the yard for days after he's gone. Or maybe that's just memory.",
+			"end": true,
+			"effects": [
+				"set has_forged_weapons = true"
+			],
+			"log": "The wandering smith Torben spent a week forging weapons for the village guard. Twelve spearheads, four shield bosses, and a short sword for {chieftain}. He left heading east, and the sound of his hammer stayed behind.",
+			"_x": 100, "_y": 390
+		},
+
+		"forge_tools": {
+			"text": "Torben doesn't build a flashy forge. He builds a workbench, sets up a quiet fire, and goes to work with the focus of a man who considers plowshares a calling.\n\nThe farmers bring their broken tools on the first day. Torben looks at each one the way a healer looks at a wound. Most he sets aside. A few he holds up and stares at in genuine horror.\n\n'Who made this?' he asks, holding a hoe that appears to have been forged by someone who had only heard of hoes described to them.\n\n'The village smith,' someone says.\n\n'You don't have a village smith.'\n\n'Exactly.'\n\nHe works for six days. Quiet work, not showy. Plowshares that gleam. Scythes with edges that sing. A set of shears so precise the shepherd cries when he holds them. A proper anvil, smaller than his but solid, left as a gift. 'For whoever comes after me,' he says.\n\nHe leaves at dawn on the seventh day, before the village wakes. The farmers find the tools laid out in the barn, each one wrapped in oilcloth, each one perfect. Tucked into the plowshare, a note in a hand that's more used to gripping hammers than quills:\n\n'Feed your people. — T.'",
+			"end": true,
+			"effects": [
+				"population += 2",
+				"set has_forged_tools = true"
+			],
+			"log": "The wandering smith Torben spent a week forging farm tools. He left before dawn on the seventh day. The tools were perfect. The note said: 'Feed your people.'",
+			"_x": 300, "_y": 390
+		},
+
+		"fix_bridge": {
+			"text": "Torben stands on the bridge for ten minutes, bouncing on his heels, listening to the wood complain. He gets off. The bridge sighs with relief.\n\n'It's not a bridge,' he says. 'It's a prayer. And the prayer is not being answered.'\n\nHe starts the next morning. Tears out the rotten planks, keeps the ones that still have life, cuts new beams from a fallen oak that he somehow finds, drags back, and shapes in an afternoon. The iron joints he forges himself — heavy, square, honest.\n\nDay three, the children discover that watching a large man hit things with a hammer while standing in a river is the most entertaining thing that has ever happened. They bring him food. He eats it standing in the water, one hand on a beam, talking with his mouth full about bridges he's fixed in other villages.\n\n'The trick,' he says, spitting out a fishbone, 'is to build it for the heaviest cart that will ever cross it. Then double that. Because someone will always try something stupid.'\n\nDay seven. The last plank is laid. The last joint is bolted. Torben stands on one side. The entire village stands on the other.\n\nA merchant's cart rolls across. Heavy. Loaded. The bridge doesn't creak. Doesn't groan. Doesn't move. The merchant looks down, looks up, and laughs with sheer relief.\n\nTorben waves from the far side. Climbs on his cart. The mule, for once, doesn't complain — the road east is flat and the bridge behind them is solid.\n\nThe children wave until he's a speck. The bridge stands. It will stand for a long time.",
+			"end": true,
+			"effects": [
+				"set bridge_repaired = true"
+			],
+			"log": "The wandering smith Torben spent a week rebuilding the village bridge. Iron joints, new planks, built to last. He crossed it once and kept walking east.",
+			"_x": 500, "_y": 390
+		}
+	}
+}

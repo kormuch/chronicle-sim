@@ -26,9 +26,10 @@ var game_state: Dictionary = {
 	"decision_count": 0,
 	"flags":          {},
 	# Combat stats — assigned at generation
-	"chieftain_might": 2,
+	"chieftain_strength": 2,
 	"chieftain_wits":  2,
 	"chieftain_grit":  2,
+	"chieftain_heart": 2,
 	"chieftain_endurance": 11,  # grit * 3 + 5
 	# Weapon
 	"weapon_base":    "",   # spear/club/shortsword/axe/bow
@@ -65,6 +66,7 @@ var _combat_data:         Dictionary = {}     # Current combat scene data
 var _combat_round:        int        = 0
 var _combat_enemy_hp:     int        = 0
 var _combat_group_status: String     = "strong"  # strong/holding/wavering/breaking
+var _combat_last_result: String     = ""        # stored between rounds for display
 
 # ---------------------------------------------------------------------------
 # Name-syllable system (Tolkien-/Germanic-inspired, inheritable)
@@ -448,16 +450,19 @@ func _finalize_generation() -> void:
 	var chieftain: Dictionary = _gen_chieftain_from_kronrat(npcs, alignment)
 	game_state["chieftain"] = chieftain
 
-	# Chieftain combat stats — random allocation of 9 points across 3 stats
-	var stat_pool: int = 9
-	var might: int = 1 + randi() % 3    # 1-3
-	stat_pool -= might
-	var wits: int = 1 + randi() % min(3, stat_pool - 1)
+	# Chieftain combat stats — random allocation of 8 points across 4 stats (each 1-3)
+	var stat_pool: int = 8
+	var strength: int = 1 + randi() % 3
+	stat_pool -= strength
+	var wits: int = 1 + randi() % min(3, stat_pool - 2)  # leave room for 2 more stats
 	stat_pool -= wits
-	var grit: int = max(1, stat_pool)
-	game_state["chieftain_might"] = might
+	var grit: int = 1 + randi() % min(3, stat_pool - 1)  # leave room for 1 more stat
+	stat_pool -= grit
+	var heart: int = max(1, stat_pool)
+	game_state["chieftain_strength"] = strength
 	game_state["chieftain_wits"]  = wits
 	game_state["chieftain_grit"]  = grit
+	game_state["chieftain_heart"] = heart
 	game_state["chieftain_endurance"] = grit * 3 + 5
 
 	# Starting weapon — random
@@ -1451,6 +1456,7 @@ func _trigger_combat_scene() -> void:
 		_combat_data = combat
 		_combat_enemy_hp = int(combat.get("enemy_hp", 15))
 		_combat_group_status = "strong"
+		_combat_last_result = ""
 		_combat_round = 1
 
 	var enemy_name: String = str(combat.get("enemy", "the enemy"))
@@ -1464,16 +1470,19 @@ func _trigger_combat_scene() -> void:
 	if not group_texts.is_empty():
 		group_flavor = group_texts[randi() % group_texts.size()]
 
-	var display_text: String = "[b]── %s — Round %d ──[/b]\n%s" % [
-		adv.get("title", "Combat"), _combat_round, _format_text(round_text)]
-	if group_flavor != "":
-		display_text += "\n\n[i]%s[/i]" % group_flavor
-
-	# Endurance display
 	var endurance: int = int(game_state.get("chieftain_endurance", 11))
 	var max_endurance: int = int(game_state.get("chieftain_grit", 2)) * 3 + 5
-	display_text += "\n\n[b]Endurance:[/b] %d/%d    [b]Enemy:[/b] %s (%d HP)" % [
-		endurance, max_endurance, enemy_name, _combat_enemy_hp]
+	var display_text: String = ""
+	# Prepend last round's result if available
+	if _combat_last_result != "":
+		display_text += _combat_last_result + "\n\n"
+		_combat_last_result = ""
+	display_text += "[b]── Round %d ──[/b]  You: %d/%d  |  %s: %d HP" % [
+		_combat_round, endurance, max_endurance, enemy_name, _combat_enemy_hp]
+	if round_text != "":
+		display_text += "\n%s" % _format_text(round_text)
+	if group_flavor != "":
+		display_text += "\n[i]%s[/i]" % group_flavor
 
 	# Build stance choices — filter by conditions
 	var stances: Array = combat.get("stances", [])
@@ -1511,20 +1520,14 @@ func _apply_combat_choice(choice_index: int) -> void:
 		return
 	var choice: Dictionary = _gen_choices[choice_index]
 
-	# "Continue..." button — just trigger next round
-	if not choice.has("_stance") and not choice.has("_rally"):
-		call_deferred("_trigger_combat_scene")
-		return
-
 	var rally_bonus: int = 0
 	if choice.get("_rally", false):
-		# Morale burn — rally the men
-		rally_bonus = 2
+		# Morale burn — rally the men (heart adds to rally bonus)
+		var heart_val: int = int(game_state.get("chieftain_heart", 2))
+		rally_bonus = 2 + (heart_val - 1)  # heart 1→+2, heart 2→+3, heart 3→+4
 		game_state["alignment"] = clamp(game_state.get("alignment", 0) - 5, -100, 100)
 		_combat_group_status = "holding"
-		event_triggered.emit(current_event_id,
-			"[i]You grab a wavering man by the collar. 'HOLD!' Your voice carries over the noise. They turn back. They hold. For now.[/i]",
-			[])
+		_combat_last_result = "[i]'HOLD!' They turn back. For now.[/i]"
 		# Re-trigger same round with bonus applied to next choice
 		# Store rally bonus for next stance pick
 		game_state["_rally_bonus"] = rally_bonus
@@ -1535,8 +1538,8 @@ func _apply_combat_choice(choice_index: int) -> void:
 	rally_bonus = int(game_state.get("_rally_bonus", 0))
 	game_state.erase("_rally_bonus")
 
-	# Resolve player attack: 2d6 + stat + weapon_bonus + rally vs difficulty
-	var stat_name: String = str(stance.get("stat", "might"))
+	# Resolve player attack: d100 + modifiers*5 - difficulty*2
+	var stat_name: String = str(stance.get("stat", "strength"))
 	var stat_val: int = int(game_state.get("chieftain_" + stat_name, 2))
 	var weapon_legend: int = int(game_state.get("weapon_legend", 0))
 	var weapon_bonus: int = 0
@@ -1547,12 +1550,12 @@ func _apply_combat_choice(choice_index: int) -> void:
 	var stance_bonus: int = int(stance.get("bonus", 0))
 	var difficulty: int = int(_combat_data.get("difficulty", 8))
 
-	var roll: int = (randi() % 6 + 1) + (randi() % 6 + 1)
-	var total: int = roll + stat_val + weapon_bonus + stance_bonus + rally_bonus
-	var margin: int = total - difficulty
+	var roll: int = randi() % 100 + 1
+	var modifier: int = (stat_val + weapon_bonus + stance_bonus + rally_bonus) * 5
+	var effective: int = roll + modifier - difficulty * 2
 
 	# Determine hit tier
-	var tier: String = _get_hit_tier(margin)
+	var tier: String = _get_hit_tier(effective)
 
 	# Exposed flank penalty when group is breaking and using forward stance
 	if _combat_group_status == "breaking" and str(stance.get("stance_type", "")) == "forward":
@@ -1586,13 +1589,14 @@ func _apply_combat_choice(choice_index: int) -> void:
 		var weapon_name: String = str(game_state.get("weapon_name", "your weapon"))
 		_log_debug("LEGEND UP: %s is now legend %d" % [weapon_name, legend + 1])
 
-	# Build result text
-	var result: String = "[b]Your attack:[/b] %s (roll: %d + %d = %d vs %d)\n%s" % [
-		tier.to_upper(), roll, stat_val + weapon_bonus + stance_bonus + rally_bonus,
-		total, difficulty, player_text]
-
+	# Build compact result text
+	var result: String = "[b]You:[/b] %s" % player_text
+	if player_dmg > 0:
+		result += " [%d dmg]" % player_dmg
+	if player_self_dmg > 0:
+		result += " [%d self]" % player_self_dmg
 	if tier == "devastating":
-		result += "\n[color=gold]★ A legendary strike! Your weapon's legend grows.[/color]"
+		result += " [color=gold]★ Legend grows.[/color]"
 
 	# Enemy attacks back (if alive)
 	var enemy_text: String = ""
@@ -1601,11 +1605,11 @@ func _apply_combat_choice(choice_index: int) -> void:
 		var enemy_stat: int = int(_combat_data.get("enemy_attack", 3))
 		var shield_reduction: int = 2 if game_state.get("has_shield", false) else 0
 
-		var enemy_roll: int = (randi() % 6 + 1) + (randi() % 6 + 1)
+		var enemy_roll: int = randi() % 100 + 1
 		var grit: int = int(game_state.get("chieftain_grit", 2))
-		var defense: int = grit + shield_reduction
-		var enemy_margin: int = (enemy_roll + enemy_stat) - (8 + defense)
-		var enemy_tier: String = _get_hit_tier(enemy_margin)
+		var defense: int = (grit + shield_reduction) * 5
+		var enemy_effective: int = enemy_roll + enemy_stat * 5 - defense
+		var enemy_tier: String = _get_hit_tier(enemy_effective)
 
 		var enemy_table: Dictionary = _damage_tables.get(enemy_type, {})
 		var enemy_tier_entries: Array = enemy_table.get(enemy_tier, [])
@@ -1617,19 +1621,27 @@ func _apply_combat_choice(choice_index: int) -> void:
 		enemy_dmg = max(0, enemy_dmg - shield_reduction)
 		endurance = max(0, int(game_state.get("chieftain_endurance", 11)) - enemy_dmg)
 		game_state["chieftain_endurance"] = endurance
-		enemy_text = str(enemy_entry.get("text", "The enemy strikes back."))
+		enemy_text = str(enemy_entry.get("text", "Strikes back."))
 
-		result += "\n\n[b]Enemy attack:[/b] %s\n%s" % [enemy_tier.to_upper(), enemy_text]
+		result += "\n[b]Enemy:[/b] %s" % enemy_text
+		if enemy_dmg > 0:
+			result += " [%d dmg]" % enemy_dmg
 	else:
-		result += "\n\n[color=green][b]The enemy falls![/b][/color]"
+		result += "\n[color=green][b]Enemy falls.[/b][/color]"
 
 	# Update group status
 	_update_group_status(tier)
 
-	# Group flavor for next round
+	# Group flavor
 	var group_texts: Array = _damage_tables.get("group_status", {}).get(_combat_group_status, [])
 	if not group_texts.is_empty():
-		result += "\n\n[i]%s[/i]" % group_texts[randi() % group_texts.size()]
+		result += "\n[i]%s[/i]" % group_texts[randi() % group_texts.size()]
+
+	# Updated stats
+	endurance = int(game_state.get("chieftain_endurance", 11))
+	var max_endurance: int = int(game_state.get("chieftain_grit", 2)) * 3 + 5
+	var enemy_name: String = str(_combat_data.get("enemy", "enemy"))
+	result += "\nYou: %d/%d | %s: %d HP" % [endurance, max_endurance, enemy_name, _combat_enemy_hp]
 
 	state_changed.emit(game_state.duplicate(true))
 
@@ -1679,21 +1691,25 @@ func _apply_combat_choice(choice_index: int) -> void:
 			call_deferred("_end_story_adventure")
 		return
 
-	# Continue — show result, then next round
-	event_triggered.emit(current_event_id, result, [{"label": "Continue..."}])
+	# Store result — next _trigger_combat_scene will display it with stance choices
+	_combat_last_result = result
+	call_deferred("_trigger_combat_scene")
 
 
-func _get_hit_tier(margin: int) -> String:
-	if margin <= -5: return "fumble"
-	if margin <= -1: return "miss"
-	if margin <= 2:  return "glancing"
-	if margin <= 5:  return "solid"
-	if margin <= 8:  return "critical"
+func _get_hit_tier(effective: int) -> String:
+	## W100 tier thresholds on effective roll (d100 + mods*5 - difficulty*2)
+	if effective <= 5:  return "fumble"
+	if effective <= 25: return "miss"
+	if effective <= 50: return "glancing"
+	if effective <= 75: return "solid"
+	if effective <= 90: return "critical"
 	return "devastating"
 
 
 func _update_group_status(player_tier: String) -> void:
 	## Group morale shifts based on how chieftain is doing.
+	## Heart slows decay: heart >= 2 blocks miss→wavering, heart >= 3 blocks fumble→breaking.
+	var heart_val: int = int(game_state.get("chieftain_heart", 2))
 	match player_tier:
 		"devastating", "critical":
 			if _combat_group_status != "strong":
@@ -1709,14 +1725,18 @@ func _update_group_status(player_tier: String) -> void:
 			if _combat_group_status == "strong":
 				_combat_group_status = "holding"
 			elif _combat_group_status == "holding":
-				_combat_group_status = "wavering"
+				# Heart >= 2: resist dropping from holding to wavering on miss
+				if heart_val < 2:
+					_combat_group_status = "wavering"
 		"fumble":
 			if _combat_group_status == "strong":
 				_combat_group_status = "wavering"
 			elif _combat_group_status == "holding":
 				_combat_group_status = "wavering"
 			elif _combat_group_status == "wavering":
-				_combat_group_status = "breaking"
+				# Heart >= 3: resist dropping from wavering to breaking on fumble
+				if heart_val < 3:
+					_combat_group_status = "breaking"
 
 
 # ---------------------------------------------------------------------------

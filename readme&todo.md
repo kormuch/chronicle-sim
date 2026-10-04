@@ -214,6 +214,13 @@ All files in `material/` are design inputs — not loaded by the engine. Used to
 - **Horror tools:** Personal investment, Terror vs. Revulsion vs. Dread, Compartmentalization, Group Dissent, Revelation
 - **Application for Chronicle Sim:** Multi-gen mystery arcs, moral corruption events, dark_omens / prophecy event types
 
+**`lonewolf-fire-on-the-water-analysis.md`** — structural analysis of Joe Dever's *Fire on the Water* (Lone Wolf Book 2):
+- **7 episode types** identified: Harbour Ambush, Sea Voyage/Saboteur, Hostile Port, Coach Journey, City Navigation, Underground Tunnel, Siege Climax
+- **8 design principles:** buildup before action, choices = what to do not who to be, information as resource, skill/item-gated choices, ambiguous NPCs, layered threats, environment as gameplay, not every scene needs choices
+- **5 episode templates** for Chronicle Sim adventures: Investigation, Hostile Navigation, Journey with Hazards, Slow Buildup to Crisis, Earned Climax
+- **Anti-patterns** documented (random tables, linear path, instant death — things that don't transfer)
+- Primary reference for adventure prose style and pacing
+
 **`situation-generators-summary.md`** — distilled from "Creating Fun Game Situations" & "Rollenspielplots Plus":
 - **6 generators:** Long Knives (faction conflict), Broken Places (corrupted power), The Quest (time-limited phases), Transgression (3-sided social movement), Predator Souls (monster to understand), Nine Rooms (location by function)
 - **Core principles:** Tension before details, triangle drama (3 sides > 2), costliness of choice, escalation, timing as tool

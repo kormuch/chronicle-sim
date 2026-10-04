@@ -15,6 +15,13 @@ config/description="A text-based generational RPG"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
 
+[display]
+
+window/size/viewport_width=412
+window/size/viewport_height=915
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep_width"
+
 [autoload]
 
 GameManager="*res://GameManager.gd"

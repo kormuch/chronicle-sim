@@ -1,0 +1,111 @@
+{
+	"_info": "The Brewmaster's Bet — lighthearted winter competition. A traveling brewmaster challenges the village. Three brewing approaches with different outcomes. Sets mead_recipe or brewmaster_friend flags for future trade events.",
+	"id": "brewmasters_bet",
+	"title": "The Brewmaster's Bet",
+	"description": "A large man with a cart full of barrels. He wants to make a wager.",
+	"conditions": [],
+	"entry": "the_arrival",
+	"scenes": {
+		"the_arrival": {
+			"text": "The gate watch spots him at dusk. A big man — wide, not tall — driving a cart piled with barrels. He's singing. Badly. The mule pulling the cart looks like it has heard this song before and wishes it hadn't.\n\nHe waves at the gate with both hands, which means no one is steering the mule. The mule doesn't care. It knows the routine.\n\n'Good evening! I am Harek, brewer of meads, taster of honeys, and humble servant of fermentation.' He bows from the cart, nearly falls off, catches himself. 'I've heard your village makes a passable mead. I've come to test that claim.'\n\nThe gate watch looks at {chieftain}. Harek is already uncorking a sample bottle.",
+			"choices": [
+				{
+					"label": "A challenge? Let's hear the terms.",
+					"next": "the_wager"
+				},
+				{
+					"label": "No wagers. But he's welcome at the fire tonight.",
+					"next": "just_a_drink"
+				},
+				{
+					"label": "Winter's no time for games. He can water his mule and move on.",
+					"next": "turn_away_brewer"
+				}
+			],
+			"_x": 400, "_y": 30
+		},
+
+		"the_wager": {
+			"text": "Harek settles by the fire like a man who has settled by ten thousand fires. He pours a sample of his mead. It's good. Very good. The kind of good that makes your own brewer stare at his cup and reconsider his life.\n\n'Here is what I propose,' Harek says, wiping foam from his beard. 'Your village brews its best. I brew mine. We find three honest tongues to judge. If yours is better — and I mean better, not just different — I give you my recipe. Three generations of Harek family craft. And a cask of my finest, for the winter.'\n\nHe leans forward. His eyes are sharp behind the showmanship.\n\n'If mine is better: one barrel of your grain. And you admit — publicly, at the fire, with witnesses — that Harek's mead is superior.' He grins. 'I collect admissions the way other men collect coins.'",
+			"choices": [
+				{
+					"label": "We accept. Give us three days to brew.",
+					"next": "the_brewing"
+				},
+				{
+					"label": "The stakes are too rich. But stay for a drink.",
+					"next": "just_a_drink"
+				}
+			],
+			"_x": 200, "_y": 210
+		},
+
+		"just_a_drink": {
+			"text": "Harek shrugs like a man used to hearing no. It doesn't slow him down.\n\nHe stays the night. Tells stories about villages he's visited — the one where a goat drank an entire cask, the one where the brewer was so bad they used the mead to strip paint, the one where he fell in love with a baker's daughter and she fell in love with his mule.\n\nThe village laughs. Even the elders. Even the healer, who doesn't laugh at anything.\n\nIn the morning, he's gone before the fire is relit. His mule's tracks lead east. On the bench where he sat, a small clay bottle. Inside: a mead so good the brewer locks himself in the brewery for two days trying to figure out how it's made.\n\nHe never does.",
+			"end": true,
+			"effects": [],
+			"log": "A traveling brewmaster named Harek passed through. He told stories, shared a drink, and left at dawn. The village laughed more that night than it had all winter.",
+			"_x": 400, "_y": 210
+		},
+
+		"turn_away_brewer": {
+			"text": "Harek nods. 'Fair enough. Winter makes people careful. Can't blame careful.'\n\nHe tips an imaginary hat, turns the mule around — a process that takes longer than it should and involves the mule expressing opinions — and trundles back down the road, singing again.\n\nThe gate watch stares after him.\n\n'Was that really necessary?' one of them asks.\n\n{chieftain} says nothing. It was necessary. Probably.",
+			"end": true,
+			"effects": [],
+			"log": "A traveling brewmaster came to the gates in winter. {chieftain} sent him on his way. The mule did not seem to mind.",
+			"_x": 600, "_y": 210
+		},
+
+		"the_brewing": {
+			"text": "Three days. The village hasn't been this excited since the naming.\n\nHarek sets up in the barn, whistling, measuring honey with a precision that borders on religious. Your brewer watches from a distance, torn between learning and rivalry.\n\nThe question is what to brew. Your traditional recipe is solid — good honey, clean water, steady hand. It's what the village knows. But Harek has been doing this for thirty years.\n\nThe healer appears at the brewery door. 'I have herbs,' she says. 'Meadowsweet. Elderflower. Yarrow. I know what they do to honey.' She raises an eyebrow. 'If you want to win, you brew something he's never tasted.'\n\nOld Aldric, passing by, snorts. 'Or you brew honest mead and let the honey speak for itself. Tricks are for merchants.'",
+			"choices": [
+				{
+					"label": "The healer's herbs. Give them something they've never tasted.",
+					"next": "tasting_herbs"
+				},
+				{
+					"label": "Traditional recipe. Honest mead, honest village.",
+					"next": "tasting_traditional"
+				},
+				{
+					"label": "Spike it with the cellar spirits. Make it strong enough to win by force.",
+					"next": "tasting_spiked",
+					"conditions": ["has_storehouse == true"]
+				}
+			],
+			"_x": 200, "_y": 390
+		},
+
+		"tasting_herbs": {
+			"text": "The healer works through the night. Elderflower first, then meadowsweet, then something she won't name. The brew changes colour three times. By morning it smells like a summer meadow distilled into a cup.\n\nThe tasting happens at the fire. Three travelers — a merchant, a tinker, and a pilgrim who wandered in at the wrong time — serve as judges.\n\nHarek goes first. His mead is excellent. Deep, golden, warm. The merchant nods approvingly. The pilgrim asks for seconds.\n\nThen yours.\n\nThe merchant takes a sip. Pauses. Takes another. The tinker drinks, looks at the cup, drinks again. The pilgrim sets his cup down and stares at it as if it has explained something he'd been wondering about.\n\nHarek tastes it last. He goes quiet. Very quiet. For the first time all week, Harek has nothing to say.\n\n'I have never,' he says slowly, 'tasted anything like that.' He sets down the cup. 'You win.'\n\nHe hands over the recipe. A piece of vellum, creased from years in his pocket. 'Use it well. And tell your healer —' He shakes his head. 'Just tell her I said well done.'\n\nHe leaves the next morning. Doesn't sing.",
+			"end": true,
+			"effects": [
+				"set has_mead_recipe = true"
+			],
+			"log": "The village won a brewing contest against the traveling brewmaster Harek. The healer's herbs made the difference. Harek left his recipe behind and, for once, left in silence.",
+			"_x": 60, "_y": 570
+		},
+
+		"tasting_traditional": {
+			"text": "Three days. Clean water. Good honey from the north meadow. The brewer does what he knows. No tricks. No secrets. Just steady hands and twenty years of practice.\n\nThe tasting happens at the fire. Three travelers judge.\n\nIt's close. Closer than anyone expected. Your mead is clear, honest, warm — the taste of the village in a cup. Harek's is deeper, more complex, layered with thirty years of craft.\n\nHarek wins. By a margin as thin as a blade of grass, but he wins.\n\n'Grain,' he says. But he's not gloating. He's looking at your brewer with something close to respect.\n\nThe barrel is loaded. Harek climbs onto the cart. Then he climbs back down, walks to your brewer, and clasps his arm.\n\n'Honest mead. Honest village. I don't get that often.' He reaches into his coat and pulls out a small pouch. 'Oak chips. Soak them in the cask for a fortnight before you seal it. That's the only secret I have. The rest is just patience.'\n\nA month later, a merchant arrives from the east road. 'Harek sent me,' he says. 'Said you were good people. Said your mead was almost as good as his.'",
+			"end": true,
+			"effects": [
+				"alignment += 5",
+				"set brewmaster_friend = true"
+			],
+			"log": "The village lost a brewing contest to the traveling brewmaster Harek — by a hair. He took a barrel of grain and left a tip, a compliment, and a merchant headed our way. {chieftain} chose honesty over cleverness.",
+			"_x": 200, "_y": 570
+		},
+
+		"tasting_spiked": {
+			"text": "The cellar spirits are strong. Distilled twice, stored in the back where the elders keep things the healer doesn't approve of. Mixed into the mead, they turn it from a drink into an event.\n\nThe tasting happens at the fire.\n\nHarek goes first. His mead is, as always, excellent. The judges nod. Solid.\n\nThen yours.\n\nThe merchant takes a sip. His eyes water. The tinker takes a sip and coughs so hard he drops the cup. The pilgrim takes a sip, says 'God,' and takes another.\n\nHarek tastes it. His face goes through six expressions in three seconds. Then he starts laughing. He laughs until he's on the ground. The merchant is laughing too. The tinker has given up pretending to judge and is pouring himself another cup.\n\nBy midnight, no one can remember the contest. Harek is arm-wrestling the gate watch. The brewer is singing Harek's song. The pilgrim has abandoned his vow of temperance and is dancing with the healer, who is also dancing, which has never happened before.\n\nIn the morning, Harek is asleep under the cart. The mule is eating his hat.\n\nTucked under a barrel, weighted with a stone: his recipe. A note scrawled on top: 'You people are completely insane. I'll be back.'\n\nNo one is sure who won. No one cares.",
+			"end": true,
+			"effects": [
+				"alignment -= 5",
+				"set has_mead_recipe = true"
+			],
+			"log": "A brewing contest with the brewmaster Harek ended in chaos when {chieftain} spiked the entry with cellar spirits. Nobody remembers who won. The recipe was found under a barrel. Harek promised to return.",
+			"_x": 400, "_y": 570
+		}
+	}
+}

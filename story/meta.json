@@ -21,7 +21,15 @@
 		"has_obsidian_blade":  { "type": "bool",    "default": false, "description": "The obsidian blade from the ritual site was taken" },
 		"blade_identified":    { "type": "bool",    "default": false, "description": "A sorcerer has identified the obsidian blade's nature" },
 		"ranger_traumatized":  { "type": "bool",    "default": false, "description": "A ranger was deeply shaken by what he saw" },
-		"dead_man_investigated":{"type": "bool",    "default": false, "description": "The dead man in the river was investigated" }
+		"dead_man_investigated":{"type": "bool",    "default": false, "description": "The dead man in the river was investigated" },
+		"altweib_present":     { "type": "bool",    "default": false, "description": "The Altweib lives at the village edge" },
+		"altweib_heeded":      { "type": "bool",    "default": false, "description": "The Altweib's warning was heard" },
+		"altweib_rejected":    { "type": "bool",    "default": false, "description": "The Altweib was turned away without being heard" },
+		"has_mead_recipe":     { "type": "bool",    "default": false, "description": "The village has a superior mead recipe from Harek" },
+		"brewmaster_friend":   { "type": "bool",    "default": false, "description": "Brewmaster Harek respects the village and may return" },
+		"has_forged_weapons":  { "type": "bool",    "default": false, "description": "Proper weapons forged by a skilled smith" },
+		"has_forged_tools":    { "type": "bool",    "default": false, "description": "Proper farm tools forged by a skilled smith" },
+		"bridge_repaired":     { "type": "bool",    "default": false, "description": "The village bridge has been properly rebuilt" }
 	},
 	"eras": [
 		{
@@ -40,12 +48,12 @@
 					"year": 2,
 					"spring": { "adventure": "dead_mans_trail" },
 					"summer": { "pool": ["border_dispute"] },
-					"autumn": null,
-					"winter": null
+					"autumn": { "adventure": "altweib_warning" },
+					"winter": { "adventure": "brewmasters_bet" }
 				},
 				{
 					"year": 3,
-					"spring": null,
+					"spring": { "adventure": "wandering_smith" },
 					"summer": null,
 					"autumn": null,
 					"winter": null

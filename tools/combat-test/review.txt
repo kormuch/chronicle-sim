@@ -1,0 +1,54 @@
+Kampf mit Bogen passt noch nicht. Bogen = Blade?
+Und wie funktioniert Bogen und Nahkampf?
+Es muss Meldung kommen: They are running towards you:
+Drop bow or Give it a shot --> entweder Nahkampf oder Gegner wird mit glücklichem Treffer ausgeschaltet.
+Dann umschalten auf Nahkampf. Wenn Gegner nicht getroffen wird --> Ein Freischlag für Gegner.
+Ich sehe nicht in einer Übersicht, wieviele Gegner noch übrig sind und wieviele eigene Leute.
+Und: Es muss trotzdem ein Kampf 1:1 auch möglich sein oder 1:2 usw. das muss man auch simulieren.
+Als Waffe einbauen und unterscheiden: (Große) Streitaxt und Handaxt.
+Auch Eindruck: Beschreibung von normalem Schaden/mittelmäßigen Würfen wiederholt sich zu viel. Diese Beschreibungen mehr diversivifzieren und dafür kürzen. Einfach nur: Ear cut off, 3 Damage. Heavy hit on the shoulder. 2 Damage usw.
+Bei hefitgen Treffern dafür schön ausformulieren.
+Bitte Schrift auch bei Einleitung des Kampfes einheitlich groß.
+
+Kampf mit Bogen gegenlesen:
+
+
+Chieftain
+13/20
+Enemy
+2/10
+War-band: holding · Forces: 0/6 vs 11/14 · Orders: hold · Dread: 3
+Round 1
+From the second rank you watch him. Distance is your weapon now.
+GLANCING Bow grazes his forearm. First blood. Thin red line, dripping.
+[2 dmg]
+
+
+SOLID Bone Club catches the side of your helm. World tilts. Iron saved your skull, but the ringing won't stop and your vision swims.
+[1 dmg to you] (leather absorbs 1) (shield blocks 1) STUNNED
+Your vision swims. Stunned — you lose next round.
+1 of your men fall.
+Line holds firm. War-cries echo.
+Round 2
+You stagger upright. Shake it off. Not done yet.
+SOLID Bow buries below the ribs. Clean entry. He staggers backward, staring at the blade in disbelief.
+[5 dmg] BLEEDING
+Bleeding. The wound won't close. Time works against him now.
+
+
+DEVASTATING Full overhead to the helm. Iron crumples inward. Skull holds — barely. Darkness. Ringing. You're on the ground and can't remember falling. Blood fills your ear.
+[5 dmg to you] (leather absorbs 1) (shield blocks 1) STUNNED
+Your vision swims. Stunned — you lose next round.
+3 of your men fall. 2 of theirs go down.
+Your warriors press forward. They smell victory.
+Round 3
+He bleeds. [1 dmg]
+You stagger upright. Shake it off. Not done yet.
+MISS He twists aside. Bow takes air.
+[1 self-damage]
+
+
+MISS Bone Club thuds into your shield. Arm aches, but the wood holds.
+2 of your men fall. 1 of theirs go down.
+Your war-band is broken. The last of your men fall around you. Alone against many.
+
