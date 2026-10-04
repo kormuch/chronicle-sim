@@ -57,7 +57,7 @@ Beispiele:
 
 ## 4. Referenzwerke
 
-Detaillierte Analysen und Frameworks in `material/storydesign/`:
+Detaillierte Analysen und Frameworks in `source_material/storydesign/`:
 - `lonewolf-fire-on-the-water-analysis.md` — Episodenstruktur, Pacing, Choice-Design
 - `horror-mystery-plots-summary.md` — Horror-Levels, 3-Clue-Rule, Plot-Archetypen
 - `situation-generators-summary.md` — Situationsgeneratoren für Events

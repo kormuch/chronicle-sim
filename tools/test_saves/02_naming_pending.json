@@ -1,0 +1,151 @@
+{
+	"game_state": {
+		"alignment": 10,
+		"settlement": {
+			"name": "",
+			"location": "forest_edge",
+			"primary_trade": "hunting",
+			"tier": 1,
+			"population": 72,
+			"trades": [
+				"Hunter",
+				"Fletcher",
+				"Herb Woman"
+			],
+			"founding_id": "peaceful_pact",
+			"founding_note": "Ancient alliance with the neighbours",
+			"founding_text": "Early trade ties with a neighbouring tribe brought prosperity.",
+			"key_npcs": [
+				{
+					"name": "Aldwin",
+					"name_prefix": "Ald",
+					"name_suffix": "win",
+					"role": "Elder",
+					"gender": "m",
+					"age": 58,
+					"father": {
+						"name": "Galdric",
+						"name_prefix": "Gal",
+						"name_suffix": "dric"
+					},
+					"mother": {
+						"name": "Mora",
+						"name_prefix": "Mor",
+						"name_suffix": "a"
+					},
+					"state": "Life here is hard, but fair.",
+					"is_elder": true
+				},
+				{
+					"name": "Sigriel",
+					"name_prefix": "Sig",
+					"name_suffix": "riel",
+					"role": "Healer",
+					"gender": "f",
+					"age": 34,
+					"father": {
+						"name": "Bormar",
+						"name_prefix": "Bor",
+						"name_suffix": "mar"
+					},
+					"mother": {
+						"name": "Elwe",
+						"name_prefix": "El",
+						"name_suffix": "we"
+					},
+					"state": "The gods smile upon us.",
+					"is_elder": false
+				}
+			],
+			"name_candidates": [
+				"Woodmarch",
+				"Fairwood",
+				"Friendgrove"
+			]
+		},
+		"chieftain": {
+			"name": "Arulf",
+			"name_prefix": "Ar",
+			"name_suffix": "ulf",
+			"gender": "m",
+			"age": 31,
+			"father": {
+				"name": "Baldric",
+				"name_prefix": "Bal",
+				"name_suffix": "dric"
+			},
+			"mother": {
+				"name": "Elriel",
+				"name_prefix": "Elr",
+				"name_suffix": "iel"
+			},
+			"rule_start_year": 1,
+			"has_spouse": false,
+			"spouse": {},
+			"has_heir": false,
+			"heir": {}
+		},
+		"generation": 1,
+		"year": 3,
+		"season": 2,
+		"decision_count": 5,
+		"flags": {}
+	},
+	"chronicle_log": [
+		{
+			"timestamp": 1748000000,
+			"event_id": "village_founding",
+			"delta": {
+				"alignment": 0
+			},
+			"description": "Settlement founded.",
+			"year": 1,
+			"season": 1,
+			"generation": 1
+		},
+		{
+			"timestamp": 1748000010,
+			"event_id": "first_winter",
+			"delta": {
+				"alignment": 5
+			},
+			"description": "Shared equally in winter.",
+			"year": 1,
+			"season": 2,
+			"generation": 1
+		},
+		{
+			"timestamp": 1748000020,
+			"event_id": "trade_caravan",
+			"delta": {
+				"alignment": 5
+			},
+			"description": "Fair trade agreed.",
+			"year": 2,
+			"season": 1,
+			"generation": 1
+		},
+		{
+			"timestamp": 1748000030,
+			"event_id": "border_dispute",
+			"delta": {
+				"alignment": -5
+			},
+			"description": "Turned them away.",
+			"year": 2,
+			"season": 3,
+			"generation": 1
+		},
+		{
+			"timestamp": 1748000040,
+			"event_id": "drought_warning",
+			"delta": {},
+			"description": "Rationed water.",
+			"year": 3,
+			"season": 1,
+			"generation": 1
+		}
+	],
+	"undo_stack": [],
+	"current_event_id": "village_naming"
+}

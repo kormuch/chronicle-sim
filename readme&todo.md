@@ -46,7 +46,7 @@ story/              Modular story system (new system)
     dead_mans_trail.json    Dead man in river → ritual site mystery (14 scenes, no combat)
 story-editor.html   Visual story editor (standalone HTML) — timeline grid, node graph, scene editing
 story-editor.bat    Launcher for story-editor.html
-material/           Story reference & design material (not loaded by engine)
+source_material/    Story reference & design material (not loaded by engine)
   storydesign/
     horror-mystery-plots-summary.md       Distilled: 5 levels of fear, 3-clue rule, pacing
     situation-generators-summary.md       6 situation generators (Long Knives, Quest, Transgression…)
@@ -202,11 +202,11 @@ Year 1
 
 `_refresh_chronicle()` sets the label text and defers a scroll to the bottom paragraph.
 
-## Story Reference Material (`material/`)
+## Story Reference Material (`source_material/`)
 
-All files in `material/` are design inputs — not loaded by the engine. Used to generate event content.
+All files in `source_material/` are design inputs — not loaded by the engine. Used to generate event content.
 
-### Design Frameworks (`material/storydesign/`)
+### Design Frameworks (`source_material/storydesign/`)
 
 **`horror-mystery-plots-summary.md`** — distilled from "Horror in Roleplaying Plus" & "How to Handle Clues":
 - **5 levels of fear:** External threat → loved ones threatened → we create evil → we are evil → world itself is evil
@@ -226,7 +226,7 @@ All files in `material/` are design inputs — not loaded by the engine. Used to
 - **Core principles:** Tension before details, triangle drama (3 sides > 2), costliness of choice, escalation, timing as tool
 - **Application:** Each generator maps directly to an event type — use for structuring new event batches
 
-### Story Template (`material/storymaterial/`)
+### Story Template (`source_material/storymaterial/`)
 
 **`darkening-of-mirkwood-en.md`** (+ German original):
 - TOR campaign by Ryder-Hanrahan & Nepitello; 30-year arc across 5 eras (2947–2977 Third Age)
@@ -329,7 +329,7 @@ A Claude Code skill at `~/.claude/skills/chronicle-sim-adventure-design-helper/`
 3. **Iterate** — present scene flow, challenge weak choices
 4. **Output** — export as adventure JSON to `story/adventures/`
 
-The skill speaks German with the developer, English in adventure text. References `material/storydesign/` and `material/storymaterial/` for structural guidance.
+The skill speaks German with the developer, English in adventure text. References `source_material/storydesign/` and `source_material/storymaterial/` for structural guidance.
 
 ---
 

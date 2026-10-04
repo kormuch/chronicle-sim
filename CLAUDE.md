@@ -28,7 +28,7 @@ Main.gd          UI only — no own state, never writes directly to GameManager
 Main.tscn        Loads Main.gd
 events/          JSON event packs — loaded and merged at startup
 tools/           External scripts (not loaded by engine)
-material/        Story design reference (not loaded by engine)
+source_material/ Story design reference (not loaded by engine)
 design/          Concept docs (not loaded by engine)
 ```
 
